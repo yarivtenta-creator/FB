@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "test": "node --test dist/tests/**/*.test.js",
+    "test": "node --test 'dist/**/*.test.js'",
     "test:providers": "node --test dist/src/providers/test/**/*.test.js",
     "test:alpaca": "node --test dist/src/providers/alpaca/test/**/*.test.js",
     "test:data-hub": "node --test dist/src/data-hub/test/**/*.test.js",

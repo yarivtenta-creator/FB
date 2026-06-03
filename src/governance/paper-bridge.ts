@@ -56,7 +56,7 @@ export class PaperBridge {
     }
 
     // Check 3: Is provider read-only?
-    const provider = this.dataHub.getProvider(request.providerName);
+    const provider = await this.dataHub.getProvider(request.providerName);
     if (!provider.config.isReadOnly) {
       return {
         allowed: false,

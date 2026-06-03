@@ -4,7 +4,6 @@ import { ProviderStatusData, DashboardState } from '../types.js';
 
 // Note: React component testing in Node.js environment
 // Component logic and types tested below, full rendering tested in browser environment
-});
 
 test('Provider Status Panel - Data Display', async (t) => {
   await t.test('should display provider status correctly', () => {
