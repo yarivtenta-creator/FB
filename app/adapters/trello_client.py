@@ -16,6 +16,10 @@ class TrelloClient:
         self._token = get_setting("trello_token", "")
         self._board_id = get_setting("trello_board_id", "")
 
+    @property
+    def enabled(self) -> bool:
+        return self._enabled
+
     def _auth(self) -> dict:
         return {"key": self._api_key, "token": self._token}
 
