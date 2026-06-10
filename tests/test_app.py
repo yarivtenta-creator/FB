@@ -214,6 +214,91 @@ def test_settings():
     assert get_setting("test_key") == "test_value"
 
 
+def test_content_service():
+    from app.database.db import init_db
+    from app.services.lead_service import create_lead
+    from app.services.content_service import save_content_item, get_content_items, delete_content_item
+    init_db()
+    lead_id = create_lead({"business_name": "Content Service Test", "status": "New"})
+    item_id = save_content_item(lead_id, "website", "Sample website text about photography", {"key_themes": ["photography"]})
+    assert item_id > 0
+    items = get_content_items(lead_id)
+    assert len(items) >= 1
+    assert items[0]["content_type"] == "website"
+    assert isinstance(items[0]["analysis"], dict)
+    delete_content_item(item_id)
+    items_after = get_content_items(lead_id)
+    assert not any(i["id"] == item_id for i in items_after)
+
+
+def test_full_workflow_integration():
+    """Integration test: lead → AI analysis → draft → approval."""
+    from app.database.db import init_db
+    from app.services.lead_service import create_lead, get_lead, update_lead
+    from app.agents.lead_profile_agent import analyze_lead, save_profile, get_profile
+    from app.agents.outreach_draft_agent import generate
+    from app.services.outreach_service import save_draft, get_drafts
+    from app.services.approval_service import approve_draft, get_approval_history
+    from app.services.activity_service import get_recent_activities
+    init_db()
+
+    # Step 1: Create lead
+    lead_id = create_lead({
+        "business_name": "Integration Test Studio",
+        "contact_name": "Test Contact",
+        "niche": "wedding_video",
+        "country": "USA",
+        "city": "New York",
+        "language": "en",
+        "email": "integration@teststudio.com",
+        "status": "New",
+    })
+    assert lead_id > 0
+
+    # Step 2: AI analysis
+    lead = get_lead(lead_id)
+    profile_data = analyze_lead(lead)
+    assert profile_data.get("score", 0) >= 0
+    profile_id = save_profile(lead_id, profile_data)
+    update_lead(lead_id, {"lead_score": profile_data["score"], "best_channel": profile_data["recommended_channel"]})
+
+    # Step 3: Generate draft
+    profile = get_profile(lead_id)
+    draft_content = generate(lead, profile, "email", "professional")
+    assert len(draft_content) > 5
+    draft_id = save_draft(lead_id, "email", "professional", draft_content)
+    assert draft_id > 0
+
+    # Step 4: Approve draft
+    approval_id = approve_draft(
+        draft_id=draft_id,
+        lead_id=lead_id,
+        edited_content=draft_content,
+        next_action="Send tomorrow",
+        lawful_basis_note="Legitimate interest",
+    )
+    assert approval_id > 0
+
+    # Step 5: Verify history
+    history = get_approval_history(lead_id=lead_id)
+    assert any(h["decision"] == "approved" for h in history)
+
+    # Step 6: Verify activities logged
+    activities = get_recent_activities(200)
+    action_names = [a["action"] for a in activities]
+    assert "lead_created" in action_names
+    assert "draft_created" in action_names
+    assert "draft_approved" in action_names
+
+
+def test_plan_enforcer_stub():
+    from app.services.plan_enforcer import can_create_lead, can_generate_draft, get_plan_limits
+    assert can_create_lead() is True
+    assert can_generate_draft() is True
+    limits = get_plan_limits()
+    assert limits["leads"] == -1
+
+
 if __name__ == "__main__":
     import pytest
     pytest.main([__file__, "-v"])

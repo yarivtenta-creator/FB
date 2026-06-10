@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS outreach_drafts (
     lead_id INTEGER NOT NULL REFERENCES leads(id) ON DELETE CASCADE,
     channel TEXT DEFAULT 'email',
     tone TEXT DEFAULT 'professional',
+    language_code TEXT DEFAULT 'en',
     content TEXT,
     status TEXT DEFAULT 'pending',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -80,6 +81,7 @@ CREATE TABLE IF NOT EXISTS browser_profiles (
     lead_id INTEGER NOT NULL REFERENCES leads(id) ON DELETE CASCADE,
     adspower_profile_id TEXT NOT NULL,
     profile_name TEXT,
+    last_opened_at DATETIME,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 

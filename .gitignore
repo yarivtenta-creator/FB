@@ -1,4 +1,49 @@
-**/__pycache__
-*.pyc
+# Data
 data/
+*.db
+*.sqlite
+
+# Secrets
 .env
+.env.local
+.env.production
+.env.staging
+
+# Python
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# Exports / Imports / Screenshots
+app/imports/*
+app/exports/*
+app/screenshots/*
+!app/imports/.gitkeep
+!app/exports/.gitkeep
+!app/screenshots/.gitkeep
+
+# Backups
+backups/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
