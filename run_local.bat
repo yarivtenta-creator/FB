@@ -6,5 +6,5 @@ if not exist ".env" (
     echo Created .env from .env.example
 )
 if not exist "data" mkdir data
-streamlit run app/main.py --server.port 8501 --server.headless false
+streamlit run app/main_frontend.py --server.port 8501 --server.headless false
 pause

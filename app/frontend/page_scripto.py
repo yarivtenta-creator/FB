@@ -1,5 +1,7 @@
 import streamlit as st
-from app.frontend.mock_data import SCRIPTO_LOCALES, LEADS
+from app.frontend.mock_data import SCRIPTO_LOCALES
+from app.frontend.data_bridge import get_leads
+from app.services.scripto_service import generate_localized_draft, get_scripto_history, detect_language
 
 LANG_FLAGS = {"en": "🇬🇧", "it": "🇮🇹", "fr": "🇫🇷", "de": "🇩🇪"}
 
@@ -36,11 +38,24 @@ def show():
     locale = SCRIPTO_LOCALES[selected_lang]
 
     # ── Lead selector ─────────────────────────────────────────────
-    col_lead, col_tone = st.columns([2, 1])
-    lead_opts = {f"{l['business_name']}": l for l in LEADS}
+    col_lead, col_tone, col_gen = st.columns([2, 1, 1])
+    all_leads = get_leads()
+    lead_opts = {f"{l['business_name']}": l for l in all_leads} if all_leads else {}
+    if not lead_opts:
+        col_lead.warning("No leads found. Add leads first.")
+        return
     sel_lead_name = col_lead.selectbox("Lead", list(lead_opts.keys()), label_visibility="collapsed")
     lead = lead_opts[sel_lead_name]
     tone = col_tone.selectbox("Tone", ["soft", "direct", "professional"], label_visibility="collapsed")
+    with col_gen:
+        st.markdown("<div style='height:4px'></div>", unsafe_allow_html=True)
+        if st.button("✨ Generate Draft", use_container_width=True, key="gen_draft_btn"):
+            with st.spinner("Generating..."):
+                result = generate_localized_draft(lead["id"], "email", tone, selected_lang)
+            if result.get("success"):
+                st.success(f"Draft generated (ID {result['draft_id']}) in {result['language_code'].upper()}.")
+            else:
+                st.error(f"Generation failed: {result.get('error')}")
 
     st.markdown(f"### {LANG_FLAGS[selected_lang]} {locale['label']} Draft Previews")
 

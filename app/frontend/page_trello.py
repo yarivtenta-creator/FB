@@ -1,6 +1,8 @@
 import streamlit as st
 from app.frontend.mock_data import TRELLO_BOARDS, TRELLO_CARDS, LEADS
 from app.frontend.theme import STATUS_COLORS, score_color
+from app.services.trello_service import get_sync_status, sync_all_leads
+from app.database.db import get_setting, set_setting
 import plotly.graph_objects as go
 
 
@@ -22,28 +24,32 @@ def show():
 
 
 def _board_status_tab():
-    board = TRELLO_BOARDS[0]
-    connected = board["status"] == "connected"
-    sc = "#10b981" if connected else "#ef4444"
-    dot = "🟢" if connected else "🔴"
+    sync_status = get_sync_status()
+    health = sync_status.get("health", {})
+    enabled = sync_status.get("enabled", False)
+    health_status = health.get("status", "disabled")
+    connected = health_status == "connected"
+    sc = "#10b981" if connected else ("#f59e0b" if enabled else "#ef4444")
+    dot = "🟢" if connected else ("🟡" if enabled else "🔴")
 
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Board Status", "Connected" if connected else "Disconnected")
-    c2.metric("Active Cards", board["cards"])
-    c3.metric("Pipeline Lists", board["lists"])
-    c4.metric("Last Sync", board["last_sync"][11:16] + " today")
+    c1.metric("Board Status", "Connected" if connected else ("Enabled" if enabled else "Disabled"))
+    c2.metric("Trello Enabled", "Yes" if enabled else "No")
+    c3.metric("Board ID", sync_status.get("board_id") or "Not set")
+    c4.metric("AI Mode", "Live" if connected else "Offline")
 
     st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
 
+    board_id = sync_status.get("board_id", "—")
     st.markdown(f"""
     <div style="background:#1e2130;border:1px solid rgba(99,102,241,0.2);border-radius:12px;padding:18px 20px;margin-bottom:16px">
         <div style="display:flex;justify-content:space-between;align-items:center">
             <div>
-                <div style="font-size:16px;font-weight:700;color:#f1f5f9">🟦 {board['name']}</div>
-                <div style="font-size:12px;color:#64748b;margin-top:4px">Board ID: {board['id']} · {board['cards']} cards · {board['lists']} lists</div>
+                <div style="font-size:16px;font-weight:700;color:#f1f5f9">🟦 Trello Pipeline Board</div>
+                <div style="font-size:12px;color:#64748b;margin-top:4px">Board ID: {board_id}</div>
             </div>
             <div style="display:flex;gap:12px;align-items:center">
-                <span style="font-size:13px;font-weight:600;color:{sc}">{dot} {board['status'].title()}</span>
+                <span style="font-size:13px;font-weight:600;color:{sc}">{dot} {health_status.title()}</span>
             </div>
         </div>
     </div>
@@ -53,19 +59,25 @@ def _board_status_tab():
     with col_sync:
         if st.button("🔄 Sync Now", use_container_width=True):
             with st.spinner("Syncing to Trello..."):
-                import time; time.sleep(0.9)
-            st.success("Synced 12 cards to Trello.")
+                result = sync_all_leads()
+            if result.get("errors"):
+                st.warning(f"Synced {result['synced']}/{result['total']} leads. {len(result['errors'])} errors.")
+            else:
+                if result['synced'] == 0 and not enabled:
+                    st.info("Trello is disabled. Enable it in the Setup tab.")
+                else:
+                    st.success(f"Synced {result['synced']} leads to Trello.")
     with col_open:
         st.button("🔗 Open Board", use_container_width=True)
 
     st.markdown("### Workspace Status")
     workspace_items = [
-        ("Trello Connection", "Active", "#10b981"),
-        ("OAuth Token", "Valid", "#10b981"),
-        ("Board Access", "Read/Write", "#10b981"),
-        ("Auto-sync", "Disabled", "#f59e0b"),
-        ("Webhook Callback", "Not configured", "#64748b"),
-        ("Last Error", "None", "#10b981"),
+        ("Trello Integration", "Enabled" if enabled else "Disabled", "#10b981" if enabled else "#ef4444"),
+        ("Connection Status", health_status.title(), "#10b981" if connected else "#f59e0b"),
+        ("API Key", "Set" if get_setting("trello_api_key") else "Not set", "#10b981" if get_setting("trello_api_key") else "#ef4444"),
+        ("Token", "Set" if get_setting("trello_token") else "Not set", "#10b981" if get_setting("trello_token") else "#ef4444"),
+        ("Board ID", "Set" if get_setting("trello_board_id") else "Not set", "#10b981" if get_setting("trello_board_id") else "#f59e0b"),
+        ("Last Error", health.get("message", "None"), "#64748b"),
     ]
     cols = st.columns(2)
     for i, (label, val, color) in enumerate(workspace_items):
@@ -156,19 +168,40 @@ def _preview_tab():
 
 def _setup_tab():
     st.markdown("### Trello Board Setup")
-    st.info("Trello integration is available in **Scripto SaaS (Phase 2)**. Configuration shown below is for planning purposes.")
+
+    trello_enabled = get_setting("trello_enabled", "false").lower() == "true"
+    enabled_toggle = st.toggle("Enable Trello Integration", value=trello_enabled)
 
     with st.form("trello_config"):
         st.markdown("#### Connection")
         c1, c2 = st.columns(2)
-        c1.text_input("Trello API Key", placeholder="Get from https://trello.com/app-key")
-        c2.text_input("Trello Token", type="password", placeholder="OAuth token")
+        api_key = c1.text_input("Trello API Key", value=get_setting("trello_api_key", ""), placeholder="Get from https://trello.com/app-key")
+        token = c2.text_input("Trello Token", value=get_setting("trello_token", ""), type="password", placeholder="OAuth token")
         st.markdown("#### Board Settings")
-        c3, c4 = st.columns(2)
-        pipeline_board = c3.text_input("Pipeline Board ID", placeholder="e.g. abc123")
-        approval_board = c4.text_input("Approval Board ID (optional)", placeholder="e.g. xyz789")
-        auto_sync = st.checkbox("Auto-sync on approval decision", value=False)
+        board_id = st.text_input("Pipeline Board ID", value=get_setting("trello_board_id", ""), placeholder="e.g. abc123")
         st.markdown("#### Privacy")
         st.markdown('<div style="font-size:12px;color:#64748b">Email, phone, draft content, and compliance data will never be synced to Trello.</div>', unsafe_allow_html=True)
         if st.form_submit_button("💾 Save Trello Config", type="primary"):
-            st.info("Trello config saved (Phase 2 will activate this).")
+            set_setting("trello_enabled", "true" if enabled_toggle else "false")
+            set_setting("trello_api_key", api_key)
+            set_setting("trello_token", token)
+            set_setting("trello_board_id", board_id)
+            st.success("Trello configuration saved.")
+            st.rerun()
+
+    if st.button("🔌 Test Trello Connection", key="trello_test_btn"):
+        key = get_setting("trello_api_key", "")
+        tok = get_setting("trello_token", "")
+        if not key or not tok:
+            st.error("Please save API Key and Token first.")
+        else:
+            try:
+                import requests
+                r = requests.get("https://api.trello.com/1/members/me",
+                                 params={"key": key, "token": tok}, timeout=5)
+                if r.status_code == 200:
+                    st.success(f"Connected as {r.json().get('fullName', 'unknown')}")
+                else:
+                    st.error(f"Trello returned {r.status_code}")
+            except Exception as e:
+                st.error(f"Cannot reach Trello: {e}")

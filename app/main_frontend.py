@@ -15,9 +15,20 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# Initialise DB on every startup
+from app.database.db import init_db, get_setting
+init_db()
+
 # Inject global CSS theme
 from app.frontend.theme import inject_css
 inject_css()
+
+# Show setup wizard on first run
+setup_complete = get_setting("setup_complete", "false")
+if setup_complete != "true":
+    from app.frontend.page_setup_wizard import show as show_wizard
+    show_wizard()
+    st.stop()
 
 # Sidebar navigation
 from app.frontend.sidebar import show_sidebar

@@ -1,9 +1,9 @@
 import streamlit as st
 import plotly.graph_objects as go
 import plotly.express as px
-from app.frontend.mock_data import (
-    get_pipeline_stats, get_lead_growth_data, get_language_distribution,
-    ACTIVITIES, LEADS
+from app.frontend.data_bridge import (
+    get_stats, get_lead_growth_data, get_language_distribution,
+    get_activities, get_leads
 )
 from app.frontend.theme import STATUS_COLORS, score_color
 
@@ -11,7 +11,7 @@ from app.frontend.theme import STATUS_COLORS, score_color
 def show():
     st.markdown('<div class="page-header"><h1>📊 Dashboard</h1><p class="page-subtitle">Overview of your SDR pipeline and recent activity</p></div>', unsafe_allow_html=True)
 
-    stats = get_pipeline_stats()
+    stats = get_stats()
 
     # ── KPI Row 1 ──────────────────────────────────────────────
     c1, c2, c3, c4 = st.columns(4)
@@ -161,7 +161,7 @@ def _recent_activity_feed():
         "lead_created": ("➕", "#64748b", "Lead created"),
     }
 
-    for act in ACTIVITIES[:8]:
+    for act in get_activities(limit=8):
         icon, color, label = action_icons.get(act["action"], ("•", "#64748b", act["action"]))
         biz = act.get("business_name", "System")
         time_str = act["created_at"][11:16]
@@ -188,7 +188,8 @@ def _top_leads_widget():
     </div>
     """, unsafe_allow_html=True)
 
-    top = sorted(LEADS, key=lambda x: x["lead_score"], reverse=True)[:6]
+    all_leads = get_leads()
+    top = sorted([l for l in all_leads if l.get("lead_score")], key=lambda x: x.get("lead_score", 0), reverse=True)[:6]
     for lead in top:
         score = lead["lead_score"]
         color = score_color(score)
@@ -197,7 +198,7 @@ def _top_leads_widget():
         <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
             <div style="flex:1;min-width:0;">
                 <div style="font-size:13px;color:#f1f5f9;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{lead['business_name']}</div>
-                <div style="font-size:11px;color:#64748b;margin-top:1px">{lead['city']}, {lead['country']}</div>
+                <div style="font-size:11px;color:#64748b;margin-top:1px">{lead.get('city','') or ''}, {lead.get('country','') or ''}</div>
             </div>
             <div style="text-align:right">
                 <div style="font-size:13px;font-weight:700;color:{color}">{score}</div>

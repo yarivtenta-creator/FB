@@ -33,6 +33,14 @@ def _seed_default_settings(conn):
         "ai_mode": "mock",
         "ollama_base_url": "http://localhost:11434",
         "ollama_model": "llama3.2",
+        "trello_enabled": "false",
+        "trello_api_key": "",
+        "trello_token": "",
+        "trello_board_id": "",
+        "setup_complete": "false",
+        "workspace_name": "Edit Value — SDR Workspace",
+        "sender_name": "",
+        "default_language": "en",
     }
     for key, value in defaults.items():
         conn.execute(

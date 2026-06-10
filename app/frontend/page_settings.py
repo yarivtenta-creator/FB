@@ -1,4 +1,5 @@
 import streamlit as st
+from app.database.db import get_setting, set_setting
 
 
 def show():
@@ -24,10 +25,14 @@ def _general_tab():
     st.markdown("### Workspace Settings")
     with st.form("general_settings"):
         c1, c2 = st.columns(2)
-        c1.text_input("Workspace Name", value="Edit Value — SDR Workspace")
-        c2.text_input("Your Name / Sender Name", value="[Your Name]")
+        workspace_name = c1.text_input("Workspace Name", value=get_setting("workspace_name", "Edit Value — SDR Workspace"))
+        sender_name = c2.text_input("Your Name / Sender Name", value=get_setting("sender_name", ""))
+        lang_opts = ["en", "it", "fr", "de"]
+        lang_labels_map = {"en": "English (en)", "it": "Italian (it)", "fr": "French (fr)", "de": "German (de)"}
+        current_lang = get_setting("default_language", "en")
+        lang_idx = lang_opts.index(current_lang) if current_lang in lang_opts else 0
         c3, c4 = st.columns(2)
-        c3.selectbox("Default Language", ["English (en)", "Italian (it)", "French (fr)", "German (de)"])
+        default_language = c3.selectbox("Default Language", lang_opts, index=lang_idx, format_func=lambda x: lang_labels_map.get(x, x))
         c4.selectbox("Timezone", ["UTC+0 (London)", "UTC+1 (Rome/Paris/Berlin)", "UTC-5 (New York)", "UTC-6 (Austin)", "UTC+11 (Sydney)"])
         st.markdown("#### Pipeline Configuration")
         c5, c6 = st.columns(2)
@@ -38,13 +43,16 @@ def _general_tab():
         st.checkbox("Deduplicate by email", value=True)
         st.checkbox("Deduplicate by business name + city", value=True)
         if st.form_submit_button("💾 Save General Settings", type="primary"):
+            set_setting("workspace_name", workspace_name)
+            set_setting("sender_name", sender_name)
+            set_setting("default_language", default_language)
             st.success("Settings saved.")
 
 
 def _ai_tab():
     st.markdown("### AI Engine Configuration")
 
-    current_mode = st.session_state.get("ai_mode", "mock")
+    current_mode = get_setting("ai_mode", st.session_state.get("ai_mode", "mock"))
 
     col1, col2 = st.columns(2)
     with col1:
@@ -56,6 +64,7 @@ def _ai_tab():
         </div>""", unsafe_allow_html=True)
         if st.button("Use Mock AI", use_container_width=True, key="use_mock"):
             st.session_state["ai_mode"] = "mock"
+            set_setting("ai_mode", "mock")
             st.rerun()
 
     with col2:
@@ -67,6 +76,7 @@ def _ai_tab():
         </div>""", unsafe_allow_html=True)
         if st.button("Use Ollama", use_container_width=True, key="use_ollama"):
             st.session_state["ai_mode"] = "ollama"
+            set_setting("ai_mode", "ollama")
             st.rerun()
 
     st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
@@ -74,14 +84,19 @@ def _ai_tab():
     with st.form("ai_settings"):
         st.markdown("#### Ollama Configuration")
         c1, c2 = st.columns(2)
-        c1.text_input("Ollama Base URL", value="http://localhost:11434")
-        c2.selectbox("Model", ["llama3.2", "llama3.1", "mistral", "phi3", "gemma2"])
+        ollama_url = c1.text_input("Ollama Base URL", value=get_setting("ollama_base_url", "http://localhost:11434"))
+        model_opts = ["llama3.2", "llama3.1", "mistral", "phi3", "gemma2"]
+        current_model = get_setting("ollama_model", "llama3.2")
+        model_idx = model_opts.index(current_model) if current_model in model_opts else 0
+        ollama_model = c2.selectbox("Model", model_opts, index=model_idx)
         st.markdown("#### Prompt Settings")
         c3, c4 = st.columns(2)
         c3.selectbox("Default Output Language", ["Auto (from lead)", "English", "Italian", "French", "German"])
         c4.slider("Max Draft Length (words)", 50, 500, 150)
         st.checkbox("Fallback to Mock AI if Ollama fails", value=True)
         if st.form_submit_button("💾 Save AI Settings", type="primary"):
+            set_setting("ollama_base_url", ollama_url)
+            set_setting("ollama_model", ollama_model)
             st.success("AI settings saved.")
 
     if st.button("🔌 Test Ollama Connection"):
