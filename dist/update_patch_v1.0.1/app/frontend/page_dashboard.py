@@ -81,7 +81,7 @@ def _chart_lead_growth():
         xaxis=dict(showgrid=False, linecolor="#2d3142"),
         yaxis=dict(showgrid=True, gridcolor="rgba(255,255,255,0.04)", linecolor="#2d3142", title="New"),
         yaxis2=dict(overlaying="y", side="right", showgrid=False, title="Total",
-                    titlefont=dict(color="#10b981"), tickfont=dict(color="#10b981")),
+                    title=dict(font=dict(color="#10b981")), tickfont=dict(color="#10b981")),
         barmode="group",
     )
     st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
