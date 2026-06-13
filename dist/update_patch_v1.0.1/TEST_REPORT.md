@@ -36,7 +36,7 @@ tests/test_install.py::test_data_bridge PASSED
 tests/test_install.py::test_trello_disabled PASSED
 tests/test_install.py::test_wizard_detection PASSED
 
-27 passed in 1.60s
+27 passed in 0.82s
 ```
 
 ---
@@ -58,13 +58,12 @@ PASS page_setup_wizard
 
 ---
 
-## get_lead_growth_data() verification
+## Bugs fixed
 
-```
-get_lead_growth_data OK — months: ['2026-06'] (live DB data)
-Returns tuple: (months: list, new_leads: list, cumulative: list)
-Fallback to mock series when DB empty: OK
-```
+| Bug | Status |
+|---|---|
+| ImportError: get_lead_growth_data missing | FIXED |
+| ValueError: bgcolor='transparent' rejected by Plotly | FIXED |
 
 ---
 
