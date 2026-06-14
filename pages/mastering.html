@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>מאסטרינג לוויניל | The Vinyl Lab Israel</title>
+  <meta name="description" content="מאסטרינג מקצועי המיועד לפורמט ויניל — בציוד High-End, ב-Live Sound Studio / The Vinyl Lab Israel." />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #0a0a0a;
+      --off-black: #111111;
+      --dark-gray: #1c1c1c;
+      --mid-gray: #2e2e2e;
+      --warm-gray: #888;
+      --light-gray: #ccc;
+      --cream: #f5f0e8;
+      --gold: #c8a96e;
+      --gold-light: #e0c98a;
+      --white: #ffffff;
+      --font-body: 'Segoe UI', Arial, sans-serif;
+      --radius: 4px;
+      --transition: 0.25s ease;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--cream);
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.75;
+    }
+
+    /* ── NAV ── */
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,10,10,0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--mid-gray);
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--gold);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+      flex-direction: row-reverse;
+    }
+    .nav-links a {
+      color: var(--light-gray);
+      text-decoration: none;
+      font-size: 0.92rem;
+      letter-spacing: 0.02em;
+      transition: color var(--transition);
+    }
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--gold); }
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      flex-direction: column;
+      gap: 5px;
+      padding: 4px;
+    }
+    .nav-toggle span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--cream);
+      border-radius: 2px;
+      transition: var(--transition);
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; position: absolute; top: 64px; right: 0; left: 0; background: var(--off-black); flex-direction: column; gap: 0; padding: 12px 0; border-bottom: 1px solid var(--mid-gray); }
+      .nav-links.open { display: flex; }
+      .nav-links li { width: 100%; }
+      .nav-links a { display: block; padding: 12px 24px; font-size: 1rem; }
+      .nav-toggle { display: flex; }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      height: 520px;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('../assets/images/optimized/mastering-console.jpeg');
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.38);
+    }
+    .hero-content {
+      position: relative;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 24px 56px;
+    }
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 800;
+      line-height: 1.15;
+      color: var(--white);
+      max-width: 640px;
+    }
+    .hero-sub {
+      margin-top: 16px;
+      font-size: 1.1rem;
+      color: var(--light-gray);
+      max-width: 560px;
+    }
+
+    /* ── SECTIONS ── */
+    section { padding: 72px 24px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 24px;
+      line-height: 1.25;
+    }
+    .section-body {
+      color: var(--light-gray);
+      max-width: 760px;
+      font-size: 1rem;
+    }
+    .section-body p + p { margin-top: 16px; }
+
+    /* alternating split */
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: center;
+    }
+    .split.reverse { direction: ltr; }
+    .split.reverse .split-text { direction: rtl; }
+    @media (max-width: 860px) {
+      .split { grid-template-columns: 1fr; }
+      .split.reverse { direction: rtl; }
+    }
+    .split-img {
+      border-radius: 8px;
+      overflow: hidden;
+      line-height: 0;
+    }
+    .split-img img {
+      width: 100%;
+      height: 340px;
+      object-fit: cover;
+      display: block;
+      border-radius: 8px;
+    }
+
+    /* equipment grid */
+    .equipment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+      margin-top: 32px;
+    }
+    .equip-card {
+      background: var(--dark-gray);
+      border: 1px solid var(--mid-gray);
+      border-radius: 6px;
+      padding: 24px 20px;
+    }
+    .equip-card h3 {
+      font-size: 1rem;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .equip-card p { font-size: 0.9rem; color: var(--light-gray); }
+
+    /* process steps */
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+      counter-reset: steps;
+    }
+    .step {
+      counter-increment: steps;
+      background: var(--dark-gray);
+      border: 1px solid var(--mid-gray);
+      border-radius: 6px;
+      padding: 28px 20px;
+      position: relative;
+    }
+    .step::before {
+      content: counter(steps, decimal-leading-zero);
+      position: absolute;
+      top: -16px;
+      right: 20px;
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--gold);
+      opacity: 0.25;
+      line-height: 1;
+    }
+    .step h3 { font-size: 1rem; color: var(--white); margin-bottom: 8px; }
+    .step p { font-size: 0.88rem; color: var(--warm-gray); }
+
+    /* includes list */
+    .includes-list {
+      list-style: none;
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    .includes-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.96rem;
+      color: var(--light-gray);
+    }
+    .includes-list li::before {
+      content: "✦";
+      color: var(--gold);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* dual images */
+    .dual-images {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 32px;
+    }
+    .dual-images img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      border-radius: 8px;
+      display: block;
+    }
+    @media (max-width: 600px) {
+      .dual-images { grid-template-columns: 1fr; }
+    }
+
+    /* CTA band */
+    .cta-band {
+      background: var(--dark-gray);
+      border-top: 1px solid var(--mid-gray);
+      border-bottom: 1px solid var(--mid-gray);
+      text-align: center;
+      padding: 64px 24px;
+    }
+    .cta-band h2 {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+    .cta-band p {
+      color: var(--warm-gray);
+      margin-bottom: 32px;
+      font-size: 1rem;
+    }
+    .btn {
+      display: inline-block;
+      padding: 14px 32px;
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: background var(--transition), color var(--transition);
+    }
+    .btn-gold {
+      background: var(--gold);
+      color: var(--black);
+    }
+    .btn-gold:hover { background: var(--gold-light); }
+    .btn-outline {
+      border: 1.5px solid var(--gold);
+      color: var(--gold);
+      margin-right: 16px;
+    }
+    .btn-outline:hover { background: var(--gold); color: var(--black); }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      background: var(--off-black);
+      border-top: 1px solid var(--mid-gray);
+      padding: 56px 24px 28px;
+    }
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 48px;
+    }
+    @media (max-width: 740px) {
+      .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+    }
+    .footer-brand p { color: var(--warm-gray); font-size: 0.9rem; margin-top: 12px; max-width: 300px; }
+    .footer-col h4 { color: var(--gold); font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li + li { margin-top: 10px; }
+    .footer-col ul a { color: var(--warm-gray); text-decoration: none; font-size: 0.9rem; transition: color var(--transition); }
+    .footer-col ul a:hover { color: var(--gold); }
+    .footer-bottom {
+      max-width: 1100px;
+      margin: 40px auto 0;
+      padding-top: 20px;
+      border-top: 1px solid var(--mid-gray);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-bottom p { color: var(--warm-gray); font-size: 0.82rem; }
+    .footer-bottom a { color: var(--warm-gray); text-decoration: none; }
+    .footer-bottom a:hover { color: var(--gold); }
+
+    /* bg alternation */
+    .bg-dark { background: var(--off-black); }
+    .bg-darker { background: var(--black); }
+  </style>
+</head>
+<body>
+
+  <!-- ══ NAV ══ -->
+  <nav class="site-nav" role="navigation" aria-label="ניווט ראשי">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo">The Vinyl Lab Israel</a>
+      <button class="nav-toggle" aria-label="פתח תפריט" aria-expanded="false" onclick="this.setAttribute('aria-expanded', this.getAttribute('aria-expanded')==='true'?'false':'true'); document.querySelector('.nav-links').classList.toggle('open');">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="../index.html">בית</a></li>
+        <li><a href="mastering.html" class="active">מאסטרינג</a></li>
+        <li><a href="vinyl-production.html">ייצור ויניל</a></li>
+        <li><a href="cd-production.html">CD</a></li>
+        <li><a href="cassettes.html">קסטות</a></li>
+        <li><a href="design-packaging.html">עיצוב ואריזות</a></li>
+        <li><a href="../index.html#contact">צור קשר</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ══ HERO ══ -->
+  <header class="hero">
+    <div class="hero-bg" role="img" aria-label="לוח קונסולת מאסטרינג אנלוגית"></div>
+    <div class="hero-content">
+      <span class="hero-eyebrow">שירות מקצועי</span>
+      <h1>מאסטרינג<br>שמיועד לוויניל</h1>
+      <p class="hero-sub">הפורמט האנלוגי דורש מאסטרינג שונה לחלוטין. אנחנו עושים את זה נכון.</p>
+    </div>
+  </header>
+
+  <!-- ══ SECTION 1: מה זה מאסטרינג לוויניל ══ -->
+  <section class="bg-darker">
+    <div class="container">
+      <div class="split">
+        <div class="split-text">
+          <p class="section-label">הבסיס</p>
+          <h2 class="section-title">מאסטרינג לוויניל —<br>לא אותו הדבר</h2>
+          <div class="section-body">
+            <p>מאסטרינג לוויניל הוא תהליך שונה לחלוטין ממאסטרינג לדיגיטל (Spotify, iTunes, CD). הוא מתחשב במגבלות הפיזיות של הסרט האנלוגי: רוחב הסרט, עומק החריץ, היחס בין ערוצי סטריאו, ותיקון עקומת RIAA.</p>
+            <p>בס חזק מדי יגרום למחט לקפוץ מהתלם. תדרים גבוהים לא מאוזנים ייצרו עיוות. פייז'ינג שגוי בתדרים הנמוכים יפגע ביכולת ההקלטה על הלכה. כל אלה דורשים אוזן מיומנת וניסיון ספציפי בפורמט.</p>
+            <p>ב-<strong>Live Sound Studio / The Vinyl Lab</strong> מבוצע תהליך המאסטרינג בציוד High-End, על ידי מהנדסים עם ניסיון מוכח בהוצאת תקליטי ויניל לשוק הבינלאומי.</p>
+          </div>
+        </div>
+        <div class="split-img">
+          <img src="../assets/images/optimized/mastering-rack-full-shot.jpg" alt="ראק מאסטרינג מלא עם ציוד High-End" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SECTION 2: ציוד ══ -->
+  <section class="bg-dark">
+    <div class="container">
+      <p class="section-label">הציוד שלנו</p>
+      <h2 class="section-title">שרשרת אנלוגית-דיגיטלית מקצועית</h2>
+      <p class="section-body">אנחנו עובדים עם ציוד שנבחר במיוחד לעבודה עם ויניל — לא כלים כלליים, אלא שרשרת סיגנל שמותאמת לפורמט.</p>
+
+      <div class="equipment-grid">
+        <div class="equip-card">
+          <h3>פרי-אמפים Neve</h3>
+          <p>קולורציה אנלוגית קלאסית, טרנספורמטורים אמיתיים, חום ועומק אופייניים לסאונד ה-British.</p>
+        </div>
+        <div class="equip-card">
+          <h3>EQ אנלוגי</h3>
+          <p>תיקון שיוויון פסיבי ואקטיבי, עם יכולת ניתוח תדרים מדויקת לצרכים של הוויניל.</p>
+        </div>
+        <div class="equip-card">
+          <h3>קומפרסיה מדויקת</h3>
+          <p>שרשרת דינמיקה שמטפלת בסיגנל בעדינות — ניסיון רב בשמירה על Headroom מספיק ל-Lathe.</p>
+        </div>
+        <div class="equip-card">
+          <h3>מוניטורים מקצועיים</h3>
+          <p>האזנה בסביבה אקוסטית מטופלת, עם שדה סאונד ממש — לא הנחות.</p>
+        </div>
+        <div class="equip-card">
+          <h3>ציוד מדיד</h3>
+          <p>ספקטרום אנליזר, קורלציית פאז, מד Loudness — החלטות מבוססות מדידה, לא ניחושים.</p>
+        </div>
+        <div class="equip-card">
+          <h3>עיבוד דיגיטלי High-End</h3>
+          <p>Plug-ins ו-DAW ברמה מקצועית, מתוך שרשרת אנלוגית-דיגיטלית משולבת.</p>
+        </div>
+      </div>
+
+      <div class="dual-images" style="margin-top:40px;">
+        <img src="../assets/images/optimized/mastering-equipment-01.webp" alt="ציוד מאסטרינג — מבט ראשון" loading="lazy" />
+        <img src="../assets/images/optimized/mastering-equipment-02.webp" alt="ציוד מאסטרינג — מבט שני" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SECTION 3: התהליך ══ -->
+  <section class="bg-darker">
+    <div class="container">
+      <p class="section-label">שלב אחר שלב</p>
+      <h2 class="section-title">התהליך</h2>
+      <p class="section-body">מהרגע שאתם שולחים קבצים ועד שיש בידכם גרסה מאושרת מוכנה ל-Lathe — הנה מה שקורה.</p>
+
+      <div class="process-steps">
+        <div class="step">
+          <h3>התייעצות ראשונית</h3>
+          <p>שיחה על האלבום, הסגנון המוזיקלי, יעד הלחיצה, ו-Reference tracks שאתם מביאים.</p>
+        </div>
+        <div class="step">
+          <h3>קבלת קבצים</h3>
+          <p>WAV / AIFF 24-bit לפחות, Mix Master ללא Limiting — אנחנו מטפלים בשלב הדינמיקה הסופי.</p>
+        </div>
+        <div class="step">
+          <h3>האזנה וניתוח</h3>
+          <p>האזנה ביקורתית מלאה לכל הרצועות, זיהוי בעיות תדר, פאז, ודינמיקה.</p>
+        </div>
+        <div class="step">
+          <h3>עיבוד EQ ודינמיקה</h3>
+          <p>תיקון שיוויון ייעודי לוויניל, קומפרסיה עדינה, טיפול בתדרים נמוכים ומניעת ניתור מחט.</p>
+        </div>
+        <div class="step">
+          <h3>קידוד RIAA</h3>
+          <p>הכנת הסיגנל לעקומת RIAA הסטנדרטית — חיוני לניגון תקין בכל מערכת ויניל.</p>
+        </div>
+        <div class="step">
+          <h3>אישור גרסה סופית</h3>
+          <p>שליחת Preview לאישורכם לפני ייצוא הקבצים הסופיים לשלב הלחיצה.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SECTION 4: מה זה כולל ══ -->
+  <section class="bg-dark">
+    <div class="container">
+      <p class="section-label">מה מקבלים</p>
+      <h2 class="section-title">מה השירות כולל</h2>
+      <p class="section-body">מאסטרינג לוויניל ב-The Vinyl Lab Israel כולל את כל הרכיבים הבאים — ללא תוספות מחיר נסתרות.</p>
+
+      <ul class="includes-list">
+        <li>עיבוד סטריאו מלא (Mid-Side או Stereo)</li>
+        <li>תיקון EQ תדרי — טיפול בתדרים בעייתיים</li>
+        <li>קומפרסיה ושליטה על דינמיקה</li>
+        <li>ליאול (Limiting) מבוקר לצרכי הוויניל</li>
+        <li>ניקוי רעשים וחרחורים</li>
+        <li>תיקון קורלציית פאז בתדרים נמוכים</li>
+        <li>הכנת DDP / קבצים לשלב הלחיצה</li>
+        <li>ייצוא קבצי WAV מוכנים ל-Lathe Cutting</li>
+        <li>Round of revisions — סיבוב תיקונים אחד</li>
+        <li>ייעוץ לגבי כמות ועיצוב (לפי בקשה)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══ CTA ══ -->
+  <section class="cta-band">
+    <div class="container">
+      <h2>מוכנים להכין את האלבום לוויניל?</h2>
+      <p>שלחו לנו הודעה ונתאם שיחת ייעוץ חינמית — בלי התחייבות.</p>
+      <a href="https://wa.me/972501234567?text=שלום%2C%20אני%20מעוניין%20במאסטרינג%20לוויניל" class="btn btn-gold" target="_blank" rel="noopener">WhatsApp — דברו איתנו</a>
+      <a href="../index.html#contact" class="btn btn-outline" style="margin-right:16px;">טופס יצירת קשר</a>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ══ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="../index.html" class="nav-logo" style="font-size:1.3rem;">The Vinyl Lab Israel</a>
+        <p>סטודיו מאסטרינג וייצור תקליטים בישראל. מאסטרינג לוויניל, ייצור CD, קסטות, ועיצוב אריזות — הכל תחת קורת גג אחת.</p>
+      </div>
+      <div class="footer-col">
+        <h4>שירותים</h4>
+        <ul>
+          <li><a href="mastering.html">מאסטרינג לוויניל</a></li>
+          <li><a href="vinyl-production.html">ייצור תקליטי ויניל</a></li>
+          <li><a href="cd-production.html">ייצור תקליטורים</a></li>
+          <li><a href="cassettes.html">קסטות אודיו</a></li>
+          <li><a href="design-packaging.html">עיצוב ואריזות</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>צור קשר</h4>
+        <ul>
+          <li><a href="../index.html#contact">טופס יצירת קשר</a></li>
+          <li><a href="https://wa.me/972501234567" target="_blank" rel="noopener">WhatsApp</a></li>
+          <li><a href="mailto:info@thevinyllab.co.il">info@thevinyllab.co.il</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 The Vinyl Lab Israel. כל הזכויות שמורות.</p>
+      <p><a href="../index.html">עמוד הבית</a></p>
+    </div>
+  </footer>
+
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>
