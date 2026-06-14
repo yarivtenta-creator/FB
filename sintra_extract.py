@@ -26,7 +26,7 @@ except ImportError:
 DELAY = 1.5          # seconds between tasks (increase if pages load slowly)
 MAX_LOAD_MORE_CLICKS = 200
 TASK_TIMEOUT = 15000  # ms to wait for selectors
-OUTPUT_ROOT = Path(r"C:\Users\Local PC\Desktop\SINTRA_CUSTOMER_SUPPORT_PROMPT_LIBRARY_EXTRACT")
+OUTPUT_ROOT = Path(r"C:\Users\Local PC\Documents\SINTRA_CUSTOMER_SUPPORT_PROMPT_LIBRARY_EXTRACT")
 
 FOLDERS = {
     "raw":      OUTPUT_ROOT / "01_RAW_EXPORTS",
@@ -37,7 +37,7 @@ FOLDERS = {
 }
 
 # Notion selectors (robust, class-agnostic where possible)
-SEL_LOAD_MORE      = 'div[role="button"]:has-text("Load more"), button:has-text("Load more")'
+SEL_LOAD_MORE      = 'div[role="button"]:has-text("Load more"), button:has-text("Load more"), a:has-text("Load more"), span:has-text("Load more")'
 SEL_PAGE_CONTENT   = '.notion-page-content, [data-content-editable-root="true"]'
 SEL_DB_ROW         = '.notion-collection-item, [data-block-id] .notion-list-item, [role="row"]'
 SEL_TITLE_CELL     = '.notion-collection-item-title, [placeholder="Untitled"], [data-content-editable-leaf="true"]'
@@ -201,60 +201,100 @@ def expand_all_rows(page):
 # ─────────────────────────────────────────────
 # COLLECT MASTER INDEX
 # ─────────────────────────────────────────────
-def collect_master_index(page) -> list[dict]:
+def collect_master_index(page) -> list:
     log("Collecting master index of all tasks ...")
 
-    # Try to gather rows via JS evaluation — more reliable than element handles across scrolls
+    # Dump DOM snapshot for debugging
+    dom_snippet = page.evaluate("() => document.body.innerHTML.slice(0, 3000)")
+    log(f"DOM snippet (first 500 chars): {dom_snippet[:500]}", also_print=False)
+
     rows_js = page.evaluate("""
         () => {
             const results = [];
+            const seen = new Set();
 
-            // Strategy 1: collection-item rows
-            const items = document.querySelectorAll(
-                '.notion-collection-item, [data-block-id].notion-list-item-anchor'
-            );
-            items.forEach((el, i) => {
-                const titleEl = el.querySelector(
-                    '.notion-collection-item-title span[data-content-editable-leaf], ' +
-                    '.notion-collection-item-title .notranslate, ' +
-                    '.notion-collection-item-title'
-                );
-                const title = titleEl ? titleEl.innerText.trim() : '';
-                const blockId = el.getAttribute('data-block-id') ||
-                                el.closest('[data-block-id]')?.getAttribute('data-block-id') || '';
-                if (title) results.push({ index: i, title, block_id: blockId });
+            const add = (title, block_id, href) => {
+                const key = title.toLowerCase().trim();
+                if (!key || key.length < 3 || seen.has(key)) return;
+                seen.add(key);
+                results.push({ title: title.trim(), block_id: block_id || '', href: href || '' });
+            };
+
+            // S1: notion-collection-item (app view)
+            document.querySelectorAll('.notion-collection-item').forEach(el => {
+                const t = el.querySelector('.notion-collection-item-title');
+                const id = el.getAttribute('data-block-id') || '';
+                if (t) add(t.innerText, id, '');
             });
 
-            // Strategy 2: table rows
+            // S2: table rows role="row"
             if (results.length === 0) {
-                const rows = document.querySelectorAll('[role="row"]');
-                rows.forEach((el, i) => {
-                    const cell = el.querySelector('[role="cell"]:first-child');
-                    const title = cell ? cell.innerText.trim() : '';
-                    const blockId = el.getAttribute('data-block-id') || '';
-                    if (title && title !== 'Name' && title !== 'Title') {
-                        results.push({ index: i, title, block_id: blockId });
-                    }
+                document.querySelectorAll('[role="row"]').forEach(el => {
+                    const cell = el.querySelector('[role="cell"]');
+                    const id = el.getAttribute('data-block-id') || '';
+                    const t = cell ? cell.innerText.trim() : '';
+                    if (t && t !== 'Name' && t !== 'Title') add(t, id, '');
                 });
             }
 
-            // Strategy 3: generic page blocks with titles
+            // S3: any anchor whose href is a notion page link (public site)
             if (results.length === 0) {
-                const anchors = document.querySelectorAll('a[href*="notion.so"], a[href*="notion.site"]');
-                anchors.forEach((el, i) => {
-                    const title = el.innerText.trim();
-                    if (title) results.push({ index: i, title, block_id: '', href: el.href });
+                document.querySelectorAll('a[href]').forEach(el => {
+                    const href = el.href || '';
+                    if (!href.includes('notion') && !href.includes('sintra')) return;
+                    // skip nav/header links (short text)
+                    const t = el.innerText.replace(/\\n/g, ' ').trim();
+                    if (t.length < 4) return;
+                    add(t, '', href);
                 });
             }
 
+            // S4: list items inside a notion page (public rendered page)
+            if (results.length === 0) {
+                // Public Notion pages render as divs with class containing "notion"
+                const listItems = document.querySelectorAll(
+                    '[class*="notion"][class*="list"] a, ' +
+                    '[class*="collection"] a, ' +
+                    '[class*="gallery"] a, ' +
+                    'li a, ' +
+                    'td a'
+                );
+                listItems.forEach(el => {
+                    const t = el.innerText.replace(/\\n/g, ' ').trim();
+                    add(t, '', el.href || '');
+                });
+            }
+
+            // S5: broadest fallback — every unique non-trivial link on page
+            if (results.length === 0) {
+                document.querySelectorAll('a').forEach(el => {
+                    const href = el.href || '';
+                    const t = el.innerText.replace(/\\n/g, ' ').trim();
+                    if (t.length > 5 && href.length > 10) add(t, '', href);
+                });
+            }
+
+            // Number them
+            results.forEach((r, i) => { r.index = i; });
             return results;
         }
     """)
 
     log(f"Master index: found {len(rows_js)} items via JS.")
+
+    # If still 0, dump all links so we can debug
+    if len(rows_js) == 0:
+        all_links = page.evaluate("""
+            () => [...document.querySelectorAll('a')].slice(0,50).map(a => ({
+                text: a.innerText.trim().slice(0,80),
+                href: a.href.slice(0,120)
+            }))
+        """)
+        log(f"DEBUG all links on page: {json.dumps(all_links, ensure_ascii=False)}", also_print=True)
+
     for item in rows_js:
         item["status"] = "pending"
-        item["task_url"] = ""
+        item.setdefault("task_url", "")
 
     return rows_js
 
