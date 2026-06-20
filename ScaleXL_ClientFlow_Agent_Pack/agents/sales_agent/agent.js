@@ -2,7 +2,7 @@
 
 const HOT_KEYWORDS = ['buy', 'price', 'purchase', 'how much', 'ready', 'interested', 'order', 'cost', 'pricing', 'deal', 'discount'];
 const COLD_KEYWORDS = ['just browsing', 'maybe later', 'no thanks', 'not interested', 'not ready'];
-const SPAM_PATTERNS = [/(.){5,}/, /https?:\/\/[^\s]+/i, /\b(free money|win|prize|click here)\b/i];
+const SPAM_PATTERNS = [/(.)\1{5,}/, /https?:\/\/[^\s]+/i, /\b(free money|win|prize|click here)\b/i];
 
 function run(input) {
   const { message = '', lead_profile = {}, channel = 'unknown' } = input || {};
