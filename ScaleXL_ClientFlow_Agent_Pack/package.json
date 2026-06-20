@@ -1,0 +1,9 @@
+{
+  "name": "scaleXL-clientflow-agent-pack",
+  "version": "1.0.0",
+  "description": "BotCommerce-style multi-client agent pack",
+  "main": "src/agent_runner.js",
+  "scripts": { "test": "node tests/test_runner.js" },
+  "keywords": ["botcommerce", "agents", "clientflow", "scaleXL"],
+  "license": "MIT"
+}
