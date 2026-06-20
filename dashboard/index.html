@@ -5,356 +5,228 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ScaleXL ClientFlow OS</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #1a1a2e; color: #e0e0e0; font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; height: 100vh; display: flex; flex-direction: column; }
 
-  /* Header */
-  header { background: #16213e; border-bottom: 2px solid #0f3460; padding: 16px 24px; display: flex; align-items: center; gap: 16px; }
-  header h1 { font-size: 1.4rem; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
-  .live-indicator { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #4ade80; font-weight: 600; margin-left: auto; }
-  .live-dot { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+header { background: #161b22; border-bottom: 1px solid #30363d; padding: 14px 24px; display: flex; align-items: center; gap: 16px; }
+header h1 { font-size: 18px; font-weight: 600; color: #58a6ff; }
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: #3fb950; box-shadow: 0 0 6px #3fb950; animation: pulse 2s infinite; }
+.live-label { font-size: 12px; color: #3fb950; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
 
-  /* Layout */
-  .app-body { display: flex; flex: 1; overflow: hidden; }
+.layout { display: flex; flex: 1; overflow: hidden; }
 
-  /* Sidebar */
-  aside { width: 220px; background: #16213e; border-right: 1px solid #0f3460; padding: 16px 12px; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; flex-shrink: 0; }
-  aside h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #8892b0; padding: 4px 8px 8px; }
-  .agent-btn { background: #0f3460; border: 1px solid #1a4a80; border-radius: 6px; color: #cbd5e1; padding: 10px 12px; cursor: pointer; text-align: left; font-size: 0.82rem; transition: all 0.15s; }
-  .agent-btn:hover { background: #1a4a80; color: #fff; border-color: #e94560; }
-  .agent-btn.active { background: #e94560; border-color: #e94560; color: #fff; }
+/* Sidebar */
+.sidebar { width: 200px; background: #161b22; border-right: 1px solid #30363d; padding: 16px 0; overflow-y: auto; flex-shrink: 0; }
+.sidebar-title { font-size: 11px; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; padding: 0 16px 8px; }
+.agent-btn { display: block; width: 100%; text-align: left; padding: 8px 16px; background: none; border: none; color: #c9d1d9; font-size: 13px; cursor: pointer; transition: background .15s; }
+.agent-btn:hover { background: #21262d; color: #58a6ff; }
+.agent-btn.active { background: #1f6feb22; color: #58a6ff; border-left: 2px solid #58a6ff; }
 
-  /* Main content */
-  main { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 24px; }
+/* Main */
+.main { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 24px; }
 
-  /* Cards */
-  .card { background: #16213e; border: 1px solid #0f3460; border-radius: 10px; padding: 20px; }
-  .card h2 { font-size: 1rem; font-weight: 600; color: #e94560; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid #0f3460; }
+.panel { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; }
+.panel h2 { font-size: 15px; font-weight: 600; color: #c9d1d9; margin-bottom: 16px; }
 
-  /* Form elements */
-  label { display: block; font-size: 0.82rem; color: #8892b0; margin-bottom: 6px; }
-  select, input[type="text"], textarea {
-    width: 100%; background: #1a1a2e; border: 1px solid #0f3460; border-radius: 6px;
-    color: #e0e0e0; padding: 10px 12px; font-size: 0.88rem; font-family: inherit; outline: none;
-    transition: border-color 0.15s;
-  }
-  select:focus, input:focus, textarea:focus { border-color: #e94560; }
-  textarea { min-height: 120px; resize: vertical; font-family: 'Courier New', monospace; font-size: 0.82rem; }
+.form-group { margin-bottom: 14px; }
+label { display: block; font-size: 12px; color: #8b949e; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px; }
+select, textarea, input[type=text] { width: 100%; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; color: #e6edf3; padding: 8px 12px; font-size: 13px; font-family: inherit; outline: none; }
+select:focus, textarea:focus, input:focus { border-color: #58a6ff; }
+textarea { resize: vertical; min-height: 100px; font-family: 'Consolas', monospace; }
 
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .form-group { display: flex; flex-direction: column; gap: 6px; }
+.btn { padding: 8px 20px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: opacity .15s; }
+.btn:hover { opacity: .85; }
+.btn-blue { background: #1f6feb; color: #fff; }
+.btn-green { background: #238636; color: #fff; }
 
-  .btn { background: #e94560; border: none; border-radius: 6px; color: #fff; padding: 10px 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
-  .btn:hover { background: #c73652; }
-  .btn:disabled { background: #555; cursor: not-allowed; }
-  .btn-row { display: flex; gap: 10px; margin-top: 12px; }
+.output { background: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 14px; font-family: 'Consolas', monospace; font-size: 12px; white-space: pre-wrap; min-height: 80px; color: #3fb950; max-height: 300px; overflow-y: auto; }
 
-  /* Output area */
-  .output { background: #1a1a2e; border: 1px solid #0f3460; border-radius: 6px; padding: 14px; min-height: 80px; font-family: 'Courier New', monospace; font-size: 0.8rem; color: #a8b4c8; white-space: pre-wrap; word-break: break-word; max-height: 360px; overflow-y: auto; }
-  .output.success { border-color: #4ade80; }
-  .output.error { border-color: #e94560; color: #f87171; }
+/* Pipeline steps */
+.steps { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.step { background: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 12px; }
+.step-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.step-num { background: #1f6feb; color: #fff; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; flex-shrink: 0; }
+.step-name { font-size: 13px; font-weight: 600; color: #58a6ff; }
+.badge { font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: 600; }
+.badge-green { background: #1a4731; color: #3fb950; }
+.badge-red { background: #4d1a1a; color: #f85149; }
+.badge-yellow { background: #3d2e00; color: #e3b341; }
+.badge-blue { background: #1f3a5f; color: #58a6ff; }
+.step-data { font-family: 'Consolas', monospace; font-size: 11px; color: #8b949e; }
 
-  /* Pipeline steps */
-  .pipeline-steps { display: flex; flex-direction: column; gap: 10px; }
-  .pipeline-step { background: #1a1a2e; border: 1px solid #0f3460; border-radius: 8px; padding: 12px 14px; }
-  .pipeline-step-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; cursor: pointer; user-select: none; }
-  .step-num { background: #0f3460; color: #7dd3fc; border-radius: 4px; padding: 2px 7px; font-size: 0.75rem; font-weight: 700; }
-  .step-name { font-size: 0.88rem; font-weight: 600; color: #e2e8f0; }
-  .badge { border-radius: 20px; padding: 2px 10px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; }
-  .badge-green { background: #14532d; color: #4ade80; }
-  .badge-red { background: #450a0a; color: #f87171; }
-  .badge-yellow { background: #422006; color: #fbbf24; }
-  .badge-blue { background: #0c2a4a; color: #7dd3fc; }
-  .badge-purple { background: #2e1065; color: #c084fc; }
-  .step-body { font-family: 'Courier New', monospace; font-size: 0.76rem; color: #94a3b8; white-space: pre-wrap; margin-top: 6px; display: none; }
-  .step-body.open { display: block; }
-  .toggle-icon { margin-left: auto; color: #8892b0; font-size: 0.8rem; }
+.row { display: flex; gap: 12px; }
+.row > * { flex: 1; }
 
-  /* Status bar */
-  footer { background: #16213e; border-top: 1px solid #0f3460; padding: 8px 24px; font-size: 0.78rem; color: #64748b; }
-  footer span { color: #7dd3fc; }
-
-  /* Spinner */
-  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #fff3; border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+/* Status bar */
+.statusbar { background: #161b22; border-top: 1px solid #30363d; padding: 6px 24px; font-size: 12px; color: #8b949e; }
 </style>
 </head>
 <body>
 
 <header>
-  <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#e94560"/><path d="M8 16h4l3-7 4 14 3-7h4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <div class="live-dot"></div>
   <h1>ScaleXL ClientFlow OS</h1>
-  <div class="live-indicator"><div class="live-dot"></div> LIVE</div>
+  <span class="live-label">LIVE</span>
 </header>
 
-<div class="app-body">
-  <aside>
-    <h2>Agents</h2>
-    <div id="agent-list">
-      <!-- populated by JS -->
-    </div>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-title">Agents</div>
+    <div id="agentList"></div>
   </aside>
 
-  <main>
+  <main class="main">
+
     <!-- Single Agent Tester -->
-    <div class="card">
-      <h2>Single Agent Tester</h2>
-      <div class="form-row">
+    <div class="panel">
+      <h2>🤖 Single Agent Tester</h2>
+      <div class="row">
         <div class="form-group">
-          <label for="agent-select">Select Agent</label>
-          <select id="agent-select"></select>
+          <label>Select Agent</label>
+          <select id="agentSelect" onchange="onAgentChange()"></select>
         </div>
       </div>
-      <div class="form-group" style="margin-top:12px">
-        <label for="agent-input">Input JSON</label>
-        <textarea id="agent-input" spellcheck="false"></textarea>
+      <div class="form-group">
+        <label>Input (JSON)</label>
+        <textarea id="agentInput" rows="6"></textarea>
       </div>
-      <div class="btn-row">
-        <button class="btn" id="run-agent-btn" onclick="runAgent()">Run Agent</button>
-      </div>
-      <div style="margin-top:14px">
+      <button class="btn btn-blue" onclick="runAgent()">▶ Run Agent</button>
+      <div class="form-group" style="margin-top:14px">
         <label>Output</label>
-        <div class="output" id="agent-output">Run an agent to see output here...</div>
+        <div class="output" id="agentOutput">// output will appear here</div>
       </div>
     </div>
 
     <!-- Pipeline Tester -->
-    <div class="card">
-      <h2>Pipeline Tester — Full ClientFlow OS</h2>
-      <div class="form-row">
+    <div class="panel">
+      <h2>⚡ ClientFlow OS Pipeline</h2>
+      <div class="row">
         <div class="form-group">
-          <label for="pipeline-message">Message</label>
-          <input type="text" id="pipeline-message" placeholder="e.g. I want to buy your product now" value="I want to buy your product now">
+          <label>Message</label>
+          <input type="text" id="pipelineMsg" value="I want to buy now, what is the price?" />
         </div>
         <div class="form-group">
-          <label for="pipeline-channel">Channel</label>
-          <select id="pipeline-channel">
-            <option value="whatsapp">WhatsApp</option>
-            <option value="instagram">Instagram</option>
-            <option value="email">Email</option>
-            <option value="facebook">Facebook</option>
-            <option value="sms">SMS</option>
+          <label>Channel</label>
+          <select id="pipelineChannel">
+            <option>whatsapp</option>
+            <option>instagram</option>
+            <option>email</option>
+            <option>messenger</option>
           </select>
         </div>
       </div>
-      <div class="btn-row">
-        <button class="btn" id="run-pipeline-btn" onclick="runPipeline()">Run Pipeline</button>
-      </div>
-      <div id="pipeline-output" style="margin-top:16px"></div>
+      <button class="btn btn-green" onclick="runPipeline()">⚡ Run Pipeline</button>
+      <div class="steps" id="pipelineSteps"></div>
     </div>
+
   </main>
 </div>
 
-<footer>Status: <span id="status-bar">Ready</span></footer>
+<div class="statusbar" id="statusbar">Ready — ScaleXL ClientFlow OS v1.0.0</div>
 
 <script>
-const AGENT_DEFAULTS = {
-  safety_compliance_agent: { message: "Hello, I'm interested in your services", sender_history: [] },
-  inbox_triage_agent: { conversation: { last_message: "I need help urgently!" }, channel: "whatsapp", timestamp: null },
-  lead_scoring_agent: { message: "I want to buy now, what's the price?", lead_profile: { name: "Jane Doe" } },
-  campaign_router_agent: { message: "I saw your ad", lead_profile: { business_type: "ecommerce" }, source: "facebook_ad", channel: "whatsapp", tags: [] },
-  human_handoff_agent: { message: "I want to speak to a manager now", conversation_history: [], escalation_flags: {} },
-  support_agent: { message: "The app is not working, I need help", conversation_history: [], customer_id: "CUST-001" },
-  booking_agent: { message: "I want to schedule a consultation", existing_booking_data: { name: "John Smith", date: "2026-07-01", time: "10:00", service_type: "consultation" } },
-  ecommerce_order_agent: { message: "I want to order the premium package", catalog_context: {}, customer_id: "CUST-001" },
-  sales_agent: { message: "I want to buy now, what's the price?", lead_profile: { name: "Jane Doe" }, channel: "whatsapp" },
-  follow_up_agent: { lead_profile: { name: "Jane Doe" }, last_message_timestamp: new Date().toISOString(), funnel_stage: "consideration", last_score: "warm" }
+const BASE = 'http://localhost:2222';
+
+const DEFAULTS = {
+  sales_agent: { message: "I want to buy now, what's the price?", lead_profile: { name: "John" }, channel: "whatsapp" },
+  support_agent: { message: "I was charged twice, need refund", conversation_history: [], customer_id: "cust_001" },
+  booking_agent: { message: "I want to book a consultation", existing_booking_data: { name: "Jane", date: "2026-07-01", time: "10:00", service_type: "consultation" } },
+  lead_scoring_agent: { message: "I'm very interested, ready to move forward", lead_profile: {} },
+  follow_up_agent: { lead_profile: { name: "Alice" }, last_message_timestamp: new Date().toISOString(), funnel_stage: "consideration", last_score: "warm" },
+  human_handoff_agent: { message: "I want to speak to your manager NOW", conversation_history: [], escalation_flags: [] },
+  ecommerce_order_agent: { message: "I want to order the blue shirt", catalog_context: {}, customer_id: "cust_002" },
+  campaign_router_agent: { lead_profile: { business_type: "ecommerce" }, source: "facebook_ad", channel: "messenger", tags: [], message: "Hello" },
+  inbox_triage_agent: { conversation: { last_message: "I am furious about this payment issue!" }, channel: "whatsapp", timestamp: new Date().toISOString() },
+  safety_compliance_agent: { message: "Check out this amazing offer!", broadcast_request: null, sender_history: {} }
 };
 
-function setStatus(msg) {
-  document.getElementById('status-bar').textContent = msg;
-}
+const BADGE_MAP = {
+  hot: 'badge-red', warm: 'badge-yellow', cold: 'badge-blue', spam: 'badge-red',
+  critical: 'badge-red', high: 'badge-yellow', medium: 'badge-blue', low: 'badge-green',
+  allowed: 'badge-green', blocked: 'badge-red',
+  pitch: 'badge-yellow', close: 'badge-green', qualify: 'badge-blue', disqualify: 'badge-red'
+};
 
 async function loadAgents() {
   try {
-    const res = await fetch('/api/agents');
-    const data = await res.json();
-    const agents = data.agents || [];
-
-    // Populate sidebar
-    const list = document.getElementById('agent-list');
-    list.innerHTML = '';
-    agents.forEach(name => {
+    const r = await fetch(BASE + '/api/agents');
+    const { agents } = await r.json();
+    const list = document.getElementById('agentList');
+    const sel = document.getElementById('agentSelect');
+    agents.forEach((a, i) => {
       const btn = document.createElement('button');
-      btn.className = 'agent-btn';
-      btn.textContent = name.replace(/_/g, ' ');
-      btn.dataset.agent = name;
-      btn.onclick = () => selectAgent(name, btn);
+      btn.className = 'agent-btn' + (i === 0 ? ' active' : '');
+      btn.textContent = a.replace(/_/g, ' ');
+      btn.onclick = () => { document.querySelectorAll('.agent-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); sel.value = a; onAgentChange(); };
       list.appendChild(btn);
-    });
-
-    // Populate select
-    const sel = document.getElementById('agent-select');
-    sel.innerHTML = '';
-    agents.forEach(name => {
       const opt = document.createElement('option');
-      opt.value = name;
-      opt.textContent = name.replace(/_/g, ' ');
+      opt.value = a; opt.textContent = a;
       sel.appendChild(opt);
     });
-    sel.onchange = () => prefillInput(sel.value);
-    if (agents.length > 0) {
-      prefillInput(agents[0]);
-    }
-    setStatus('Loaded ' + agents.length + ' agents');
-  } catch(e) {
-    setStatus('Error loading agents: ' + e.message);
-  }
+    onAgentChange();
+    status('Connected — ' + agents.length + ' agents loaded');
+  } catch(e) { status('⚠ Cannot connect to server at ' + BASE); }
 }
 
-function selectAgent(name, btn) {
-  document.querySelectorAll('.agent-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('agent-select').value = name;
-  prefillInput(name);
-}
-
-function prefillInput(agentName) {
-  const defaults = AGENT_DEFAULTS[agentName] || { message: "Hello" };
-  document.getElementById('agent-input').value = JSON.stringify(defaults, null, 2);
+function onAgentChange() {
+  const agent = document.getElementById('agentSelect').value;
+  document.getElementById('agentInput').value = JSON.stringify(DEFAULTS[agent] || {}, null, 2);
+  document.querySelectorAll('.agent-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.replace(/ /g,'_') === agent);
+  });
 }
 
 async function runAgent() {
-  const agent = document.getElementById('agent-select').value;
-  const inputRaw = document.getElementById('agent-input').value;
-  const outputEl = document.getElementById('agent-output');
-  const btn = document.getElementById('run-agent-btn');
-
+  const agent = document.getElementById('agentSelect').value;
   let input;
-  try { input = JSON.parse(inputRaw); }
-  catch(e) {
-    outputEl.className = 'output error';
-    outputEl.textContent = 'Invalid JSON: ' + e.message;
-    return;
-  }
-
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Running...';
-  outputEl.className = 'output';
-  outputEl.textContent = 'Running...';
-  setStatus('Running ' + agent + '...');
-
+  try { input = JSON.parse(document.getElementById('agentInput').value); } catch(e) { alert('Invalid JSON'); return; }
+  const out = document.getElementById('agentOutput');
+  out.textContent = 'Running...';
+  status('Running ' + agent + '...');
   try {
-    const res = await fetch('/api/run', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ agent, input })
-    });
-    const data = await res.json();
-    outputEl.className = 'output success';
-    outputEl.textContent = JSON.stringify(data.result, null, 2);
-    setStatus('Agent ' + agent + ' completed successfully');
-  } catch(e) {
-    outputEl.className = 'output error';
-    outputEl.textContent = 'Error: ' + e.message;
-    setStatus('Error: ' + e.message);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Run Agent';
-  }
-}
-
-function getBadgeClass(agentName, result) {
-  if (!result) return 'badge-blue';
-  if (agentName === 'safety_compliance_agent') return result.allowed ? 'badge-green' : 'badge-red';
-  if (agentName === 'lead_scoring_agent') {
-    const map = { hot: 'badge-red', warm: 'badge-yellow', cold: 'badge-blue', spam: 'badge-red' };
-    return map[result.score] || 'badge-blue';
-  }
-  if (agentName === 'inbox_triage_agent') {
-    const map = { critical: 'badge-red', high: 'badge-yellow', medium: 'badge-blue', low: 'badge-green' };
-    return map[result.urgency] || 'badge-blue';
-  }
-  if (agentName === 'human_handoff_agent') return result.should_handoff ? 'badge-red' : 'badge-green';
-  if (agentName === 'follow_up_agent') return result.should_follow_up ? 'badge-green' : 'badge-blue';
-  return 'badge-purple';
-}
-
-function getBadgeLabel(agentName, result) {
-  if (!result) return 'ok';
-  if (agentName === 'safety_compliance_agent') return result.allowed ? 'ALLOWED' : 'BLOCKED';
-  if (agentName === 'lead_scoring_agent') return (result.score || 'scored').toUpperCase();
-  if (agentName === 'inbox_triage_agent') return (result.urgency || 'triaged').toUpperCase();
-  if (agentName === 'human_handoff_agent') return result.should_handoff ? 'HANDOFF' : 'NO HANDOFF';
-  if (agentName === 'campaign_router_agent') return result.funnel_stage ? result.funnel_stage.toUpperCase() : 'ROUTED';
-  if (agentName === 'follow_up_agent') return result.should_follow_up ? 'FOLLOW-UP' : 'NO FOLLOW-UP';
-  if (agentName === 'sales_agent') return (result.action || 'done').toUpperCase();
-  if (agentName === 'support_agent') return (result.type || 'support').toUpperCase();
-  if (agentName === 'booking_agent') return (result.status || 'booking').toUpperCase();
-  if (agentName === 'ecommerce_order_agent') return (result.intent || 'ecom').toUpperCase();
-  return 'DONE';
-}
-
-function renderPipelineSteps(steps) {
-  const container = document.getElementById('pipeline-output');
-  if (!steps || steps.length === 0) { container.innerHTML = ''; return; }
-
-  const html = steps.map((step, i) => {
-    const badgeClass = getBadgeClass(step.agent, step.result);
-    const badgeLabel = getBadgeLabel(step.agent, step.result);
-    const resultStr = JSON.stringify(step.result, null, 2);
-    return `
-      <div class="pipeline-step">
-        <div class="pipeline-step-header" onclick="toggleStep(this)">
-          <span class="step-num">${i + 1}</span>
-          <span class="step-name">${step.agent.replace(/_/g, ' ')}</span>
-          <span class="badge ${badgeClass}">${badgeLabel}</span>
-          <span class="toggle-icon">▼</span>
-        </div>
-        <div class="step-body">${escHtml(resultStr)}</div>
-      </div>
-    `;
-  }).join('');
-
-  container.innerHTML = '<div class="pipeline-steps">' + html + '</div>';
-}
-
-function toggleStep(header) {
-  const body = header.nextElementSibling;
-  const icon = header.querySelector('.toggle-icon');
-  body.classList.toggle('open');
-  icon.textContent = body.classList.contains('open') ? '▲' : '▼';
-}
-
-function escHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const r = await fetch(BASE + '/api/run', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ agent, input }) });
+    const data = await r.json();
+    out.textContent = JSON.stringify(data.result, null, 2);
+    status('✅ ' + agent + ' completed');
+  } catch(e) { out.textContent = 'Error: ' + e.message; status('❌ Error: ' + e.message); }
 }
 
 async function runPipeline() {
-  const message = document.getElementById('pipeline-message').value;
-  const channel = document.getElementById('pipeline-channel').value;
-  const btn = document.getElementById('run-pipeline-btn');
-
-  if (!message.trim()) {
-    setStatus('Please enter a message');
-    return;
-  }
-
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Running Pipeline...';
-  document.getElementById('pipeline-output').innerHTML = '<div style="color:#8892b0;font-size:0.85rem;padding:12px 0">Processing through all agents...</div>';
-  setStatus('Running full pipeline...');
-
+  const message = document.getElementById('pipelineMsg').value;
+  const channel = document.getElementById('pipelineChannel').value;
+  const container = document.getElementById('pipelineSteps');
+  container.innerHTML = '<div style="color:#8b949e;padding:12px">Running pipeline...</div>';
+  status('Running pipeline...');
   try {
-    const res = await fetch('/api/pipeline', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message, channel, lead_profile: {}, customer_id: 'CUST-DEMO' })
+    const r = await fetch(BASE + '/api/pipeline', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message, channel, lead_profile: {} }) });
+    const data = await r.json();
+    container.innerHTML = '';
+    (data.pipeline_steps || []).forEach(s => {
+      const div = document.createElement('div');
+      div.className = 'step';
+      const result = s.result || {};
+      const keyVals = Object.entries(result).slice(0, 3).map(([k,v]) => {
+        const val = typeof v === 'object' ? JSON.stringify(v).slice(0,60) : String(v);
+        const badgeClass = BADGE_MAP[val] || '';
+        return `<span style="color:#8b949e">${k}:</span> <span class="badge ${badgeClass}">${val}</span>`;
+      }).join('  ');
+      div.innerHTML = `<div class="step-header"><div class="step-num">${s.step}</div><div class="step-name">${s.agent}</div></div><div class="step-data">${keyVals}</div>`;
+      container.appendChild(div);
     });
-    const data = await res.json();
-    renderPipelineSteps(data.pipeline_steps || []);
-    setStatus('Pipeline complete — agent used: ' + (data.agent_used || 'unknown'));
-  } catch(e) {
-    document.getElementById('pipeline-output').innerHTML = '<div class="output error">Error: ' + escHtml(e.message) + '</div>';
-    setStatus('Pipeline error: ' + e.message);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Run Pipeline';
-  }
+    if (data.agent_used) {
+      const final = document.createElement('div');
+      final.className = 'step';
+      final.style.borderColor = '#3fb950';
+      final.innerHTML = `<div class="step-header"><div class="step-num" style="background:#238636">✓</div><div class="step-name" style="color:#3fb950">Final: ${data.agent_used}</div></div>`;
+      container.appendChild(final);
+    }
+    status('✅ Pipeline complete — agent used: ' + data.agent_used);
+  } catch(e) { container.innerHTML = '<div style="color:#f85149">Error: ' + e.message + '</div>'; status('❌ Pipeline error'); }
 }
 
-// Init
+function status(msg) { document.getElementById('statusbar').textContent = msg; }
+
 loadAgents();
 </script>
 </body>
