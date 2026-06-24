@@ -142,7 +142,23 @@ async function loadProviders(){ const d=await get('/api/data/providers'); if(!d)
   document.getElementById('providers').innerHTML=d.map(p=>`<div class="prov"><div class="h"><span>${esc(p.name)} <span class="muted">${esc(p.category)}</span></span><span class="s-${p.status}"><span class="dot"></span>${cap(p.status)} ${p.configured?'· configured':''}</span></div><div class="plinks">${p.links&&p.links.website?`<a href="${esc(p.links.website)}" target="_blank" rel="noopener">Website</a>`:''}${p.links&&p.links.apiKeys?`<a href="${esc(p.links.apiKeys)}" target="_blank" rel="noopener">API Keys</a>`:''}${p.links&&p.links.docs?`<a href="${esc(p.links.docs)}" target="_blank" rel="noopener">Docs</a>`:''}${p.links&&p.links.setupGuide?`<a href="${esc(p.links.setupGuide)}" target="_blank" rel="noopener">Setup Guide</a>`:''}<button onclick="testProvider('${esc(p.id)}')">Test</button></div><div class="muted" id="ptest-${esc(p.id)}" style="font-size:10px;margin-top:4px"></div></div>`).join('');
 }
 async function testProvider(id){ const el=document.getElementById('ptest-'+id); el.textContent='testing (read-only)…';
-  const r=await post('/api/data/providers/'+id+'/test'); el.textContent = r ? `mode:${r.mode} · reachable:${r.reachable} · ${r.note}` : 'test failed'; }
+  // Alpaca uses its own unauthenticated endpoint — always performs real probe when keys exist
+  const url = id==='alpaca' ? '/api/alpaca/test' : '/api/data/providers/'+id+'/test';
+  const r = id==='alpaca' ? await get(url) : await post(url);
+  if(!r){ el.textContent='test failed'; return; }
+  if(id==='alpaca'){
+    const state=r.alpaca_state||'UNKNOWN';
+    const net=r.network_call_performed?'real network call made':'no network call';
+    const key=r.masked_key?(' · key:'+r.masked_key):'';
+    const ts=r.tested_at?(' · '+r.tested_at.replace('T',' ').slice(0,19)+' UTC'):'';
+    const acct=r.account?(` · /v2/account:HTTP${r.account.status||'ERR'}`):'';
+    const mkt=r.market_data?(` · /v2/trades:HTTP${r.market_data.status||'ERR'}`):'';
+    el.style.color = state==='REAL_READ_ONLY_CONNECTED'?'#4caf50':state==='MOCK_NO_KEYS'?'#ff9800':'#f44336';
+    el.textContent = `${state} · reachable:${r.reachable} · ${net}${key}${acct}${mkt}${ts}`;
+  } else {
+    el.textContent = r ? `mode:${r.mode||'mock'} · reachable:${r.reachable} · ${r.note||''}` : 'test failed';
+  }
+}
 async function loadHub(){ const d=await get('/api/data/hub/health'); if(!d)return;
   document.getElementById('dataModeTag').textContent='data: '+(d.data_mode||'mock');
   document.getElementById('hub').innerHTML=`<div class="row"><span>data mode</span><span class="s-${d.data_mode==='mock'?'mock':'ok'}">${esc(d.data_mode)}</span></div><div class="row"><span>source</span><span>${esc(d.source)}</span></div><div class="row"><span>freshness</span><span class="muted">${esc(d.freshness)}</span></div><div class="row"><span>registered providers</span><span>${d.registered_providers}</span></div><div class="row"><span>active (enabled)</span><span>${d.active_providers}</span></div><div class="row"><span>configured</span><span>${d.configured_providers}</span></div><div class="row"><span>symbol coverage</span><span>${d.symbol_coverage}</span></div>`;
