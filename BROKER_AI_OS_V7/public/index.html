@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark"><head><meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Broker AI OS v5 — Integrated Console</title>
+<title>BROKER_AI_OS_V7 — Dashboard</title>
 <script src="/theme.js"></script>
 <style>
 /* Dark palette (default) */
@@ -32,12 +32,12 @@ main{padding:0 24px 28px;display:grid;gap:16px;grid-template-columns:repeat(12,1
 .kpi{display:flex;gap:18px;flex-wrap:wrap}.kpi div{display:flex;flex-direction:column}.kpi b{font-size:18px;color:var(--ink)}.kpi span{font-size:10px;color:var(--muted);text-transform:uppercase}
 </style></head><body>
 <header>
-  <h1>Broker <b>AI OS</b> v5 <span class="muted">// integrated</span></h1>
+  <h1>BROKER <b>AI OS</b> V7 <span class="muted">// read-only / no live trading</span></h1>
   <span class="tag safe">mode: manual</span>
   <span class="tag safe">auto_resume: false</span>
   <span class="tag safe">live: OFF</span>
   <span class="tag safe" id="dataModeTag">data: mock</span>
-  <span class="tag">port 6700</span>
+  <span class="tag">port 6060</span>
   <button id="themeToggle" onclick="BK_THEME.toggle()">☀ Bright</button>
   <span class="user" id="user">…</span>
   <button onclick="logout()">Logout</button>
