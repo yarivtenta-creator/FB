@@ -1,10 +1,8 @@
 'use strict';
 /**
- * server.js — BROKER AI OS v5 INTEGRATED BUILD (port 6700).
- * Mounts approved canonical components into one instance.
+ * server.js — BROKER_AI_OS_V7 (port 6060).
  * SAFETY: no broker client, no live endpoint, manual default, AUTO_RESUME=false,
- * approvals are gate-flags only (executed:false), no secrets. Core /api/approval/*
- * REMOVED — Governance is the single approval authority.
+ * Alpaca is READ-ONLY market data only — no orders, no execution, no positions modification.
  */
 const express = require('express');
 const path = require('path');
@@ -31,10 +29,31 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/docs', express.static(path.join(__dirname, 'docs')));
 
 (function bootSafety() {
-  const line = `[boot] INTEGRATED mode=${config.EXECUTION_MODE} auto_resume=${config.AUTO_RESUME} live=${config.LIVE_ENDPOINT_ENABLED}`;
+  const line = `[boot] BROKER_AI_OS_V7 port=${config.PORT} mode=${config.EXECUTION_MODE} auto_resume=${config.AUTO_RESUME} live=${config.LIVE_ENDPOINT_ENABLED}`;
   try { fs.appendFileSync(path.join(__dirname, 'logs', 'v2.log'), `${new Date().toISOString()} ${line}\n`); } catch {}
   console.log(line);
 })();
+
+// ── Unauthenticated health / status endpoints ──────────────────────────────
+app.get('/health', (req, res) => res.json({ status: 'ok', system: 'BROKER_AI_OS_V7', port: config.PORT, ts: new Date().toISOString() }));
+app.get('/api/health', (req, res) => res.json({ status: 'ok', system: 'BROKER_AI_OS_V7', port: config.PORT, ts: new Date().toISOString() }));
+app.get('/api/status', (req, res) => res.json({
+  system: 'BROKER_AI_OS_V7', port: config.PORT,
+  execution_mode: config.EXECUTION_MODE, live_trading: false,
+  read_only: true, paper_mode: true, auto_resume: config.AUTO_RESUME,
+  live_endpoint_enabled: config.LIVE_ENDPOINT_ENABLED, ts: new Date().toISOString()
+}));
+app.get('/api/providers', (req, res) => {
+  try { res.json(require('./data_layer/provider_registry').list()); }
+  catch { res.json({ providers: [], note: 'provider registry unavailable' }); }
+});
+app.get('/api/data/providers', (req, res) => {
+  try { res.json(require('./data_layer/provider_registry').list()); }
+  catch { res.json({ providers: [], note: 'provider registry unavailable' }); }
+});
+
+// ── Alpaca read-only routes (unauthenticated for diagnostics) ─────────────
+app.use('/api/alpaca', require('./connectors/alpaca/alpaca_routes'));
 
 app.use('/api/auth', authRouter);
 
@@ -85,8 +104,9 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.ht
 const PORT = config.PORT;
 if (require.main === module) {
   app.listen(PORT, () => {
-    console.log(`\n✅ BROKER AI OS v5 INTEGRATED running at http://localhost:${PORT}`);
+    console.log(`\n✅ BROKER_AI_OS_V7 running at http://localhost:${PORT}`);
     console.log(`   mode=${config.EXECUTION_MODE} auto_resume=${config.AUTO_RESUME} live=${config.LIVE_ENDPOINT_ENABLED}`);
+    console.log(`   Alpaca: READ-ONLY | No live trading | No order placement`);
     console.log(`   sign in at http://localhost:${PORT}/login\n`);
   });
 }

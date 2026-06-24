@@ -1,12 +1,13 @@
 {
-  "name": "broker-ai-os-v5",
-  "version": "5.0.0",
+  "name": "broker-ai-os-v7",
+  "version": "7.0.0",
   "private": true,
-  "description": "Broker AI OS v5 — separate safe instance (port 6700). Mock-only, manual-approval, no live execution.",
+  "description": "BROKER_AI_OS_V7 — port 6060. Read-only Alpaca market data, no live trading, no order placement.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "check": "node --check server.js && echo SYNTAX_OK"
+    "check": "node --check server.js && echo SYNTAX_OK",
+    "test": "node tests/v7_audit_test.js"
   },
   "dependencies": {
     "express": "^4.22.2"

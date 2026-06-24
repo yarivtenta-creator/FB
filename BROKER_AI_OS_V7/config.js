@@ -35,8 +35,8 @@ function readAutoResume() {
 }
 
 const config = {
-  PORT: Number(process.env.PORT_V5 || 6700),
-  INSTANCE: 'BROKER_AI_OS_V5',
+  PORT: Number(process.env.PORT || 6060),
+  INSTANCE: 'BROKER_AI_OS_V7',
   EXECUTION_MODE: readMode(),
   AUTO_RESUME: readAutoResume(),
   VALID_MODES,
