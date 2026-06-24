@@ -51,22 +51,78 @@ async function getStatus() {
 
 async function testConnection() {
   const cfg = load();
+  const ts = new Date().toISOString();
+
   if (!cfg.configured) {
     return {
       ok: false,
-      code: 'KEYS_REQUIRED',
-      missingKeys: cfg.missingKeys,
-      message: 'Alpaca API keys are missing. Set ALPACA_API_KEY and ALPACA_SECRET_KEY in .env',
-      mock_available: true
+      alpaca_state: 'MOCK_NO_KEYS',
+      reachable: false,
+      network_call_performed: false,
+      read_only: true,
+      paper: true,
+      masked_key: null,
+      missing_keys: cfg.missingKeys,
+      message: 'KEYS REQUIRED — real Alpaca connection not tested. Set ALPACA_API_KEY and ALPACA_SECRET_KEY in .env',
+      tested_at: ts
     };
   }
+
+  const results = {};
+
+  // Probe 1: GET /v2/account — READ-ONLY account status
   try {
-    // Read-only clock endpoint on the paper/broker base URL
-    const data = await _get(cfg, `${cfg.baseUrl}/v2/clock`);
-    return { ok: true, mode: 'live', is_open: data.is_open, next_open: data.next_open, next_close: data.next_close };
-  } catch (e) {
-    return { ok: false, code: 'CONNECTION_FAILED', status: e.status, message: e.message };
+    const res = await fetch(`${cfg.baseUrl}/v2/account`, {
+      method: 'GET',
+      headers: { 'APCA-API-KEY-ID': cfg._getApiKey(), 'APCA-API-SECRET-KEY': cfg._getSecretKey(), 'accept': 'application/json' }
+    });
+    const body = await res.text();
+    let json = null; try { json = JSON.parse(body); } catch {}
+    results.account = {
+      endpoint: `${cfg.baseUrl}/v2/account`, status: res.status, ok: res.ok,
+      account_status: res.ok ? (json && json.status) : undefined,
+      error: res.ok ? undefined : ((json && (json.message || json.code)) || body.slice(0, 200))
+    };
+  } catch(e) {
+    results.account = { endpoint: `${cfg.baseUrl}/v2/account`, status: null, ok: false, error: e.message };
   }
+
+  // Probe 2: GET /v2/stocks/AAPL/trades/latest — READ-ONLY market data
+  try {
+    const res = await fetch(`${cfg.dataUrl}/v2/stocks/AAPL/trades/latest`, {
+      method: 'GET',
+      headers: { 'APCA-API-KEY-ID': cfg._getApiKey(), 'APCA-API-SECRET-KEY': cfg._getSecretKey(), 'accept': 'application/json' }
+    });
+    const body = await res.text();
+    let json = null; try { json = JSON.parse(body); } catch {}
+    results.market_data = {
+      endpoint: `${cfg.dataUrl}/v2/stocks/AAPL/trades/latest`, status: res.status, ok: res.ok,
+      symbol: 'AAPL', has_data: res.ok && !!json,
+      error: res.ok ? undefined : ((json && (json.message || json.code)) || body.slice(0, 200))
+    };
+  } catch(e) {
+    results.market_data = { endpoint: `${cfg.dataUrl}/v2/stocks/AAPL/trades/latest`, status: null, ok: false, error: e.message };
+  }
+
+  const anyOk = results.account.ok || results.market_data.ok;
+
+  return {
+    ok: anyOk,
+    alpaca_state: anyOk ? 'REAL_READ_ONLY_CONNECTED' : 'REAL_READ_ONLY_FAILED',
+    reachable: anyOk,
+    network_call_performed: true,
+    read_only: true,
+    paper: true,
+    masked_key: cfg.maskedApiKey,
+    account_endpoint_tested: true,
+    market_data_endpoint_tested: true,
+    account: results.account,
+    market_data: results.market_data,
+    tested_at: ts,
+    note: anyOk
+      ? 'Real read-only Alpaca probe succeeded. No orders, no execution, no writes.'
+      : 'Real read-only Alpaca probe failed. Check keys and network. No orders attempted.'
+  };
 }
 
 async function getAccount() {
