@@ -1,0 +1,18 @@
+{
+  "_comment": "Installed-module registry (metadata only). Health is a status enum, not a live probe.",
+  "modules": [
+    { "name":"Broker AI OS v2 Core","version":"2.0.0","status":"installed","installed_date":"2026-06-03","dependencies":["express"],"health":"ok" },
+    { "name":"Health Panel","version":"1.0.0","status":"installed","installed_date":"2026-06-03","dependencies":["core"],"health":"ok" },
+    { "name":"Governance Pack","version":"1.0.0","status":"installed","installed_date":"2026-06-03","dependencies":["core"],"health":"ok" },
+    { "name":"T4 Mock Connector","version":"1.0.0","status":"installed","installed_date":"2026-06-03","dependencies":["core"],"health":"mock" },
+    { "name":"n8n Registry","version":"1.0.0","status":"installed","installed_date":"2026-06-03","dependencies":["core"],"health":"ok" },
+    { "name":"Backup Center","version":"1.0.0","status":"available","installed_date":null,"dependencies":["core"],"health":"not_installed" },
+    { "name":"Agent Control Center v2","version":"2.0.0","status":"available","installed_date":null,"dependencies":["core"],"health":"not_installed" },
+    { "name":"Audit Center","version":"1.0.0","status":"available","installed_date":null,"dependencies":["core","governance"],"health":"not_installed" },
+    { "name":"Data Hub","version":"1.0.0","status":"available","installed_date":null,"dependencies":["core"],"health":"not_installed" },
+    { "name":"Signal Explainer","version":"1.0.0","status":"available","installed_date":null,"dependencies":["core","signal_board"],"health":"not_installed" },
+    { "name":"System Map","version":"1.0.0","status":"available","installed_date":null,"dependencies":["core"],"health":"not_installed" },
+    { "name":"Config Center","version":"1.0.0","status":"available","installed_date":null,"dependencies":["core"],"health":"not_installed" },
+    { "name":"Integration Readiness Center","version":"1.0.0","status":"available","installed_date":null,"dependencies":["core"],"health":"not_installed" }
+  ]
+}

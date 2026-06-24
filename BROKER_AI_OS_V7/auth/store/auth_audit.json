@@ -1,0 +1,205 @@
+{
+  "_comment": "Auth audit events: user, action, time, component. No secrets.",
+  "events": [
+    {
+      "id": 1,
+      "user": "system",
+      "action": "auth_pack_seed",
+      "component": "auth",
+      "detail": "users generated (hashed)",
+      "time": "2026-06-03T05:00:00Z"
+    },
+    {
+      "id": 2,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "remember-me",
+      "time": "2026-06-03T06:31:48.911Z"
+    },
+    {
+      "id": 3,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "remember-me",
+      "time": "2026-06-03T06:52:27.694Z"
+    },
+    {
+      "id": 4,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "remember-me",
+      "time": "2026-06-04T01:55:23.396Z"
+    },
+    {
+      "id": 5,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "session",
+      "time": "2026-06-04T02:56:15.105Z"
+    },
+    {
+      "id": 6,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "session",
+      "time": "2026-06-04T03:09:39.377Z"
+    },
+    {
+      "id": 7,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "session",
+      "time": "2026-06-04T03:16:09.663Z"
+    },
+    {
+      "id": 8,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "session",
+      "time": "2026-06-04T03:44:23.403Z"
+    },
+    {
+      "id": 9,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "session",
+      "time": "2026-06-04T03:44:58.570Z"
+    },
+    {
+      "id": 10,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "session",
+      "time": "2026-06-04T03:45:43.812Z"
+    },
+    {
+      "id": 11,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "session",
+      "time": "2026-06-04T08:03:23.344Z"
+    },
+    {
+      "id": 12,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "session",
+      "time": "2026-06-04T18:49:52.666Z"
+    },
+    {
+      "id": 13,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "session",
+      "time": "2026-06-05T19:24:42.825Z"
+    },
+    {
+      "id": 14,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "session",
+      "time": "2026-06-05T22:33:09.392Z"
+    },
+    {
+      "id": 15,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "session",
+      "time": "2026-06-07T10:55:48.029Z"
+    },
+    {
+      "id": 16,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "session",
+      "time": "2026-06-09T04:21:52.650Z"
+    },
+    {
+      "id": 17,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "session",
+      "time": "2026-06-09T16:30:09.354Z"
+    },
+    {
+      "id": 18,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "session",
+      "time": "2026-06-09T18:09:25.136Z"
+    },
+    {
+      "id": 19,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "session",
+      "time": "2026-06-09T18:10:42.323Z"
+    },
+    {
+      "id": 20,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "session",
+      "time": "2026-06-13T17:02:32.305Z"
+    },
+    {
+      "id": 21,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "session",
+      "time": "2026-06-23T00:33:51.648Z"
+    },
+    {
+      "id": 22,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "session",
+      "time": "2026-06-23T00:34:14.514Z"
+    },
+    {
+      "id": 23,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "session",
+      "time": "2026-06-23T00:38:53.154Z"
+    },
+    {
+      "id": 24,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "session",
+      "time": "2026-06-23T00:38:56.981Z"
+    },
+    {
+      "id": 25,
+      "user": "admin",
+      "action": "login",
+      "component": "auth",
+      "detail": "session",
+      "time": "2026-06-23T00:39:53.246Z"
+    }
+  ]
+}

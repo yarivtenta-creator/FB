@@ -1,0 +1,12 @@
+{
+  "_comment": "Future-integration readiness. Registry only. No connections, no credentials.",
+  "integrations": [
+    { "name":"T4","status":"mock_ready","missing_requirements":["real data API/SDK confirmation"],"documentation_available":true,"risk_level":"medium" },
+    { "name":"Plus500","status":"not_ready","missing_requirements":["official API access","data feed contract"],"documentation_available":false,"risk_level":"high" },
+    { "name":"Interactive Brokers","status":"not_ready","missing_requirements":["TWS/Gateway setup","read-only scope decision"],"documentation_available":true,"risk_level":"high" },
+    { "name":"TradingView","status":"not_ready","missing_requirements":["webhook/alert design (read-only)"],"documentation_available":true,"risk_level":"medium" },
+    { "name":"Polygon","status":"doc_review","missing_requirements":["plan/tier selection","rate-limit plan"],"documentation_available":true,"risk_level":"low" },
+    { "name":"Finnhub","status":"doc_review","missing_requirements":["plan/tier selection"],"documentation_available":true,"risk_level":"low" },
+    { "name":"News APIs","status":"doc_review","missing_requirements":["provider selection","licensing review"],"documentation_available":true,"risk_level":"low" }
+  ]
+}

@@ -1,0 +1,38 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Agent Control Center v2</title><style>
+:root{--bg:#0a0e14;--panel:#111722;--line:#1f2937;--ink:#e6edf3;--muted:#8b98a9;--green:#2ecc71;--red:#ff5c5c;--yellow:#f5c542;--accent:#4ea1ff;--mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:13px;padding:24px}
+h1{font-size:16px}h1 b{color:var(--accent)}.note{color:var(--muted);font-size:12px;margin-bottom:16px}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px 9px;border-bottom:1px solid #1a2230;font-size:12px}
+th{color:var(--muted);text-transform:uppercase;font-size:10px;letter-spacing:1px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.running{color:var(--green)}.running .dot{background:var(--green);box-shadow:0 0 7px var(--green)}
+.stopped{color:var(--red)}.stopped .dot{background:var(--red)}
+.error{color:var(--yellow)}.error .dot{background:var(--yellow)}
+button{font-family:var(--mono);font-size:10px;cursor:pointer;background:#161d2b;color:var(--ink);border:1px solid var(--line);padding:4px 8px;border-radius:4px}
+button:hover{border-color:var(--accent);color:var(--accent)}.muted{color:var(--muted)}
+#out{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px;white-space:pre-wrap;font-size:11px;min-height:40px}
+</style></head><body>
+<h1>Agent <b>Control Center</b> v2</h1>
+<div class="note">PRIORITY 1 · status & diagnostics only · Test = dry run (no real loop, no orders, no broker)</div>
+<table id="t"><thead><tr><th>Agent</th><th>Status</th><th>Health</th><th>Last Run</th><th>Last Output</th><th>Actions</th></tr></thead><tbody></tbody></table>
+<div id="out" class="muted">Diagnostics / output appears here…</div>
+<script>
+let A=[
+ {id:1,name:"Market Intel",status:"stopped",enabled:1,last_run_time:"2026-06-03T13:30:00Z",last_output_time:"2026-06-03T13:30:05Z",last_output:"Tech leaders NVDA, MSFT. Mock.",diag:"OK. Mock."},
+ {id:2,name:"Scanner",status:"stopped",enabled:1,last_run_time:"2026-06-03T13:35:00Z",last_output_time:"2026-06-03T13:35:03Z",last_output:"Breakout AAPL; volume TSLA. Mock.",diag:"OK. Mock."},
+ {id:3,name:"Smart Money",status:"stopped",enabled:1,last_run_time:"2026-06-03T13:40:00Z",last_output_time:"2026-06-03T13:40:08Z",last_output:"No 13F hits. Mock.",diag:"EDGAR sparse. Mock."},
+ {id:4,name:"Political",status:"stopped",enabled:1,last_run_time:"2026-06-03T13:45:00Z",last_output_time:"2026-06-03T13:45:02Z",last_output:"Feed offline. Mock.",diag:"Feed offline. Mock."},
+ {id:5,name:"Risk",status:"stopped",enabled:1,last_run_time:"2026-06-03T13:50:00Z",last_output_time:"2026-06-03T13:50:01Z",last_output:"Exposure within limits. Mock.",diag:"Advisory only. Mock."},
+ {id:6,name:"Future Research",status:"stopped",enabled:0,last_run_time:null,last_output_time:null,last_output:null,diag:"Not configured."}];
+function hp(a){return a.status==='error'?'error':(a.enabled?'ok':'disabled');}
+function render(){document.querySelector('#t tbody').innerHTML=A.map(a=>
+ `<tr><td>${a.name}</td><td class="${a.status}"><span class="dot"></span>${a.status}</td>
+  <td class="muted">${hp(a)}</td><td class="muted">${a.last_run_time||'—'}</td><td class="muted">${a.last_output_time||'—'}</td>
+  <td><button onclick="t(${a.id})">Test</button> <button onclick="d(${a.id})">Diag</button> <button onclick="o(${a.id})">Output</button></td></tr>`).join('');}
+function show(s){const e=document.getElementById('out');e.classList.remove('muted');e.textContent=s;}
+function t(id){const a=A.find(x=>x.id===id);show(`Test Agent: ${a.name}\nResult: ${a.enabled?'reachable (mock)':'disabled'}\nexecuted: false · ran_real_loop: false`);}
+function d(id){const a=A.find(x=>x.id===id);show(`Diagnostics: ${a.name}\nstatus=${a.status} health=${hp(a)}\nlast_run=${a.last_run_time||'—'} last_output=${a.last_output_time||'—'}\nnotes: ${a.diag}`);}
+function o(id){const a=A.find(x=>x.id===id);show(`Last Output: ${a.name}\nat ${a.last_output_time||'—'}\n${a.last_output||'(none)'}`);}
+render();
+</script></body></html>

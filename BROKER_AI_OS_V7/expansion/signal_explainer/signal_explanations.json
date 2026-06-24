@@ -1,0 +1,10 @@
+{
+  "_comment": "Per-signal explanations for the Paper Signal Board. Read-only.",
+  "explanations": [
+    { "signal_id":1,"symbol":"NVDA","source":"market_intel","trigger":"5-day return > +5% and sector-leading","confidence":0.71,"supporting_data":{"change_5d":0.064,"sector":"Tech","rank":1},"timestamp":"2026-06-03T13:30:00Z" },
+    { "signal_id":2,"symbol":"AAPL","source":"scanner","trigger":"price closed above 20-bar high","confidence":0.63,"supporting_data":{"hi20":201.40,"price":203.10},"timestamp":"2026-06-03T13:35:00Z" },
+    { "signal_id":3,"symbol":"TSLA","source":"scanner","trigger":"volume > 2.5x 20-bar average","confidence":0.55,"supporting_data":{"vol_ratio":3.1},"timestamp":"2026-06-03T13:40:00Z" },
+    { "signal_id":4,"symbol":"MSFT","source":"smart_money","trigger":"13F-HR institutional accumulation (placeholder)","confidence":0.40,"supporting_data":{"filings":0,"note":"EDGAR sparse"},"timestamp":"2026-06-03T13:45:00Z" },
+    { "signal_id":5,"symbol":"META","source":"political","trigger":"congressional purchase disclosure","confidence":0.48,"supporting_data":{"chamber":"House","action":"buy"},"timestamp":"2026-06-03T13:50:00Z" }
+  ]
+}

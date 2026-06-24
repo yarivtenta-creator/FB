@@ -1,0 +1,20 @@
+{
+  "_comment": "Proposed orders awaiting human approval. execution_allowed is the GATE flag (starts false). Approval opens the gate; it never places an order.",
+  "pending_orders": [
+    {
+      "id": 201,
+      "from_signal": null,
+      "source": "strategy_engine",
+      "symbol": "AMZN",
+      "side": "buy",
+      "qty": 1,
+      "type": "market",
+      "status": "approved",
+      "execution_allowed": true,
+      "note": "Approved: execution is now PERMITTED but NOT performed by this package.",
+      "created_at": "2026-06-03T13:56:00Z",
+      "decided_at": "2026-06-09T04:21:55.360Z",
+      "decided_by": "chain-test"
+    }
+  ]
+}

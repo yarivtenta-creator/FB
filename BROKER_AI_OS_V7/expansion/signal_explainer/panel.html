@@ -1,0 +1,29 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Signal Explainer</title><style>
+:root{--bg:#0a0e14;--panel:#111722;--line:#1f2937;--ink:#e6edf3;--muted:#8b98a9;--green:#2ecc71;--accent:#4ea1ff;--mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:13px;padding:24px}
+h1{font-size:16px}h1 b{color:var(--accent)}.note{color:var(--muted);font-size:12px;margin-bottom:14px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px}
+.sym{font-size:15px;font-weight:bold}.src{color:var(--accent);font-size:11px;text-transform:uppercase}
+.q{color:var(--muted);font-size:11px;margin:8px 0 3px}.why{margin-bottom:6px}
+.conf{height:6px;background:#1a2230;border-radius:3px;overflow:hidden;margin:4px 0 8px}.conf>i{display:block;height:100%;background:var(--green)}
+.kv{font-size:11px;color:var(--muted);white-space:pre-wrap}
+</style></head><body>
+<h1>Signal <b>Explainer</b></h1>
+<div class="note">PRIORITY 4 · "Why was this signal generated?" · source · trigger · confidence · supporting data · timestamp · no black boxes</div>
+<div class="cards" id="cards"></div>
+<script>
+const E=[
+ {symbol:"NVDA",source:"market_intel",trigger:"5-day return > +5% and sector-leading",confidence:0.71,supporting_data:{change_5d:0.064,sector:"Tech",rank:1},timestamp:"2026-06-03T13:30:00Z"},
+ {symbol:"AAPL",source:"scanner",trigger:"price closed above 20-bar high",confidence:0.63,supporting_data:{hi20:201.40,price:203.10},timestamp:"2026-06-03T13:35:00Z"},
+ {symbol:"TSLA",source:"scanner",trigger:"volume > 2.5x 20-bar average",confidence:0.55,supporting_data:{vol_ratio:3.1},timestamp:"2026-06-03T13:40:00Z"},
+ {symbol:"MSFT",source:"smart_money",trigger:"13F institutional accumulation (placeholder)",confidence:0.40,supporting_data:{filings:0,note:"EDGAR sparse"},timestamp:"2026-06-03T13:45:00Z"},
+ {symbol:"META",source:"political",trigger:"congressional purchase disclosure",confidence:0.48,supporting_data:{chamber:"House",action:"buy"},timestamp:"2026-06-03T13:50:00Z"}];
+document.getElementById('cards').innerHTML=E.map(e=>
+ `<div class="card"><div class="sym">${e.symbol}</div><div class="src">${e.source}</div>
+  <div class="q">WHY</div><div class="why">${e.trigger}</div>
+  <div class="q">CONFIDENCE ${(e.confidence*100).toFixed(0)}%</div><div class="conf"><i style="width:${e.confidence*100}%"></i></div>
+  <div class="q">SUPPORTING DATA</div><div class="kv">${JSON.stringify(e.supporting_data,null,1)}</div>
+  <div class="q">TIME</div><div class="kv">${e.timestamp}</div></div>`).join('');
+</script></body></html>

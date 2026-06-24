@@ -1,0 +1,17 @@
+{
+  "name": "broker-ai-os-v5",
+  "version": "5.0.0",
+  "private": true,
+  "description": "Broker AI OS v5 — separate safe instance (port 6700). Mock-only, manual-approval, no live execution.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js && echo SYNTAX_OK"
+  },
+  "dependencies": {
+    "express": "^4.22.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,36 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Audit Center</title><style>
+:root{--bg:#0a0e14;--panel:#111722;--line:#1f2937;--ink:#e6edf3;--muted:#8b98a9;--accent:#4ea1ff;--mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:13px;padding:24px}
+h1{font-size:16px}h1 b{color:var(--accent)}.note{color:var(--muted);font-size:12px;margin-bottom:14px}
+.bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+input,select{font-family:var(--mono);background:#161d2b;border:1px solid var(--line);color:var(--ink);padding:6px 10px;border-radius:4px;font-size:12px}
+input{flex:1;min-width:180px}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px 9px;border-bottom:1px solid #1a2230;font-size:12px}
+th{color:var(--muted);text-transform:uppercase;font-size:10px;letter-spacing:1px}.muted{color:var(--muted)}.comp{color:var(--accent)}
+</style></head><body>
+<h1>Audit <b>Center</b></h1>
+<div class="note">PRIORITY 2 · read-only unified audit · filter + search · aggregates governance, backups, health, agents, config</div>
+<div class="bar">
+ <input id="q" placeholder="search description / type / component / user…" oninput="render()"/>
+ <select id="type" onchange="render()"></select>
+ <select id="comp" onchange="render()"></select>
+</div>
+<table id="t"><thead><tr><th>Time</th><th>User</th><th>Event Type</th><th>Component</th><th>Description</th></tr></thead><tbody></tbody></table>
+<script>
+const EV=[
+ {time:"2026-06-03T14:02:00Z",user:"human",event_type:"approval",component:"governance",description:"Order #202 approved; gate opened (no order placed)"},
+ {time:"2026-06-03T14:03:00Z",user:"human",event_type:"rejection",component:"governance",description:"Order #201 rejected; gate closed"},
+ {time:"2026-06-03T14:04:00Z",user:"system",event_type:"backup_created",component:"backup_center",description:"Manifest backup created (metadata only)"},
+ {time:"2026-06-03T14:05:00Z",user:"system",event_type:"config_change",component:"config_center",description:"Health check interval viewed (no change persisted)"},
+ {time:"2026-06-03T14:06:00Z",user:"system",event_type:"health_failure",component:"health_panel",description:"T4 reported mock (expected)"},
+ {time:"2026-06-03T14:07:00Z",user:"human",event_type:"agent_status_change",component:"agent_control_center",description:"Scanner toggled stopped (flag only)"}].sort((a,b)=>b.time.localeCompare(a.time));
+const types=["",...new Set(EV.map(e=>e.event_type))],comps=["",...new Set(EV.map(e=>e.component))];
+document.getElementById('type').innerHTML=types.map(t=>`<option value="${t}">${t||'all types'}</option>`).join('');
+document.getElementById('comp').innerHTML=comps.map(c=>`<option value="${c}">${c||'all components'}</option>`).join('');
+function render(){const q=document.getElementById('q').value.toLowerCase(),ty=document.getElementById('type').value,co=document.getElementById('comp').value;
+ const rows=EV.filter(e=>(!ty||e.event_type===ty)&&(!co||e.component===co)&&(!q||(e.description+e.event_type+e.component+e.user).toLowerCase().includes(q)));
+ document.querySelector('#t tbody').innerHTML=rows.map(e=>
+  `<tr><td class="muted">${e.time}</td><td>${e.user}</td><td>${e.event_type}</td><td class="comp">${e.component}</td><td class="muted">${e.description}</td></tr>`).join('')||'<tr><td colspan="5" class="muted">no matching events</td></tr>';}
+render();
+</script></body></html>

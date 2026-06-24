@@ -1,0 +1,16 @@
+# Secrets — NEVER commit a real environment file
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Runtime / logs / local state
+logs/
+*.log
+data_layer/paper_trading/paper_state.json
+
+# OS noise
+.DS_Store
+Thumbs.db

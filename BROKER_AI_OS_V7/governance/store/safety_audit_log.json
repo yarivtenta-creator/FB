@@ -1,0 +1,195 @@
+{
+  "_comment": "Append-only safety audit log. Secrets are redacted. Never write credentials here.",
+  "events": [
+    {
+      "id": 1,
+      "action": "pack_seed",
+      "detail": "Governance pack initialized with safe defaults",
+      "meta": {
+        "execution_mode": "manual",
+        "auto_resume": false
+      },
+      "at": "2026-06-03T12:00:00Z"
+    },
+    {
+      "id": 2,
+      "action": "approval_decision",
+      "detail": "order 201 approve",
+      "meta": {
+        "order": 201,
+        "decision": "approve",
+        "execution_allowed": true,
+        "executed": false
+      },
+      "at": "2026-06-03T04:34:56.174Z"
+    },
+    {
+      "id": 3,
+      "action": "approval_decision",
+      "detail": "order 201 approve",
+      "meta": {
+        "order": 201,
+        "decision": "approve",
+        "execution_allowed": true,
+        "executed": false
+      },
+      "at": "2026-06-04T02:55:46.145Z"
+    },
+    {
+      "id": 4,
+      "action": "approval_decision",
+      "detail": "order 201 approve",
+      "meta": {
+        "order": 201,
+        "decision": "approve",
+        "execution_allowed": true,
+        "executed": false
+      },
+      "at": "2026-06-04T03:16:09.017Z"
+    },
+    {
+      "id": 5,
+      "action": "approval_decision",
+      "detail": "order 201 approve",
+      "meta": {
+        "order": 201,
+        "decision": "approve",
+        "execution_allowed": true,
+        "executed": false
+      },
+      "at": "2026-06-04T03:39:17.603Z"
+    },
+    {
+      "id": 6,
+      "action": "approval_decision",
+      "detail": "order 201 approve",
+      "meta": {
+        "order": 201,
+        "decision": "approve",
+        "execution_allowed": true,
+        "executed": false
+      },
+      "at": "2026-06-04T03:40:08.863Z"
+    },
+    {
+      "id": 7,
+      "action": "approval_decision",
+      "detail": "order 201 approve",
+      "meta": {
+        "order": 201,
+        "decision": "approve",
+        "execution_allowed": true,
+        "executed": false
+      },
+      "at": "2026-06-04T03:41:04.523Z"
+    },
+    {
+      "id": 8,
+      "action": "approval_decision",
+      "detail": "order 201 approve",
+      "meta": {
+        "order": 201,
+        "decision": "approve",
+        "execution_allowed": true,
+        "executed": false
+      },
+      "at": "2026-06-04T03:42:56.409Z"
+    },
+    {
+      "id": 9,
+      "action": "approval_decision",
+      "detail": "order 201 approve",
+      "meta": {
+        "order": 201,
+        "decision": "approve",
+        "execution_allowed": true,
+        "executed": false
+      },
+      "at": "2026-06-04T03:43:49.425Z"
+    },
+    {
+      "id": 10,
+      "action": "approval_decision",
+      "detail": "order 201 approve",
+      "meta": {
+        "order": 201,
+        "decision": "approve",
+        "execution_allowed": true,
+        "executed": false
+      },
+      "at": "2026-06-04T03:43:49.743Z"
+    },
+    {
+      "id": 11,
+      "action": "approval_decision",
+      "detail": "order 201 approve",
+      "meta": {
+        "order": 201,
+        "decision": "approve",
+        "execution_allowed": true,
+        "executed": false
+      },
+      "at": "2026-06-04T03:45:42.805Z"
+    },
+    {
+      "id": 12,
+      "action": "approval_decision",
+      "detail": "order 201 approve",
+      "meta": {
+        "order": 201,
+        "decision": "approve",
+        "execution_allowed": true,
+        "executed": false
+      },
+      "at": "2026-06-04T03:45:45.653Z"
+    },
+    {
+      "id": 13,
+      "action": "approval_decision",
+      "detail": "order 201 approve",
+      "meta": {
+        "order": 201,
+        "decision": "approve",
+        "execution_allowed": true,
+        "executed": false
+      },
+      "at": "2026-06-04T08:03:21.916Z"
+    },
+    {
+      "id": 14,
+      "action": "approval_decision",
+      "detail": "order 201 approve",
+      "meta": {
+        "order": 201,
+        "decision": "approve",
+        "execution_allowed": true,
+        "executed": false
+      },
+      "at": "2026-06-04T08:03:25.141Z"
+    },
+    {
+      "id": 15,
+      "action": "approval_decision",
+      "detail": "order 201 approve",
+      "meta": {
+        "order": 201,
+        "decision": "approve",
+        "execution_allowed": true,
+        "executed": false
+      },
+      "at": "2026-06-09T04:21:51.220Z"
+    },
+    {
+      "id": 16,
+      "action": "approval_decision",
+      "detail": "order 201 approve",
+      "meta": {
+        "order": 201,
+        "decision": "approve",
+        "execution_allowed": true,
+        "executed": false
+      },
+      "at": "2026-06-09T04:21:55.363Z"
+    }
+  ]
+}

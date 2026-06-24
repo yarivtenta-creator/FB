@@ -1,0 +1,145 @@
+{
+  "_comment": "Immutable record of approve/reject decisions. Append-only.",
+  "approval_history": [
+    {
+      "id": 1,
+      "order_id": 201,
+      "symbol": "AMZN",
+      "side": "buy",
+      "decision": "approve",
+      "actor": "test-runner",
+      "execution_allowed": true,
+      "at": "2026-06-04T02:55:46.142Z"
+    },
+    {
+      "id": 2,
+      "order_id": 201,
+      "symbol": "AMZN",
+      "side": "buy",
+      "decision": "approve",
+      "actor": "test-runner",
+      "execution_allowed": true,
+      "at": "2026-06-04T03:16:09.015Z"
+    },
+    {
+      "id": 3,
+      "order_id": 201,
+      "symbol": "AMZN",
+      "side": "buy",
+      "decision": "approve",
+      "actor": "test-runner",
+      "execution_allowed": true,
+      "at": "2026-06-04T03:39:17.601Z"
+    },
+    {
+      "id": 4,
+      "order_id": 201,
+      "symbol": "AMZN",
+      "side": "buy",
+      "decision": "approve",
+      "actor": "test-runner",
+      "execution_allowed": true,
+      "at": "2026-06-04T03:40:08.861Z"
+    },
+    {
+      "id": 5,
+      "order_id": 201,
+      "symbol": "AMZN",
+      "side": "buy",
+      "decision": "approve",
+      "actor": "test-runner",
+      "execution_allowed": true,
+      "at": "2026-06-04T03:41:04.520Z"
+    },
+    {
+      "id": 6,
+      "order_id": 201,
+      "symbol": "AMZN",
+      "side": "buy",
+      "decision": "approve",
+      "actor": "chain-test",
+      "execution_allowed": true,
+      "at": "2026-06-04T03:42:56.406Z"
+    },
+    {
+      "id": 7,
+      "order_id": 201,
+      "symbol": "AMZN",
+      "side": "buy",
+      "decision": "approve",
+      "actor": "chain-test",
+      "execution_allowed": true,
+      "at": "2026-06-04T03:43:49.421Z"
+    },
+    {
+      "id": 8,
+      "order_id": 201,
+      "symbol": "AMZN",
+      "side": "buy",
+      "decision": "approve",
+      "actor": "test-runner",
+      "execution_allowed": true,
+      "at": "2026-06-04T03:43:49.740Z"
+    },
+    {
+      "id": 9,
+      "order_id": 201,
+      "symbol": "AMZN",
+      "side": "buy",
+      "decision": "approve",
+      "actor": "test-runner",
+      "execution_allowed": true,
+      "at": "2026-06-04T03:45:42.800Z"
+    },
+    {
+      "id": 10,
+      "order_id": 201,
+      "symbol": "AMZN",
+      "side": "buy",
+      "decision": "approve",
+      "actor": "chain-test",
+      "execution_allowed": true,
+      "at": "2026-06-04T03:45:45.650Z"
+    },
+    {
+      "id": 11,
+      "order_id": 201,
+      "symbol": "AMZN",
+      "side": "buy",
+      "decision": "approve",
+      "actor": "test-runner",
+      "execution_allowed": true,
+      "at": "2026-06-04T08:03:21.914Z"
+    },
+    {
+      "id": 12,
+      "order_id": 201,
+      "symbol": "AMZN",
+      "side": "buy",
+      "decision": "approve",
+      "actor": "chain-test",
+      "execution_allowed": true,
+      "at": "2026-06-04T08:03:25.138Z"
+    },
+    {
+      "id": 13,
+      "order_id": 201,
+      "symbol": "AMZN",
+      "side": "buy",
+      "decision": "approve",
+      "actor": "test-runner",
+      "execution_allowed": true,
+      "at": "2026-06-09T04:21:51.216Z"
+    },
+    {
+      "id": 14,
+      "order_id": 201,
+      "symbol": "AMZN",
+      "side": "buy",
+      "decision": "approve",
+      "actor": "chain-test",
+      "execution_allowed": true,
+      "at": "2026-06-09T04:21:55.360Z"
+    }
+  ]
+}

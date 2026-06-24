@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Broker AI OS v5 — Integrated Console</title>
+<script src="/theme.js"></script>
+<style>
+/* Dark palette (default) */
+:root,[data-theme="dark"]{--bg:#0a0e14;--panel:#111722;--panel2:#161d2b;--line:#1f2937;--ink:#e6edf3;--muted:#8b98a9;--green:#2ecc71;--red:#ff5c5c;--yellow:#f5c542;--accent:#4ea1ff;--bgimg:radial-gradient(circle at 20% -10%,#13243f 0%,transparent 55%);--mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace}
+/* Bright palette */
+[data-theme="light"]{--bg:#f4f6fb;--panel:#ffffff;--panel2:#eef2f9;--line:#d7dee8;--ink:#1c2530;--muted:#5b6776;--green:#1a9c52;--red:#d63a3a;--yellow:#b8860b;--accent:#1366d6;--bgimg:radial-gradient(circle at 20% -10%,#dbe7fb 0%,transparent 55%)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:13px;background-image:var(--bgimg)}
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:16px 24px;border-bottom:1px solid var(--line);background:var(--panel)}
+header h1{margin:0;font-size:16px;letter-spacing:.5px}header h1 b{color:var(--accent)}
+.tag{font-size:11px;padding:2px 8px;border:1px solid var(--line);border-radius:3px;color:var(--muted)}.tag.safe{color:var(--green);border-color:var(--green)}
+.user{margin-left:auto;color:var(--muted);font-size:12px}.user b{color:var(--ink)}
+button{font-family:var(--mono);font-size:11px;cursor:pointer;background:var(--panel2);color:var(--ink);border:1px solid var(--line);padding:5px 10px;border-radius:5px}
+button:hover{border-color:var(--accent);color:var(--accent)}
+.banner{margin:16px 24px;background:transparent;border:1px solid var(--green);color:var(--green);padding:9px 14px;border-radius:6px;font-size:12px}
+main{padding:0 24px 28px;display:grid;gap:16px;grid-template-columns:repeat(12,1fr)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.card h2{margin:0 0 10px;font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted)}
+.c12{grid-column:span 12}.c8{grid-column:span 8}.c6{grid-column:span 6}.c4{grid-column:span 4}
+@media(max-width:900px){.c8,.c6,.c4{grid-column:span 12}}
+.row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed var(--line);gap:8px}.row:last-child{border-bottom:0}
+.muted{color:var(--muted)}.s-ok,.s-connected,.s-running,.s-available,.s-configured{color:var(--green)}.s-mock,.s-not_configured,.s-planned{color:var(--yellow)}.s-stopped,.s-disconnected{color:var(--red)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--muted)}
+.links{display:flex;flex-wrap:wrap;gap:8px}.links a{color:var(--accent);text-decoration:none;font-size:12px;border:1px solid var(--line);padding:5px 9px;border-radius:5px}.links a:hover{border-color:var(--accent)}
+.prov{padding:8px 0;border-bottom:1px dashed var(--line)}.prov:last-child{border-bottom:0}
+.prov .h{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.plinks{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.plinks a,.plinks button{font-size:10px;padding:3px 7px;border:1px solid var(--line);border-radius:4px;color:var(--accent);text-decoration:none;background:var(--panel2)}
+.kpi{display:flex;gap:18px;flex-wrap:wrap}.kpi div{display:flex;flex-direction:column}.kpi b{font-size:18px;color:var(--ink)}.kpi span{font-size:10px;color:var(--muted);text-transform:uppercase}
+</style></head><body>
+<header>
+  <h1>Broker <b>AI OS</b> v5 <span class="muted">// integrated</span></h1>
+  <span class="tag safe">mode: manual</span>
+  <span class="tag safe">auto_resume: false</span>
+  <span class="tag safe">live: OFF</span>
+  <span class="tag safe" id="dataModeTag">data: mock</span>
+  <span class="tag">port 6700</span>
+  <button id="themeToggle" onclick="BK_THEME.toggle()">☀ Bright</button>
+  <span class="user" id="user">…</span>
+  <button onclick="logout()">Logout</button>
+</header>
+<div class="banner">🛡️ Integrated safe instance. Mock data only · read-only data · approvals open a permission gate (never place orders) · paper trades are paper:true / executed:false · no secrets shown.</div>
+<main>
+  <section class="card c8"><h2>1 · System Health</h2><div id="health" class="muted">loading…</div>
+    <div style="margin-top:10px"><button onclick="loadHealth()">Run Full Health Check</button></div></section>
+  <section class="card c4"><h2>4 · Alpaca A/B (status only)</h2><div id="alpaca" class="muted">loading…</div></section>
+
+  <section class="card c6"><h2>2 · Provider Setup Center</h2>
+    <div class="muted" style="margin-bottom:8px">Connect providers manually. Links open the provider site — keys are entered THERE, never here. Test is read-only.</div>
+    <div id="providers" class="muted">loading…</div></section>
+  <section class="card c12" style="border:2px solid #2a6">
+    <h2>0 · Strategy Engine <span class="muted">(3 accounts · paper only)</span></h2>
+    <div style="display:flex;align-items:center;gap:14px;margin:8px 0 14px">
+      <span id="runpill" style="padding:6px 14px;border-radius:999px;font-weight:700;background:#444;color:#fff">…</span>
+      <button id="runbtn" onclick="toggleRun()" style="font-size:16px;padding:10px 22px;font-weight:700">Loading…</button>
+      <button onclick="strategyTick()" title="Run one scoring pass now">Tick now</button>
+      <span class="muted" id="runnote"></span>
+    </div>
+    <div id="strategy" class="muted">loading…</div>
+  </section>
+  <section class="card c6"><h2>3 · Data Hub <span class="muted">(source of truth)</span></h2><div id="hub" class="muted">loading…</div></section>
+
+  <section class="card c6"><h2>7 · Paper Signal Board</h2><div id="signals" class="muted">loading…</div></section>
+  <section class="card c6"><h2>8 · Ranked Signals (from hub)</h2><div id="ranked" class="muted">loading…</div></section>
+
+  <section class="card c6"><h2>9 · Governance / Approval Queue</h2><div id="gov" class="muted">loading…</div></section>
+  <section class="card c6"><h2>10 · Paper Status <span class="muted">(simulation only)</span></h2>
+    <div id="paperStats" class="kpi muted">loading…</div>
+    <div style="margin-top:10px"><b class="muted" style="font-size:10px;text-transform:uppercase">Candidates (approved → paper)</b><div id="paperCandidates" class="muted">—</div></div>
+    <div style="margin-top:10px"><b class="muted" style="font-size:10px;text-transform:uppercase">Trades</b><div id="paperTrades" class="muted">—</div></div></section>
+
+  <section class="card c6"><h2>14 · T4 Mock Futures <span class="muted">(data only — no execution)</span></h2><div id="t4" class="muted">loading…</div></section>
+  <section class="card c6"><h2>15 · n8n Registry</h2><div id="n8n" class="muted">loading…</div></section>
+
+  <section class="card c12"><h2>16 · System Map · 17 · Backup · Operator Guides</h2>
+    <div class="links">
+      <a href="/api/expansion/map" target="_blank">System Map (JSON)</a>
+      <a href="/api/backup" target="_blank">Backup status (admin)</a>
+      <a href="/api/expansion/audit" target="_blank">Full Audit feed</a>
+      <a href="/docs/operator/START_2024.md" target="_blank">Operator: Start 2024</a>
+      <a href="/docs/operator/CONNECT_ALPACA.md" target="_blank">Operator: Connect Alpaca</a>
+      <a href="/docs/operator/PAPER_TRADING.md" target="_blank">Operator: Paper Trading</a>
+    </div></section>
+</main>
+<script>
+const T = sessionStorage.getItem('auth_token');
+if(!T){ location.href='/login'; }
+const H = { 'x-auth-token': T, 'Content-Type':'application/json' };
+async function get(p){ const r=await fetch(p,{headers:H}); if(r.status===401){location.href='/login';return null;} return r.ok?r.json():null; }
+async function post(p){ const r=await fetch(p,{method:'POST',headers:H}); return r.ok?r.json():null; }
+function cap(s){return String(s).replace(/_/g,' ');}
+function esc(s){return String(s==null?'':s).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));}
+
+
+async function loadStrategy(){
+  const d = await get('/api/strategy/status'); if(!d) return;
+  const paused = d.paused;
+  const pill = document.getElementById('runpill');
+  const btn = document.getElementById('runbtn');
+  pill.textContent = paused ? 'PAUSED' : 'RUNNING';
+  pill.style.background = paused ? '#a33' : '#2a6';
+  btn.textContent = paused ? '▶ Run' : '⏸ Pause';
+  document.getElementById('runnote').textContent = paused
+    ? 'Reading data + scoring; no new paper trades. Safe to close the PC.'
+    : 'Opening qualifying paper trades (simulation only).';
+  let html = '<table style="width:100%;border-collapse:collapse"><tr style="text-align:left">'
+    + '<th>Acct</th><th>Strategy</th><th>Keys</th><th>Min score</th><th>Sides</th><th>Open</th><th>Total</th></tr>';
+  for (const a of d.accounts){
+    html += '<tr>'
+      + '<td>'+a.account+'</td>'
+      + '<td>'+a.strategy_label+'</td>'
+      + '<td>'+(a.configured?'<b style="color:#2a6">configured</b>':'<span style="color:#a33">no keys</span>')+'</td>'
+      + '<td>'+a.threshold+'</td>'
+      + '<td>'+a.allow_sides.join(', ')+'</td>'
+      + '<td>'+a.open_trades+'</td>'
+      + '<td>'+a.total_trades+'</td>'
+      + '</tr>';
+  }
+  html += '</table>';
+  document.getElementById('strategy').innerHTML = html;
+}
+async function toggleRun(){
+  const st = await get('/api/strategy/status'); if(!st) return;
+  await post(st.paused ? '/api/strategy/resume' : '/api/strategy/pause');
+  loadStrategy();
+}
+async function strategyTick(){ await post('/api/strategy/tick'); loadStrategy(); loadPaper&&loadPaper(); }
+
+async function init(){
+  const who=await get('/api/auth/whoami');
+  document.getElementById('user').innerHTML = who&&who.ok ? `<b>${esc(who.username)}</b> (${esc(who.role)})` : 'not signed in';
+  loadStrategy(); loadHealth(); loadProviders(); loadHub(); loadSignals(); loadRanked(); loadGov(); loadPaper(); loadT4(); loadN8n();
+}
+async function loadHealth(){ const d=await get('/api/health/full'); if(!d)return; const c=d.checks||{};
+  document.getElementById('health').innerHTML=Object.keys(c).map(k=>`<div class="row"><span>${cap(k)}</span><span class="s-${c[k]}"><span class="dot"></span>${cap(c[k])}</span></div>`).join('');
+  document.getElementById('alpaca').innerHTML=`<div class="row"><span>Account A</span><span class="s-${c.alpaca_account_a}"><span class="dot"></span>${cap(c.alpaca_account_a||'n/a')}</span></div><div class="row"><span>Account B</span><span class="s-${c.alpaca_account_b}"><span class="dot"></span>${cap(c.alpaca_account_b||'n/a')}</span></div><div class="muted" style="margin-top:6px">status only — no balances/keys</div>`;
+}
+async function loadProviders(){ const d=await get('/api/data/providers'); if(!d)return;
+  document.getElementById('providers').innerHTML=d.map(p=>`<div class="prov"><div class="h"><span>${esc(p.name)} <span class="muted">${esc(p.category)}</span></span><span class="s-${p.status}"><span class="dot"></span>${cap(p.status)} ${p.configured?'· configured':''}</span></div><div class="plinks">${p.links&&p.links.website?`<a href="${esc(p.links.website)}" target="_blank" rel="noopener">Website</a>`:''}${p.links&&p.links.apiKeys?`<a href="${esc(p.links.apiKeys)}" target="_blank" rel="noopener">API Keys</a>`:''}${p.links&&p.links.docs?`<a href="${esc(p.links.docs)}" target="_blank" rel="noopener">Docs</a>`:''}${p.links&&p.links.setupGuide?`<a href="${esc(p.links.setupGuide)}" target="_blank" rel="noopener">Setup Guide</a>`:''}<button onclick="testProvider('${esc(p.id)}')">Test</button></div><div class="muted" id="ptest-${esc(p.id)}" style="font-size:10px;margin-top:4px"></div></div>`).join('');
+}
+async function testProvider(id){ const el=document.getElementById('ptest-'+id); el.textContent='testing (read-only)…';
+  const r=await post('/api/data/providers/'+id+'/test'); el.textContent = r ? `mode:${r.mode} · reachable:${r.reachable} · ${r.note}` : 'test failed'; }
+async function loadHub(){ const d=await get('/api/data/hub/health'); if(!d)return;
+  document.getElementById('dataModeTag').textContent='data: '+(d.data_mode||'mock');
+  document.getElementById('hub').innerHTML=`<div class="row"><span>data mode</span><span class="s-${d.data_mode==='mock'?'mock':'ok'}">${esc(d.data_mode)}</span></div><div class="row"><span>source</span><span>${esc(d.source)}</span></div><div class="row"><span>freshness</span><span class="muted">${esc(d.freshness)}</span></div><div class="row"><span>registered providers</span><span>${d.registered_providers}</span></div><div class="row"><span>active (enabled)</span><span>${d.active_providers}</span></div><div class="row"><span>configured</span><span>${d.configured_providers}</span></div><div class="row"><span>symbol coverage</span><span>${d.symbol_coverage}</span></div>`;
+}
+async function loadSignals(){ const d=await get('/api/data/signals'); if(!d)return;
+  document.getElementById('signals').innerHTML=d.map(s=>`<div class="row"><span>${esc(s.symbol)} <span class="muted">${esc(s.provider)}</span></span><span class="muted">${esc(s.direction||'')}</span></div>`).join('')||'<span class="muted">none</span>'; }
+async function loadRanked(){ const d=await get('/api/data/signals/ranked'); if(!d)return;
+  document.getElementById('ranked').innerHTML=d.map(s=>`<div class="row"><span>${esc(s.symbol)} <span class="muted">${esc(s.provider)}</span></span><span>${(s.score!=null?s.score:'')}</span></div>`).join('')||'<span class="muted">none</span>'; }
+async function loadGov(){ const o=await get('/api/gov/orders'); if(!o)return;
+  document.getElementById('gov').innerHTML=o.length?o.map(x=>`<div class="row"><span>#${x.id} ${esc(x.side)} ${esc(x.symbol)} <span class="muted">${esc(x.status)}</span></span><span class="muted">gate ${x.execution_allowed?'OPEN':'closed'}</span></div>`).join(''):'<span class="muted">queue empty</span>'; }
+async function loadPaper(){
+  const st=await get('/api/data/paper/stats');
+  if(st) document.getElementById('paperStats').innerHTML=`<div><b>${st.open||0}</b><span>open</span></div><div><b>${st.closed||0}</b><span>closed</span></div><div><b>${st.total_pl||0}</b><span>total P/L</span></div><div><b>${st.paper===true?'true':'?'}</b><span>paper</span></div>`;
+  const c=await get('/api/data/paper/candidates');
+  document.getElementById('paperCandidates').innerHTML=(c&&c.length)?c.map(x=>`<div class="row"><span>#${x.from_order} ${esc(x.symbol)} ${esc(x.side)}</span><span class="muted">paper:${x.paper} · executed:${x.executed}</span></div>`).join(''):'<span class="muted">none (approve an order to create one)</span>';
+  const tr=await get('/api/data/paper/trades');
+  document.getElementById('paperTrades').innerHTML=(tr&&tr.length)?tr.slice(-6).map(x=>`<div class="row"><span>#${x.id} ${esc(x.symbol)} ${esc(x.side)} <span class="muted">${esc(x.status)}</span></span><span class="muted">paper:${x.paper}</span></div>`).join(''):'<span class="muted">no paper trades yet</span>';
+}
+async function loadT4(){ const d=await get('/api/t4/mock'); if(!d)return;
+  document.getElementById('t4').innerHTML=(d.quotes||[]).map(q=>`<div class="row"><span>${esc(q.symbol)} <span class="muted">${esc(q.name)}</span></span><span>${esc(q.last)}</span></div>`).join(''); }
+async function loadN8n(){ const d=await get('/api/n8n/registry'); if(!d)return;
+  document.getElementById('n8n').innerHTML=(d.templates||[]).map(t=>`<div class="row"><span>${esc(t.name)}</span><span class="muted">${esc(t.risk)}</span></div>`).join(''); }
+async function logout(){ await fetch('/api/auth/logout',{method:'POST',headers:H}); sessionStorage.removeItem('auth_token'); location.href='/login'; }
+init();
+</script></body></html>
+</content>

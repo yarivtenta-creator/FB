@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Config Center</title><style>
+:root{--bg:#0a0e14;--panel:#111722;--line:#1f2937;--ink:#e6edf3;--muted:#8b98a9;--green:#2ecc71;--red:#ff5c5c;--accent:#4ea1ff;--mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:13px;padding:24px}
+h1{font-size:16px}h1 b{color:var(--accent)}.note{color:var(--muted);font-size:12px;margin-bottom:16px}
+.row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px dashed #1a2230}
+.k{color:var(--muted)}.v{font-weight:bold}.on{color:var(--green)}.off{color:var(--red)}
+.warn{margin-top:16px;background:#1f160e;border:1px solid #5e4a1d;color:#f5c542;padding:10px 14px;border-radius:6px;font-size:12px}
+</style></head><body>
+<h1>Config <b>Center</b></h1>
+<div class="note">PRIORITY 7 · safe settings only · view-only</div>
+<div id="cfg"></div>
+<div class="warn">🔒 This view never shows API keys, secrets, passwords, tokens, or broker credentials — by design.</div>
+<script>
+const C={execution_mode:"manual",auto_resume:false,health_check_interval_sec:60,mock_mode:{t4:true,news:true,econ_calendar:true,broker:true},live_endpoint_enabled:false};
+const rows=[
+ ["Execution Mode",C.execution_mode],
+ ["Auto Resume",C.auto_resume?'true':'false'],
+ ["Health Check Interval",C.health_check_interval_sec+'s'],
+ ["Mock Mode — T4",C.mock_mode.t4],["Mock Mode — News",C.mock_mode.news],
+ ["Mock Mode — Econ Calendar",C.mock_mode.econ_calendar],["Mock Mode — Broker",C.mock_mode.broker],
+ ["Live Endpoint Enabled",C.live_endpoint_enabled]];
+document.getElementById('cfg').innerHTML=rows.map(([k,v])=>{
+ const cls=(v===true)?'on':(v===false?'off':'');
+ return `<div class="row"><span class="k">${k}</span><span class="v ${cls}">${v}</span></div>`;}).join('');
+</script></body></html>

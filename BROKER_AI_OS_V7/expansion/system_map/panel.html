@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>System Map</title>
+<style>
+:root{--bg:#0a0e14;--panel:#111722;--line:#1f2937;--ink:#e6edf3;--muted:#8b98a9;--green:#2ecc71;--red:#ff5c5c;--yellow:#f5c542;--accent:#4ea1ff;--mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:13px;padding:24px}
+h1{font-size:16px;margin:0}h1 b{color:var(--accent)}.note{color:var(--muted);font-size:12px;margin:8px 0 16px}
+.wrap{display:grid;grid-template-columns:1fr 280px;gap:20px}@media(max-width:880px){.wrap{grid-template-columns:1fr}}
+svg{width:100%;height:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px}
+.node rect{fill:#161d2b;stroke:#2a3650;stroke-width:1.5;rx:8;cursor:pointer;transition:.15s}
+.node:hover rect{stroke:var(--accent)}
+.node.gated rect{stroke-dasharray:5 4;stroke:#5e4a1d}
+.node text{fill:var(--ink);font-family:var(--mono);font-size:12px;pointer-events:none}
+.node .sub{fill:var(--muted);font-size:9px}
+.edge{stroke:#2a3650;stroke-width:2;marker-end:url(#arrow);fill:none}
+.edge.flow{stroke:var(--accent);animation:dash 1.2s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-12}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px}
+.panel h2{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:0 0 8px}
+#detail{font-size:12px;color:var(--muted);white-space:pre-wrap}
+.gatewarn{margin-top:14px;color:var(--yellow);font-size:11px;border:1px solid #5e4a1d;border-radius:6px;padding:8px 10px}
+</style></head><body>
+<h1>System <b>Map</b></h1>
+<div class="note">PRIORITY 5 · interactive · read-only · click a node for detail · dashed node = gated / not built</div>
+<div class="wrap">
+  <svg viewBox="0 0 760 360" id="map">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="#2a3650"/>
+      </marker>
+    </defs>
+    <!-- edges drawn first -->
+    <path class="edge flow" d="M150 70 L150 110"/>
+    <path class="edge flow" d="M150 170 L150 210"/>
+    <path class="edge flow" d="M260 240 L420 240"/>
+    <path class="edge flow" d="M530 210 L530 130"/>
+    <path class="edge" d="M610 100 L610 60" stroke-dasharray="5 4"/>
+    <!-- nodes -->
+    <g class="node" data-id="data" transform="translate(60,30)"><rect width="180" height="40" rx="8"/><text x="14" y="18">Data Sources</text><text class="sub" x="14" y="32">Alpaca · T4 · News · Econ · Internal</text></g>
+    <g class="node" data-id="agents" transform="translate(60,130)"><rect width="180" height="40" rx="8"/><text x="14" y="18">Agents</text><text class="sub" x="14" y="32">Intel · Scanner · SmartMoney · Pol · Risk</text></g>
+    <g class="node" data-id="signals" transform="translate(60,220)"><rect width="200" height="40" rx="8"/><text x="14" y="18">Signals</text><text class="sub" x="14" y="32">Paper Signal Board (explainable)</text></g>
+    <g class="node" data-id="approval" transform="translate(420,220)"><rect width="200" height="40" rx="8"/><text x="14" y="18">Approval Queue</text><text class="sub" x="14" y="32">Pending orders · human approval</text></g>
+    <g class="node" data-id="governance" transform="translate(440,90)"><rect width="180" height="40" rx="8"/><text x="14" y="18">Governance</text><text class="sub" x="14" y="32">Manual · gate · audit</text></g>
+    <g class="node gated" data-id="future_exec" transform="translate(520,20)"><rect width="200" height="40" rx="8"/><text x="14" y="18">Future Execution</text><text class="sub" x="14" y="32">NOT built · human-gated</text></g>
+  </svg>
+  <div class="panel">
+    <h2>Node Detail</h2>
+    <div id="detail">Click a node to see its role.</div>
+    <div class="gatewarn">⚠ The Future Execution Layer is intentionally not implemented. Execution stays gated behind human approval.</div>
+  </div>
+</div>
+<script>
+const D={
+ data:"Data Sources\nUnified via Data Hub (mock adapters).\nAlpaca, T4 mock, News mock, Econ mock, Internal signals.",
+ agents:"Agents\nMarket Intel, Scanner, Smart Money, Political, Risk.\nRead-only / advisory. Consume Data Hub.",
+ signals:"Signals\nPaper Signal Board. Every signal is explainable\n(source, trigger, confidence, supporting data).",
+ approval:"Approval Queue\nProposed orders await human approval.\nApprove opens a gate flag — never places an order.",
+ governance:"Governance\nExecution mode = manual. Auto resume = false.\nApproval history + safety audit log.",
+ future_exec:"Future Execution Layer\nNOT built in this system. Any real executor must be\nseparate and human-gated. Out of scope."};
+document.querySelectorAll('.node').forEach(n=>n.addEventListener('click',()=>{
+ const d=document.getElementById('detail');d.textContent=D[n.dataset.id]||'';
+}));
+</script></body></html>
