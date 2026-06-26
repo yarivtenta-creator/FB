@@ -1,0 +1,340 @@
+{
+  "project_info": {
+    "name": "PROJECT 770 - AI Marketing Growth Operating System",
+    "source": "PROJECT770_CLEAN",
+    "source_id": "1-9ILTA3xkybt8YqBNsmB9e1lNCUBb0LT",
+    "date_captured": "2026-06-26",
+    "root_folder_id": "1j9Vtqs0wWjXmOVRgiqYZW8DrRdKUqEW-",
+    "root_folder_name": "pkg770"
+  },
+  "downloaded_files": {
+    "intelligence_module_registry": {
+      "filename": "intelligence_module_registry.json",
+      "location": "/home/user/FB/intelligence_module_registry.json",
+      "google_drive_id": "1dq5VKvV9ftYX3AVTHxyv9OdoDn6iCksq",
+      "size_bytes": 164441,
+      "size_kb": 161,
+      "format": "JSON",
+      "content_type": "application/json",
+      "description": "Intelligence/analysis modules + imported instruction skills registry",
+      "entries_count": 535,
+      "version": "1.0",
+      "sample_modules": [
+        "ckm_slides",
+        "ckm_design_system",
+        "ckm_design",
+        "ckm_brand",
+        "ui_ux_pro_max",
+        "youtube_strategy",
+        "twitter_thread",
+        "tiktok_script",
+        "social_media_strategy"
+      ]
+    }
+  },
+  "reference_files": {
+    "folder_structure": {
+      "filename": "PKG770_FOLDER_STRUCTURE.txt",
+      "location": "/home/user/FB/PKG770_FOLDER_STRUCTURE.txt",
+      "size_kb": 7.7,
+      "description": "Complete hierarchical folder structure with all IDs"
+    },
+    "download_summary": {
+      "filename": "PROJECT770_DOWNLOAD_SUMMARY.txt",
+      "location": "/home/user/FB/PROJECT770_DOWNLOAD_SUMMARY.txt",
+      "size_kb": 9.1,
+      "description": "Complete reference guide with usage recommendations"
+    },
+    "file_reference": {
+      "filename": "PKG770_COMPLETE_FILE_REFERENCE.json",
+      "location": "/home/user/FB/PKG770_COMPLETE_FILE_REFERENCE.json",
+      "description": "Machine-readable complete file reference with all IDs"
+    }
+  },
+  "root_level_files": {
+    "documentation": [
+      {
+        "name": "README.md",
+        "id": "1vuoXoiF9zlkhFRWEjClOD9KLGMHHh-xQ",
+        "type": "text/markdown"
+      },
+      {
+        "name": "START_HERE.md",
+        "id": "1ID86d4kldfUjxcNvLOSEvpxO3F-bQVru",
+        "type": "text/markdown"
+      },
+      {
+        "name": "AI_SETUP.md",
+        "id": "1IzinWpytb6fn7H0FLSaE3Tqz643tWEav",
+        "type": "text/markdown"
+      },
+      {
+        "name": "INSTALL.md",
+        "id": "1pMjuZqbxx56tTwpWIPFbI_f_XzhTcP2z",
+        "type": "text/markdown"
+      },
+      {
+        "name": "MASTER_PLAN.md",
+        "id": "16TzzKhii08CFqGK52bFu0iBVZDDqWsX2",
+        "type": "text/markdown"
+      },
+      {
+        "name": "PROJECT_HANDOFF_SUMMARY.md",
+        "id": "15fVE5Pp40-Jt5CxKOjLupUzSTkmhRt0w",
+        "type": "text/markdown"
+      },
+      {
+        "name": "SYSTEM_MAP.md",
+        "id": "1H78wwnIgd93SIAIwo_JkrCX0g6NnJvSp",
+        "type": "text/markdown"
+      },
+      {
+        "name": "STAGE_COVERAGE.md",
+        "id": "1-nYoCfgB-yvXlcQk_gWB4w1QiQpB-lZA",
+        "type": "text/markdown"
+      },
+      {
+        "name": "WHAT_IS_COMPLETE.md",
+        "id": "1EEtMGApi9vpDPRDFnfvXzEVKw7uWHLjp",
+        "type": "text/markdown"
+      },
+      {
+        "name": "WHAT_IS_NOT_INCLUDED.md",
+        "id": "1n0F7zQ4h4lBuFdzlSVYvZAnlBozV3-KW",
+        "type": "text/markdown"
+      }
+    ],
+    "configuration": [
+      {
+        "name": ".env",
+        "id": "1CkXZ6CVehGu2bwoAuksf86W3kE8qFXCV",
+        "type": "application/octet-stream"
+      },
+      {
+        "name": ".env.example",
+        "id": "1HILNjI_LI0tHThKsc0nBCGxSCRJ9FEe6",
+        "type": "application/octet-stream"
+      },
+      {
+        "name": "package.json",
+        "id": "1fbamom8mRiUvsRox0YTZP7wY6ghw9yU2",
+        "type": "application/json"
+      },
+      {
+        "name": "package-lock.json",
+        "id": "1rxDvqOQ2L7P_PAaHHcMwKMg8my9ga84Z",
+        "type": "application/json"
+      },
+      {
+        "name": "server.js",
+        "id": "1Q83Bk0pj5fUBBExYxHv3Rx8Hbgx45umj",
+        "type": "text/javascript"
+      }
+    ],
+    "executable": [
+      {
+        "name": "start_ai_growth_os.sh",
+        "id": "1CAUCl6opWFtnLIZkG5k18_mvZrmCuVN8",
+        "type": "text/x-sh"
+      },
+      {
+        "name": "skill-converter.html",
+        "id": "14e-ILCr79UovIJmJ2m9VS11_XiS3BEJd",
+        "type": "text/html"
+      },
+      {
+        "name": "START_AI_GROWTH_OS.bat",
+        "id": "1Pgymm2NEogqCnOg65tYHZiLyUo7HY2ko",
+        "type": "application/x-msdos-program"
+      }
+    ],
+    "registry": [
+      {
+        "name": "intelligence_module_registry.json",
+        "id": "1Stzf8qdWRDHZ5Esxs-3560_CFhDu4Q8s",
+        "type": "application/json"
+      }
+    ]
+  },
+  "major_folders": [
+    {
+      "name": "agents",
+      "id": "1ub_gp7hfUlyCUAQVXC1XJurlE66R4nXt",
+      "type": "folder",
+      "description": "AI agent implementations and configurations",
+      "subfolders": [
+        "creative_intelligence",
+        "deliverables",
+        "creative_intelligence_workflow"
+      ]
+    },
+    {
+      "name": "business",
+      "id": "1Vrk2slOfJCQw1ynFDkKrLX1Zdd6gsyTE",
+      "type": "folder",
+      "description": "Business logic and funnel processing",
+      "key_files": ["funnel.js"]
+    },
+    {
+      "name": "client_intake",
+      "id": "1q0IJJDE2KJxdekq3o1-WJPzahcRJkzjv",
+      "type": "folder",
+      "description": "Client onboarding and intake forms",
+      "key_files": ["intake_store.js", "questionnaire.html", "submissions.json"]
+    },
+    {
+      "name": "config",
+      "id": "1lgjDcNxj61gYKogLsxU-vMcfB-bPRURV",
+      "type": "folder",
+      "description": "Configuration files",
+      "key_files": ["config.json"]
+    },
+    {
+      "name": "crm",
+      "id": "1cOgEPicJYGTBJDZlXMpvGQaD8ieRnM6i",
+      "type": "folder",
+      "description": "Customer Relationship Management data",
+      "key_files": ["discovery.json", "opportunities.json", "clients.json", "leads.json"]
+    },
+    {
+      "name": "dashboard",
+      "id": "1G2oIB61occlTnL4T-v-HHOOyOFDwox7s",
+      "type": "folder",
+      "description": "Dashboard interface and UI"
+    },
+    {
+      "name": "intelligence_modules",
+      "id": "1cRK7p9E1FHtquamMcFyj2NM2mUf9id0H",
+      "type": "folder",
+      "description": "All 535 intelligence modules"
+    },
+    {
+      "name": "logs",
+      "id": "12VBTT6FwoAAUnIDY46SyS_Xc1vV3TUmg",
+      "type": "folder",
+      "description": "System logs"
+    },
+    {
+      "name": "memory",
+      "id": "13bcAdRyXQnznl9CwLoyWsz7-smi_nnAl",
+      "type": "folder",
+      "description": "Cache and memory files"
+    },
+    {
+      "name": "outputs",
+      "id": "1TqNPYiN2qP9sps4EGBAn91HuHPTP2UPg",
+      "type": "folder",
+      "description": "Generated outputs from AI processing"
+    },
+    {
+      "name": "pipeline",
+      "id": "1l-39XoamZ3nPFs0TxNfvKjlFnC7B2XQb",
+      "type": "folder",
+      "description": "Pipeline orchestration and configuration"
+    },
+    {
+      "name": "registries",
+      "id": "1YYoQ8KZ-PpQlq4T4Hj6MW1U1nV_OeSEp",
+      "type": "folder",
+      "description": "Registry configurations"
+    },
+    {
+      "name": "reports",
+      "id": "1s0jNman1-mMVBdM7mBvG6tIXmb8QCQW7",
+      "type": "folder",
+      "description": "Generated reports"
+    },
+    {
+      "name": "runtime",
+      "id": "1tBaeHqvvnzXROS029TLn7XsXWpED9th6",
+      "type": "folder",
+      "description": "Runtime environment and execution"
+    },
+    {
+      "name": "sample_outputs",
+      "id": "1U9QwsW4VgpopenZj3dP570vybv3K2C7a",
+      "type": "folder",
+      "description": "Sample output examples"
+    },
+    {
+      "name": "skill_converter",
+      "id": "1IXcfAVVAhKddBqfJYAp78AQ3EWgjI6am",
+      "type": "folder",
+      "description": "Skill conversion utilities",
+      "subfolders": ["installed"]
+    },
+    {
+      "name": "standards",
+      "id": "1PdNdjcCxmv-P5u_gDx7MQz9WkSAdfgjq",
+      "type": "folder",
+      "description": "Standards and guidelines",
+      "subfolders": ["tests"]
+    },
+    {
+      "name": "tests",
+      "id": "1fxxsiPPZf9SkQGeM-_1VHgjRLSwAx00c",
+      "type": "folder",
+      "description": "Test suite",
+      "key_files": ["run_tests.js"]
+    },
+    {
+      "name": "tools",
+      "id": "1-BnmCsJ09QY2HPT9BCEJ8u5_mYFB3V10",
+      "type": "folder",
+      "description": "Utility tools and utilities",
+      "key_files": ["ai_selftest.js"]
+    },
+    {
+      "name": "workflows",
+      "id": "1ddsfcDJMy-hYZbhX2xb0IK27Yjqr657I",
+      "type": "folder",
+      "description": "Workflow orchestration",
+      "subfolders": ["creative_intelligence_workflow"]
+    }
+  ],
+  "key_files_with_ids": {
+    "business_layer": {
+      "funnel.js": "11qkQoAstcycC59yUGtZRJ_uD7mwd_Pd6"
+    },
+    "client_intake_layer": {
+      "intake_store.js": "1Vw0X04P_5wk1UtDPcxL_5IbfqM-jNHma",
+      "questionnaire.html": "1nXtRVOJZA1jEKzwak9kkmJPaAZKUs6AC",
+      "submissions.json": "1waO6nu7mIiwRuzhxKKGNHKMm1KN830Pp"
+    },
+    "configuration": {
+      "config.json": "18nx7b7-ClUZ_qbY5OhiB5XFtPDyMI3hM"
+    },
+    "crm_data": {
+      "discovery.json": "19TUm5a0qJKadN-NNVIVrhjqMTCBjYC-G",
+      "opportunities.json": "1U5d-7yL-wuvwsnUxazh-GAVMt73mi8CQ",
+      "clients.json": "1WD9eNgRoyLHJvgOIIEKMdt1ZgxGJsEgS",
+      "leads.json": "1EFv0GDEMWelpQx0moizB8baADvfWGGDs",
+      "followups.json": "1eGPlPYPDhhR6XUNwrmv3YkJ78xo0Oals",
+      "communications.json": "1lua-FMUTsYLC500H6k6nLI_74fSQnrDy"
+    },
+    "testing": {
+      "run_tests.js": "1xdF7XQBvhM65reYRGAI-tLpYFbR8yOGZ",
+      "ai_selftest.js": "1EE6Kv8yWhzM3NezmJNjTVMar3Xj79N6y"
+    }
+  },
+  "summary_statistics": {
+    "total_root_files": 51,
+    "total_folders": 20,
+    "total_files_scanned": 460,
+    "intelligence_modules": 535,
+    "documentation_files": 25,
+    "configuration_files": 5,
+    "executable_files": 3
+  },
+  "download_instructions": {
+    "step_1": "The intelligence_module_registry.json has been successfully downloaded",
+    "step_2": "Use the folder IDs above to download complete subfolders via Google Drive API",
+    "step_3": "Reference the PKG770_FOLDER_STRUCTURE.txt for complete file listing",
+    "step_4": "Use the IDs in this JSON file to construct direct Google Drive URLs"
+  },
+  "google_drive_url_patterns": {
+    "file": "https://drive.google.com/file/d/{FILE_ID}/view",
+    "folder": "https://drive.google.com/drive/folders/{FOLDER_ID}",
+    "download": "https://drive.google.com/uc?id={FILE_ID}&export=download"
+  }
+}

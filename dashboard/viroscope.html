@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viral Video Builder — PROJECT 770</title>
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --accent: #7c3aed;
+    --accent2: #a855f7;
+    --green: #22c55e;
+    --yellow: #eab308;
+    --red: #ef4444;
+    --text: #f0f0f0;
+    --muted: #888;
+    --radius: 8px;
+    --font: 'Segoe UI', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  header h1 { font-size: 1.1rem; font-weight: 600; }
+  header .badge {
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  header a.back { color: var(--muted); font-size: 0.85rem; text-decoration: none; margin-left: auto; }
+  header a.back:hover { color: var(--text); }
+
+  .container { max-width: 860px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .step.active { border-color: var(--accent); }
+  .step.done { border-color: var(--green); }
+  .step.locked { opacity: 0.45; pointer-events: none; }
+
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: var(--surface2);
+    cursor: default;
+  }
+  .step-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
+  }
+  .step.active .step-num { background: var(--accent); color: #fff; }
+  .step.done .step-num { background: var(--green); color: #fff; }
+  .step-title { font-weight: 600; font-size: 0.95rem; }
+  .step-sub { color: var(--muted); font-size: 0.8rem; margin-top: 2px; }
+
+  .step-body { padding: 20px; }
+
+  label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+
+  input[type="text"], select, textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 0.9rem;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  input[type="text"]:focus,
+  select:focus,
+  textarea:focus { border-color: var(--accent); }
+
+  select { appearance: none; cursor: pointer; }
+  textarea { resize: vertical; min-height: 120px; }
+
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field { margin-bottom: 14px; }
+
+  .niche-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .niche-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .niche-item:hover { border-color: var(--accent2); }
+  .niche-item.selected { border-color: var(--accent); background: #1a1030; }
+  .niche-item .star { color: var(--yellow); font-size: 0.85rem; }
+  .niche-item .tag { background: var(--accent); color: #fff; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; }
+  .niche-text { flex: 1; font-size: 0.9rem; font-family: monospace; }
+  .niche-len { color: var(--muted); font-size: 0.75rem; flex-shrink: 0; }
+
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.15s, transform 0.1s;
+    text-decoration: none;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--accent2); }
+  .btn-green { background: var(--green); color: #000; }
+  .btn-green:hover { opacity: 0.88; }
+  .btn-outline { background: transparent; color: var(--accent2); border: 1px solid var(--accent); }
+  .btn-outline:hover { background: #1a1030; }
+
+  .code-box {
+    background: #0a0a0a;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.82rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: #d4d4d4;
+    max-height: 360px;
+    overflow-y: auto;
+    margin-top: 12px;
+  }
+
+  .info-box {
+    background: #0e1a2e;
+    border: 1px solid #1e3a5f;
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-size: 0.84rem;
+    color: #93c5fd;
+    margin-top: 12px;
+    line-height: 1.6;
+  }
+  .info-box ol { padding-left: 18px; }
+
+  .warn-box {
+    background: #1a1200;
+    border: 1px solid #3a2800;
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    font-size: 0.82rem;
+    color: #fbbf24;
+    margin-top: 10px;
+  }
+
+  .success-box {
+    background: #0a1f0a;
+    border: 1px solid #166534;
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    color: var(--green);
+    margin-top: 10px;
+  }
+
+  .dest-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .dest-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 12px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .dest-card:hover { border-color: var(--accent2); }
+  .dest-card.selected { border-color: var(--accent); background: #1a1030; }
+  .dest-card .icon { font-size: 1.4rem; margin-bottom: 6px; }
+  .dest-card .name { font-size: 0.82rem; font-weight: 600; }
+  .dest-card .desc { font-size: 0.72rem; color: var(--muted); margin-top: 3px; }
+
+  .char-count { font-size: 0.72rem; color: var(--muted); text-align: right; margin-top: 4px; }
+  .char-count.over { color: var(--red); }
+
+  #toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--green); color: #000;
+    padding: 10px 18px; border-radius: var(--radius);
+    font-size: 0.85rem; font-weight: 600;
+    opacity: 0; transform: translateY(10px);
+    transition: opacity 0.25s, transform 0.25s;
+    pointer-events: none; z-index: 1000;
+  }
+  #toast.show { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 600px) { .row { grid-template-columns: 1fr; } .dest-grid { grid-template-columns: repeat(2, 1fr); } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎬 Viral Video Builder</h1>
+  <span class="badge">VIROSCOPE ROUTER</span>
+  <a class="back" href="/">← Dashboard</a>
+</header>
+
+<div class="container">
+
+  <!-- STEP 1: INTAKE -->
+  <div class="step active" id="step1">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">Client Intake</div>
+        <div class="step-sub">Enter business info to generate ViroScope niche options</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <div class="row">
+        <div class="field">
+          <label>Business / Brand Name *</label>
+          <input type="text" id="company" placeholder="e.g. FitnessPro Studio">
+        </div>
+        <div class="field">
+          <label>Industry / Niche *</label>
+          <input type="text" id="industry" placeholder="e.g. fitness coaching">
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Offer / Service *</label>
+          <input type="text" id="offer" placeholder="e.g. online personal training">
+        </div>
+        <div class="field">
+          <label>Target Audience *</label>
+          <input type="text" id="audience" placeholder="e.g. busy professionals over 35">
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Platform</label>
+          <select id="platform">
+            <option value="TikTok">TikTok</option>
+            <option value="Instagram Reels">Instagram Reels</option>
+            <option value="YouTube Shorts">YouTube Shorts</option>
+            <option value="YouTube">YouTube (long-form)</option>
+            <option value="LinkedIn">LinkedIn</option>
+            <option value="Facebook">Facebook</option>
+            <option value="general">General / Multi-platform</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Language</label>
+          <select id="language">
+            <option value="English">English</option>
+            <option value="Hebrew">Hebrew</option>
+            <option value="Spanish">Spanish</option>
+            <option value="French">French</option>
+            <option value="Portuguese">Portuguese</option>
+            <option value="German">German</option>
+            <option value="Arabic">Arabic</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Production Style</label>
+          <input type="text" id="production_style" placeholder="e.g. cinematic, energetic, talking head" value="modern, dynamic, cinematic">
+        </div>
+        <div class="field">
+          <label>Content Goal</label>
+          <input type="text" id="content_goal" placeholder="e.g. drive leads, build authority">
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="generateNiches()">⚡ Generate ViroScope Niche Options</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: VIROSCOPE -->
+  <div class="step locked" id="step2">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">ViroScope Analysis</div>
+        <div class="step-sub">Copy niche → open ViroScope → paste results back here</div>
+      </div>
+    </div>
+    <div class="step-body">
+
+      <label>Niche Options — Select Your Preferred (★ = Recommended)</label>
+      <div class="niche-list" id="nicheList"></div>
+
+      <div class="info-box" id="viroscopeInstructions" style="display:none">
+        <ol id="instructionList"></ol>
+      </div>
+
+      <div class="btn-row" id="viroscopeBtns" style="display:none">
+        <button class="btn btn-secondary" onclick="copyNiche()">📋 Copy ViroScope Prompt</button>
+        <a class="btn btn-green" href="https://www.viroscopeai.com/generate" target="_blank" rel="noopener noreferrer">🚀 Open ViroScope</a>
+      </div>
+
+      <div class="field" style="margin-top: 20px;" id="viroscopePasteArea" style="display:none">
+        <label>Paste ViroScope Results Here *</label>
+        <textarea id="viroscopeResults" rows="8" placeholder="Paste the full ViroScope analysis results here after running your niche..."></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="generateClaudePrompt()">⚡ Generate Claude Prompt</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: CLAUDE PROMPT -->
+  <div class="step locked" id="step3">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-title">Claude Production Prompt</div>
+        <div class="step-sub">Copy prompt → open Claude → paste result back</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <label>Generated Claude Prompt</label>
+      <div class="code-box" id="claudePromptBox">—</div>
+
+      <div class="info-box" id="claudeInstructions" style="display:none">
+        <ol id="claudeInstructionList"></ol>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="copyClaudePrompt()">📋 Copy Claude Prompt</button>
+      </div>
+
+      <div class="field" style="margin-top: 20px;">
+        <label>Paste Claude Video Package Here *</label>
+        <textarea id="claudeResult" rows="12" placeholder="Paste Claude's complete video production package here..."></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="proceedToExport()">➡️ Choose Export Destination</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: EXPORT DESTINATION -->
+  <div class="step locked" id="step4">
+    <div class="step-header">
+      <div class="step-num">4</div>
+      <div>
+        <div class="step-title">Export Destination</div>
+        <div class="step-sub">Choose where to send the production package</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <label>Select Destination</label>
+      <div class="dest-grid">
+        <div class="dest-card" onclick="selectDest('higgsfield', this)">
+          <div class="icon">🎬</div>
+          <div class="name">Higgsfield</div>
+          <div class="desc">Cinematic AI video</div>
+        </div>
+        <div class="dest-card" onclick="selectDest('gemini', this)">
+          <div class="icon">✨</div>
+          <div class="name">Gemini</div>
+          <div class="desc">Google video gen</div>
+        </div>
+        <div class="dest-card" onclick="selectDest('claude', this)">
+          <div class="icon">🤖</div>
+          <div class="name">Claude</div>
+          <div class="desc">Script refinement</div>
+        </div>
+        <div class="dest-card" onclick="selectDest('runway', this)">
+          <div class="icon">🛫</div>
+          <div class="name">Runway</div>
+          <div class="desc">AI video gen</div>
+        </div>
+        <div class="dest-card" onclick="selectDest('veo', this)">
+          <div class="icon">🌐</div>
+          <div class="name">Veo</div>
+          <div class="desc">Google DeepMind</div>
+        </div>
+        <div class="dest-card" onclick="selectDest('kling', this)">
+          <div class="icon">⚡</div>
+          <div class="name">Kling</div>
+          <div class="desc">Kuaishou AI video</div>
+        </div>
+        <div class="dest-card" onclick="selectDest('editor_brief', this)">
+          <div class="icon">🎞️</div>
+          <div class="name">Editor Brief</div>
+          <div class="desc">Human editor pack</div>
+        </div>
+        <div class="dest-card" onclick="selectDest('youtube_upload_package', this)">
+          <div class="icon">▶️</div>
+          <div class="name">YouTube Package</div>
+          <div class="desc">Upload-ready pack</div>
+        </div>
+      </div>
+
+      <div class="btn-row" style="margin-top: 16px;">
+        <button class="btn btn-primary" onclick="generateExport()">⚡ Generate Export Prompt</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5: EXPORT OUTPUT -->
+  <div class="step locked" id="step5">
+    <div class="step-header">
+      <div class="step-num">5</div>
+      <div>
+        <div class="step-title">Export Prompt</div>
+        <div class="step-sub">Copy and use in your selected destination tool</div>
+      </div>
+    </div>
+    <div class="step-body">
+      <label>Export Prompt — <span id="destLabel">—</span></label>
+      <div class="code-box" id="exportBox">—</div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="copyExport()">📋 Copy Export Prompt</button>
+        <button class="btn btn-green" onclick="saveProject()">💾 Save Project</button>
+        <button class="btn btn-outline" onclick="resetAll()">🔄 New Video</button>
+      </div>
+
+      <div id="saveResult" style="display:none"></div>
+    </div>
+  </div>
+
+</div>
+
+<div id="toast">Copied!</div>
+
+<script>
+  const API = '/api/modules/run';
+  const MODULE = 'viroscope_claude_video_router';
+
+  let state = {
+    intake: {},
+    niches: [],
+    selectedNiche: '',
+    claudePrompt: '',
+    claudeResult: '',
+    selectedDest: '',
+    exportedPrompt: '',
+  };
+
+  function getIntake() {
+    return {
+      company:          document.getElementById('company').value.trim(),
+      industry:         document.getElementById('industry').value.trim(),
+      offer:            document.getElementById('offer').value.trim(),
+      target_audience:  document.getElementById('audience').value.trim(),
+      platform:         document.getElementById('platform').value,
+      language:         document.getElementById('language').value,
+      production_style: document.getElementById('production_style').value.trim(),
+      content_goal:     document.getElementById('content_goal').value.trim(),
+    };
+  }
+
+  async function callModule(fnName, input) {
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ module: MODULE, fn: fnName, input }),
+    });
+    const data = await res.json();
+    if (data.result !== undefined) return data.result;
+    if (data.ok === false) throw new Error(data.error || 'Module error');
+    return data;
+  }
+
+  async function generateNiches() {
+    const intake = getIntake();
+    if (!intake.company) { alert('Please enter a business name.'); return; }
+    if (!intake.offer && !intake.industry) { alert('Please enter industry or offer.'); return; }
+
+    state.intake = intake;
+
+    try {
+      const result = await callModule('generateNiches', { ...intake, stage: 'generate_niches' });
+      state.niches = result.niches || [];
+
+      renderNiches(result);
+      document.getElementById('step1').classList.remove('active');
+      document.getElementById('step1').classList.add('done');
+      unlockStep('step2');
+    } catch(e) {
+      alert('Error: ' + e.message);
+    }
+  }
+
+  function renderNiches(result) {
+    const list = document.getElementById('nicheList');
+    list.innerHTML = '';
+    (result.niches || []).forEach((n, i) => {
+      const div = document.createElement('div');
+      div.className = 'niche-item' + (i === 0 ? ' selected' : '');
+      div.onclick = () => {
+        document.querySelectorAll('.niche-item').forEach(el => el.classList.remove('selected'));
+        div.classList.add('selected');
+        state.selectedNiche = n;
+      };
+      div.innerHTML = `
+        ${i === 0 ? '<span class="star">★</span>' : '<span style="width:16px;display:inline-block"></span>'}
+        ${i === 0 ? '<span class="tag">RECOMMENDED</span>' : ''}
+        <span class="niche-text">${escHtml(n)}</span>
+        <span class="niche-len">${n.length}/60</span>
+      `;
+      list.appendChild(div);
+    });
+    if (result.niches && result.niches.length) {
+      state.selectedNiche = result.niches[0];
+    }
+
+    const instrEl = document.getElementById('viroscopeInstructions');
+    const instrList = document.getElementById('instructionList');
+    instrEl.style.display = 'block';
+    instrList.innerHTML = (result.instructions || []).map(i => `<li>${escHtml(i)}</li>`).join('');
+
+    document.getElementById('viroscopeBtns').style.display = 'flex';
+    document.getElementById('viroscopePasteArea').style.display = 'block';
+  }
+
+  function copyNiche() {
+    if (!state.selectedNiche) { alert('Select a niche first.'); return; }
+    navigator.clipboard.writeText(state.selectedNiche).then(() => showToast('Niche copied!'));
+  }
+
+  async function generateClaudePrompt() {
+    const viroscope = document.getElementById('viroscopeResults').value.trim();
+    if (!state.selectedNiche) { alert('Select a ViroScope niche above.'); return; }
+    if (!viroscope) { alert('Paste ViroScope results before proceeding.'); return; }
+
+    state.viroscopeResults = viroscope;
+
+    try {
+      const result = await callModule('generateClaudePrompt', {
+        ...state.intake,
+        stage: 'generate_claude_prompt',
+        selected_viroscope_niche: state.selectedNiche,
+        raw_viroscope_results: viroscope,
+      });
+
+      if (result.ok === false) { alert(result.error); return; }
+
+      state.claudePrompt = result.prompt || '';
+      document.getElementById('claudePromptBox').textContent = state.claudePrompt;
+
+      const instrEl = document.getElementById('claudeInstructions');
+      const instrList = document.getElementById('claudeInstructionList');
+      instrEl.style.display = 'block';
+      instrList.innerHTML = (result.instructions || []).map(i => `<li>${escHtml(i)}</li>`).join('');
+
+      document.getElementById('step2').classList.remove('active');
+      document.getElementById('step2').classList.add('done');
+      unlockStep('step3');
+    } catch(e) {
+      alert('Error: ' + e.message);
+    }
+  }
+
+  function copyClaudePrompt() {
+    if (!state.claudePrompt) return;
+    navigator.clipboard.writeText(state.claudePrompt).then(() => showToast('Claude prompt copied!'));
+  }
+
+  function proceedToExport() {
+    const r = document.getElementById('claudeResult').value.trim();
+    if (!r) { alert('Paste Claude\'s response before continuing.'); return; }
+    state.claudeResult = r;
+    document.getElementById('step3').classList.remove('active');
+    document.getElementById('step3').classList.add('done');
+    unlockStep('step4');
+  }
+
+  function selectDest(dest, el) {
+    document.querySelectorAll('.dest-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.selectedDest = dest;
+  }
+
+  async function generateExport() {
+    if (!state.selectedDest) { alert('Select a destination first.'); return; }
+
+    try {
+      const result = await callModule('generateExport', {
+        ...state.intake,
+        stage: 'generate_export',
+        selected_viroscope_niche: state.selectedNiche,
+        raw_viroscope_results: state.viroscopeResults,
+        pasted_claude_result: state.claudeResult,
+        selected_destination: state.selectedDest,
+      });
+
+      if (result.ok === false) { alert(result.error); return; }
+
+      state.exportedPrompt = result.exported_prompt || '';
+      document.getElementById('exportBox').textContent = state.exportedPrompt;
+      document.getElementById('destLabel').textContent = state.selectedDest.replace(/_/g, ' ').toUpperCase();
+
+      document.getElementById('step4').classList.remove('active');
+      document.getElementById('step4').classList.add('done');
+      unlockStep('step5');
+    } catch(e) {
+      alert('Error: ' + e.message);
+    }
+  }
+
+  function copyExport() {
+    if (!state.exportedPrompt) return;
+    navigator.clipboard.writeText(state.exportedPrompt).then(() => showToast('Export prompt copied!'));
+  }
+
+  async function saveProject() {
+    try {
+      const result = await callModule('saveProject', {
+        ...state.intake,
+        stage: 'save_project',
+        viroscope_niche_options: state.niches,
+        selected_viroscope_niche: state.selectedNiche,
+        raw_viroscope_results: state.viroscopeResults || '',
+        generated_claude_prompt: state.claudePrompt,
+        pasted_claude_result: state.claudeResult,
+        selected_destination: state.selectedDest,
+        exported_prompt: state.exportedPrompt,
+      });
+
+      const div = document.getElementById('saveResult');
+      div.style.display = 'block';
+      div.innerHTML = `<div class="success-box">✅ Project saved — ID: <strong>${result.project && result.project.project_id || '—'}</strong></div>`;
+      showToast('Project saved!');
+    } catch(e) {
+      alert('Save error: ' + e.message);
+    }
+  }
+
+  function resetAll() {
+    if (!confirm('Start a new video project? Current data will be cleared.')) return;
+    state = { intake: {}, niches: [], selectedNiche: '', claudePrompt: '', claudeResult: '', selectedDest: '', exportedPrompt: '' };
+    ['step2','step3','step4','step5'].forEach(id => {
+      const el = document.getElementById(id);
+      el.classList.add('locked');
+      el.classList.remove('active','done');
+    });
+    document.getElementById('step1').classList.add('active');
+    document.getElementById('step1').classList.remove('done');
+    document.getElementById('nicheList').innerHTML = '';
+    document.getElementById('viroscopeResults').value = '';
+    document.getElementById('claudePromptBox').textContent = '—';
+    document.getElementById('claudeResult').value = '';
+    document.getElementById('exportBox').textContent = '—';
+    document.getElementById('saveResult').style.display = 'none';
+    document.querySelectorAll('.dest-card').forEach(c => c.classList.remove('selected'));
+  }
+
+  function unlockStep(id) {
+    const el = document.getElementById(id);
+    el.classList.remove('locked');
+    el.classList.add('active');
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+</body>
+</html>

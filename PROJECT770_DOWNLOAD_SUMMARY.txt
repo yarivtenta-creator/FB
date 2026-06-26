@@ -1,0 +1,277 @@
+================================================================================
+PROJECT 770 - COMPLETE DOWNLOAD SUMMARY & FILE MAP
+================================================================================
+Date: 2026-06-26
+Source: PROJECT770_CLEAN (Google Drive ID: 1-9ILTA3xkybt8YqBNsmB9e1lNCUBb0LT)
+
+================================================================================
+1. INTELLIGENCE_MODULE_REGISTRY.JSON - SUCCESSFULLY DOWNLOADED
+================================================================================
+
+File Location: /home/user/FB/intelligence_module_registry.json
+File Size: 161 KB (164,441 bytes)
+Google Drive ID: 1dq5VKvV9ftYX3AVTHxyv9OdoDn6iCksq
+Original Location: PROJECT770_CLEAN/pkg770/
+
+Format: JSON
+Registry Type: intelligence_module
+Version: 1.0
+Description: Intelligence/analysis modules + imported instruction skills
+
+CONTENTS:
+- Total Modules: 535 entries
+- Type: instruction_skill, intelligence modules
+- Status: IMPORTED_ACTIVE (all active)
+- Owner: imported
+- All imported: 2026-06-23T07:07:13.175Z
+
+SAMPLE MODULES (first 18):
+1. ckm_slides - 11 rules
+2. ckm_design_system - 40 rules
+3. ckm_design - 40 rules
+4. ckm_brand - 20 rules
+5. ckm_banner_design - 40 rules
+6. ui_ux_pro_max - 40 rules
+7. ckm_ui_styling - 40 rules
+8. youtube_strategy - 40 rules
+9. twitter_thread - 40 rules
+10. tiktok_script - 40 rules
+11. thread_hook_writer - 40 rules
+12. sponsor_pitch - 40 rules
+13. social_media_strategy - 40 rules
+14. social_media_policy - 40 rules
+15. social_media_graphics - 40 rules
+16. social_media_calendar - 40 rules
+17. social_media_audit - 40 rules
+18. social_listening_plan - 40 rules
+... (and 517 more modules)
+
+Full module list available in the JSON file.
+
+================================================================================
+2. PKG770 FOLDER COMPLETE STRUCTURE - MAPPED
+================================================================================
+
+File Location: /home/user/FB/PKG770_FOLDER_STRUCTURE.txt
+Folder ID: 1j9Vtqs0wWjXmOVRgiqYZW8DrRdKUqEW-
+
+TOTAL INVENTORY:
+- Root Level Files: 51 files
+- Major Subfolders: 20 folders
+- Total Files Scanned: 460 files
+- Total Subfolders: Multiple nested folders
+
+ROOT FILES BREAKDOWN:
+A. Documentation (25 markdown files):
+   - README.md
+   - START_HERE.md
+   - AI_SETUP.md
+   - INSTALL.md
+   - MASTER_PLAN.md
+   - PROJECT_HANDOFF_SUMMARY.md
+   - SYSTEM_MAP.md
+   - STAGE_COVERAGE.md
+   - WHAT_IS_COMPLETE.md
+   - WHAT_IS_NOT_INCLUDED.md
+   - MODULAR_MODES.md
+   - SCALEXL_ALIGNMENT_BUILD.md
+   - MISSING_LINKS_BUILD.md
+   - DELIVERABLES_ENGINE.md
+   - REVENUE_ENGINE.md
+   - MARKETING_PLAN_FEATURE.md
+   - CONNECTIONS_SETUP.md
+   - AUDIT_REPORT.md
+   - FILE_TREE.md
+   - FINAL_DELIVERY_REPORT.md
+   - RUN_COMMANDS.md
+   - README_FIXED.md
+   - And others...
+
+B. Configuration Files (5 files):
+   - .env
+   - .env.example
+   - package.json
+   - package-lock.json
+   - server.js
+
+C. Executable/Utility Files:
+   - start_ai_growth_os.sh
+   - skill-converter.html
+   - START_AI_GROWTH_OS.bat
+
+D. Registry Files:
+   - intelligence_module_registry.json (also in pkg770 root)
+
+MAJOR SUBFOLDERS (20 total):
+1. agents/ - Agent implementations and configurations
+   - Contains: deliverables, creative_intelligence subfolders
+
+2. business/ - Business logic
+   - Key file: funnel.js
+
+3. client_intake/ - Client onboarding
+   - Key files: intake_store.js, questionnaire.html, submissions.json
+
+4. config/ - Configuration
+   - Key file: config.json (PROJECT_770_MARKETING_AI_OS settings)
+
+5. crm/ - Customer Relationship Management
+   - Files: discovery.json, opportunities.json, clients.json, leads.json, 
+            followups.json, communications.json
+
+6. dashboard/ - Dashboard interface
+
+7. intelligence_modules/ - All 535 intelligence modules
+
+8. logs/ - System logs
+
+9. memory/ - Cache/memory files
+
+10. outputs/ - Generated outputs from AI processing
+
+11. pipeline/ - Pipeline orchestration
+
+12. registries/ - Registry configurations
+
+13. reports/ - Generated reports
+
+14. runtime/ - Runtime environment
+
+15. sample_outputs/ - Example outputs
+
+16. skill_converter/ - Skill conversion utilities
+    - Subfolder: installed/
+
+17. standards/ - Standards and guidelines
+    - Subfolder: tests/
+
+18. tests/ - Test suite
+    - Key file: run_tests.js
+
+19. tools/ - Utility tools
+    - Key file: ai_selftest.js
+
+20. workflows/ - Workflow orchestration
+    - Key folder: creative_intelligence_workflow/
+
+================================================================================
+3. DETAILED FILE LISTING WITH GOOGLE DRIVE IDs
+================================================================================
+
+ROOT LEVEL FILES (Sample - all have IDs):
+
+Documentation:
+- README.md: 1vuoXoiF9zlkhFRWEjClOD9KLGMHHh-xQ
+- START_HERE.md: 1ID86d4kldfUjxcNvLOSEvpxO3F-bQVru
+- AI_SETUP.md: 1IzinWpytb6fn7H0FLSaE3Tqz643tWEav
+- INSTALL.md: 1pMjuZqbxx56tTwpWIPFbI_f_XzhTcP2z
+- MASTER_PLAN.md: 16TzzKhii08CFqGK52bFu0iBVZDDqWsX2
+[... and 20 more markdown files - see full structure file]
+
+Configuration:
+- .env: 1CkXZ6CVehGu2bwoAuksf86W3kE8qFXCV
+- .env.example: 1HILNjI_LI0tHThKsc0nBCGxSCRJ9FEe6
+- package.json: 1fbamom8mRiUvsRox0YTZP7wY6ghw9yU2
+- package-lock.json: 1rxDvqOQ2L7P_PAaHHcMwKMg8my9ga84Z
+- server.js: 1Q83Bk0pj5fUBBExYxHv3Rx8Hbgx45umj
+
+Executable:
+- start_ai_growth_os.sh: 1CAUCl6opWFtnLIZkG5k18_mvZrmCuVN8
+- skill-converter.html: 14e-ILCr79UovIJmJ2m9VS11_XiS3BEJd
+
+FOLDER IDs (for recursive downloads):
+- agents/: 1ub_gp7hfUlyCUAQVXC1XJurlE66R4nXt
+- business/: 1Vrk2slOfJCQw1ynFDkKrLX1Zdd6gsyTE
+- client_intake/: 1q0IJJDE2KJxdekq3o1-WJPzahcRJkzjv
+- config/: 1lgjDcNxj61gYKogLsxU-vMcfB-bPRURV
+- crm/: 1cOgEPicJYGTBJDZlXMpvGQaD8ieRnM6i
+- dashboard/: 1G2oIB61occlTnL4T-v-HHOOyOFDwox7s
+- intelligence_modules/: 1cRK7p9E1FHtquamMcFyj2NM2mUf9id0H
+- logs/: 12VBTT6FwoAAUnIDY46SyS_Xc1vV3TUmg
+- memory/: 13bcAdRyXQnznl9CwLoyWsz7-smi_nnAl
+- outputs/: 1TqNPYiN2qP9sps4EGBAn91HuHPTP2UPg
+- pipeline/: 1l-39XoamZ3nPFs0TxNfvKjlFnC7B2XQb
+- registries/: 1YYoQ8KZ-PpQlq4T4Hj6MW1U1nV_OeSEp
+- reports/: 1s0jNman1-mMVBdM7mBvG6tIXmb8QCQW7
+- runtime/: 1tBaeHqvvnzXROS029TLn7XsXWpED9th6
+- sample_outputs/: 1U9QwsW4VgpopenZj3dP570vybv3K2C7a
+- skill_converter/: 1IXcfAVVAhKddBqfJYAp78AQ3EWgjI6am
+- standards/: 1PdNdjcCxmv-P5u_gDx7MQz9WkSAdfgjq
+- tests/: 1fxxsiPPZf9SkQGeM-_1VHgjRLSwAx00c
+- tools/: 1-BnmCsJ09QY2HPT9BCEJ8u5_mYFB3V10
+- workflows/: 1ddsfcDJMy-hYZbhX2xb0IK27Yjqr657I
+
+KEY FILES BY FOLDER:
+- business/funnel.js: 11qkQoAstcycC59yUGtZRJ_uD7mwd_Pd6
+- client_intake/intake_store.js: 1Vw0X04P_5wk1UtDPcxL_5IbfqM-jNHma
+- client_intake/questionnaire.html: 1nXtRVOJZA1jEKzwak9kkmJPaAZKUs6AC
+- config/config.json: 18nx7b7-ClUZ_qbY5OhiB5XFtPDyMI3hM
+- crm/discovery.json: 19TUm5a0qJKadN-NNVIVrhjqMTCBjYC-G
+- crm/opportunities.json: 1U5d-7yL-wuvwsnUxazh-GAVMt73mi8CQ
+- crm/clients.json: 1WD9eNgRoyLHJvgOIIEKMdt1ZgxGJsEgS
+- crm/leads.json: 1EFv0GDEMWelpQx0moizB8baADvfWGGDs
+- tests/run_tests.js: 1xdF7XQBvhM65reYRGAI-tLpYFbR8yOGZ
+- tools/ai_selftest.js: 1EE6Kv8yWhzM3NezmJNjTVMar3Xj79N6y
+
+================================================================================
+4. USAGE RECOMMENDATIONS
+================================================================================
+
+To download the complete project structure:
+1. Use the folder IDs listed above with Google Drive API
+2. Start with the 20 main folders in order of importance
+3. Priority order:
+   - agents/ - Core AI agent implementations
+   - business/ - Business logic and funnel
+   - crm/ - Lead/client/opportunity data
+   - workflows/ - Workflow orchestration
+   - config/ - Configuration
+   - intelligence_modules/ - The 535 modules
+
+To access the files:
+- Google Drive Web: Add the folder/file ID to the URL pattern:
+  https://drive.google.com/file/d/{FILE_ID}/view
+  https://drive.google.com/drive/folders/{FOLDER_ID}
+
+- Google Drive API: Use the IDs with standard API calls
+
+================================================================================
+5. PROJECT OVERVIEW
+================================================================================
+
+PROJECT 770: AI Marketing Growth Operating System
+- Type: Node.js-based AI marketing automation platform
+- Purpose: Marketing strategy, lead generation, client intake, creative intelligence
+- Status: Production-ready (as of 2026-06-23)
+- Key Components:
+  * AI-powered creative intelligence agents
+  * Lead qualification and CRM pipeline
+  * Client intake questionnaire system
+  * Workflow orchestration
+  * 535 reusable intelligence modules
+  * Real-time dashboard
+
+Key Technologies:
+- Node.js/JavaScript
+- JSON-based configuration
+- Google Drive integration
+- Custom workflow engine
+- Intelligence module registry
+
+================================================================================
+6. FILES AVAILABLE FOR DOWNLOAD
+================================================================================
+
+In /home/user/FB/:
+1. intelligence_module_registry.json - 161 KB
+   All 535 intelligence modules with metadata
+
+2. PKG770_FOLDER_STRUCTURE.txt - 7.7 KB
+   Complete folder structure and file listing with IDs
+
+3. PROJECT770_DOWNLOAD_SUMMARY.txt (this file)
+   Complete reference guide
+
+================================================================================
+END OF SUMMARY
+================================================================================
