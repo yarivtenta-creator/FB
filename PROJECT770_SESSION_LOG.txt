@@ -1,0 +1,441 @@
+================================================================================
+PROJECT 770 — AI MARKETING GROWTH OPERATING SYSTEM
+FULL SESSION BUILD LOG
+Date: 2026-06-26
+================================================================================
+
+NOTE: This document covers everything known from the handoff context and the
+most recent build session. Earlier sessions (pre-handoff) are referenced from
+the handoff summary pasted at session start — not reconstructed from memory.
+
+================================================================================
+SECTION 1 — WHAT PROJECT 770 IS
+================================================================================
+
+Name:    PROJECT 770 — AI Marketing Growth Operating System
+Short:   pkg770
+Type:    Node.js application (pure Node, zero npm dependencies)
+Port:    6500
+Entry:   server.js
+Source:  Google Drive folder ID: 1j9Vtqs0wWjXmOVRgiqYZW8DrRdKUqEW-
+Repo:    yarivtenta-creator/FB (GitHub)
+
+The system is a modular AI marketing OS with:
+- 535+ intelligence modules (pure computation, offline, no API keys)
+- A client intake system (questionnaire → CRM)
+- A creative intelligence workflow engine
+- A CRM with leads, clients, opportunities, discovery, communications
+- A dashboard UI (dashboard/index.html, served at port 6500)
+- A module runner that auto-discovers and executes any .js file placed in
+  intelligence_modules/
+
+Technology decisions:
+- No external API calls by default (offline-capable)
+- No secrets stored in plain text
+- All modules are pure computation (deterministic, testable)
+- JSON for all data storage
+- Static HTML dashboard served directly by Node's http module
+
+================================================================================
+SECTION 2 — PROJECT 770 ARCHITECTURE (from Google Drive source)
+================================================================================
+
+ROOT: pkg770/
+  server.js               ← main entry, port 6500
+  package.json
+  .env / .env.example
+  intelligence_module_registry.json   ← registry of all 535+ modules
+  start_ai_growth_os.sh / .bat
+  skill-converter.html
+
+KEY RUNTIME FILES (runtime/):
+  runtime/intelligence.js     ← auto-loads all .js files from intelligence_modules/
+  runtime/module_runner.js    ← universal invoker: run(moduleId, fnName, arg)
+  runtime/registry.js         ← validates the module registry
+  runtime/pipeline.js         ← processing pipeline
+  runtime/crm.js              ← CRM data layer
+  runtime/ai.js               ← AI layer (offline by default)
+  runtime/connectors.js       ← external connector stubs
+  runtime/discovery.js        ← business discovery
+  runtime/self_test.js        ← system self-test
+  runtime/options_engine.js   ← options/settings engine
+  runtime/qa_compliance.js    ← QA compliance checker
+  runtime/pr_intelligence.js  ← PR intelligence
+  runtime/offline_analysis.js ← offline analysis engine
+  runtime/skills.js           ← skill checker
+  runtime/intake_agents.js    ← intake processing agents
+  runtime/skill_converter.js  ← skill converter
+  runtime/env.js              ← loads optional .env
+
+KEY AGENT FILES (agents/):
+  agents/deliverables/engine.js        ← deliverables engine
+  agents/creative_intelligence/        ← creative intelligence agents
+  agents/creative_intelligence_workflow/
+
+WORKFLOW:
+  workflows/creative_intelligence_workflow/runner.js
+
+CLIENT INTAKE:
+  client_intake/intake_store.js   ← intake data storage
+  client_intake/submissions.json  ← submitted forms
+  client_intake/questionnaire.html
+
+CRM DATA (crm/):
+  discovery.json        ← business discovery records
+  leads.json            ← lead list
+  clients.json          ← converted clients
+  opportunities.json    ← sales pipeline
+  followups.json        ← follow-up schedule
+  communications.json   ← interaction history
+
+DASHBOARD:
+  dashboard/index.html  ← main dashboard UI (served at /)
+
+INTELLIGENCE MODULES (intelligence_modules/):
+  - 535 modules auto-loaded by runtime/intelligence.js
+  - Each .js file = one module
+  - Pattern: exports { assess } or named functions + STATUS constant
+  - Called via: POST /api/modules/run { module, fn, input }
+
+KEY SERVER ROUTES (server.js):
+  GET  /              → dashboard/index.html
+  GET  /api/health    → system health + registry validation
+  GET  /api/registries → load all registries
+  POST /api/modules/run  → run a specific module function
+  POST /api/modules/auto → auto-run modules on intake data
+  POST /api/pipeline     → run the full creative intelligence pipeline
+  ... (additional routes for CRM, workflow, intake, etc.)
+
+INTAKE VALIDATION (server.js):
+  Required fields: company, industry, target_audience, offer, country, goal
+  Generation is BLOCKED if any required field is missing (no placeholder output)
+
+================================================================================
+SECTION 3 — INTELLIGENCE MODULE PATTERN (from viral_intelligence.js)
+================================================================================
+
+Standard module shape:
+
+  'use strict';
+  const SubModule = require('./sibling_module');
+
+  function assess(input) {
+    input = input || {};
+    // pure computation only — no network, no secrets
+    return { score, recommendation };
+  }
+
+  module.exports = { assess, STATUS: 'ACTIVE' };
+
+Module runner invocation:
+  POST /api/modules/run
+  Body: { "module": "module_id", "fn": "assess", "input": { ... } }
+
+Auto-discovery:
+  runtime/intelligence.js reads ALL .js files in intelligence_modules/
+  No registration needed in server.js — just drop the file in the folder
+  Only intelligence_module_registry.json needs a new entry for the dashboard
+
+================================================================================
+SECTION 4 — WHAT WAS BUILT IN THE PREVIOUS SESSIONS (from handoff context)
+================================================================================
+
+Source: The handoff block pasted by user at session start.
+These sessions happened before this chat — details are from the handoff summary.
+
+COMPLETED BEFORE THIS SESSION:
+  - Full PROJECT 770 folder mapping from Google Drive (460 files, 20 folders)
+  - intelligence_module_registry.json downloaded and committed (535 modules)
+  - PKG770_FOLDER_STRUCTURE.txt — complete visual tree with all Google Drive IDs
+  - PKG770_COMPLETE_FILE_REFERENCE.json — machine-readable file reference
+  - PROJECT770_DOWNLOAD_SUMMARY.txt — full usage guide
+  - Architecture agent completed detailed system map
+  - Branch created: claude/project770-complete-n8k3yb
+
+MODULES KNOWN TO EXIST (from registry, examples):
+  Design:       ckm_slides, ckm_design_system, ui_ux_pro_max, ckm_ui_styling
+  Content:      youtube_strategy, twitter_thread, tiktok_script,
+                social_media_strategy, social_media_calendar, social_media_audit
+  Viral:        viral_intelligence (top aggregator), virality_scoring,
+                trend_intelligence, cultural_signal_tracker, internet_culture,
+                content_opportunity, hook_intelligence, workflow_diagnostics
+  Ad Copy:      ad_copy (last entry before this session)
+  ... + 500+ more
+
+================================================================================
+SECTION 5 — WHAT WAS BUILT IN THIS SESSION (2026-06-26)
+================================================================================
+
+BRANCH: claude/project-770-module-jp6vfw
+COMMIT: 46cfcdd
+
+FILES CREATED / MODIFIED:
+
+1. intelligence_modules/viroscope_claude_video_router.js  [NEW]
+   ─────────────────────────────────────────────────────
+   Module name:   Viroscope Claude Video Router
+   Client name:   Viral Video Builder
+   Module ID:     viroscope_claude_video_router
+   Pattern:       Follows viral_intelligence.js exactly
+   Exports:       { assess, generateNiches, generateClaudePrompt,
+                    generateExport, saveProject, STATUS }
+
+   PURPOSE:
+   Workflow bridge between client intake and video production tools.
+   Intake → ViroScope niche → ViroScope results → Claude production prompt
+   → Claude result pasted back → destination-specific export prompt.
+   Manual copy/paste only. No API calls. No external dependencies.
+
+   4 STAGES (called via input.stage):
+
+   STAGE 1: generate_niches
+     Input:  intake data (company, industry, offer, audience, platform, language)
+     Output: 5 ViroScope niche options (max 60 chars each), recommended first
+     Logic:  Derives angles from intake — direct offer+audience, how-to,
+             results/transformation, industry authority, platform-specific
+     Example niches:
+       "online personal training for busy professionals"
+       "how to grow with online personal training"
+       "fitness coaching content that goes viral"
+
+   STAGE 2: generate_claude_prompt
+     Input:  intake data + selected_viroscope_niche + raw_viroscope_results
+             + platform + language + production_style + content_goal
+     Output: Full Claude production prompt (ready to paste into claude.ai)
+     Prompt asks Claude to:
+       a) Pick best viral idea from ViroScope results
+       b) Explain WHY it fits the client
+       c) Produce full video production package:
+          - Video concept (hook angle, message, emotional driver)
+          - Hook (exact first 3 seconds)
+          - Script outline (intro/content/CTA)
+          - Scene breakdown (3-6 scenes with visuals, text, voiceover)
+          - Production style notes (camera, pacing, music, colour)
+          - Caption/overlay copy
+          - Call to action (exact wording)
+          - Platform optimisation specs
+     Originality rule enforced: no competitor copying, only structure/psychology
+
+   STAGE 3: generate_export
+     Input:  pasted_claude_result + selected_destination + intake data
+     Output: Destination-specific export prompt
+
+     8 DESTINATIONS:
+     higgsfield         → cinematic prompt + params (AR, duration, style,
+                          negative prompt, motion notes)
+     gemini             → structured video generation prompt with scene list
+     claude             → 3 refinement prompts (script punch-up, production
+                          audit, hook variation generator)
+     runway             → Runway ML text-to-video / image-to-video prompt
+     veo                → Veo parameters (resolution, frame rate, audio)
+     kling              → Kling AI professional mode prompt
+     editor_brief       → Full human editor brief: shot list, voiceover,
+                          timeline (hook 0-3s, value, CTA), captions,
+                          B-roll rules, music direction, export specs
+                          per platform (TikTok, Reels, YouTube, LinkedIn)
+     youtube_upload_package → Title options (3 variants), description
+                          template (SEO), tags, thumbnail prompt for AI/
+                          designer, pinned comment, chapters template
+
+   STAGE 4: save_project
+     Input:  all accumulated data from stages 1-3
+     Output: Project object with all fields:
+       { project_id, intake_id, client_name,
+         viroscope_niche_options[], selected_viroscope_niche,
+         raw_viroscope_results, generated_claude_prompt,
+         pasted_claude_result, selected_destination,
+         exported_prompt, created_at, updated_at }
+
+2. dashboard/viroscope.html  [NEW]
+   ────────────────────────────────
+   URL:     http://localhost:6500/viroscope.html
+   Design:  Dark theme (#0d0d0d), purple accent (#7c3aed), responsive
+   Layout:  5 sequential steps — locked until previous step complete
+
+   STEP 1 — Client Intake
+     Fields: Business name, Industry, Offer, Target Audience,
+             Platform (dropdown), Language (dropdown),
+             Production Style, Content Goal
+     Action: "Generate ViroScope Niche Options" → calls generateNiches
+
+   STEP 2 — ViroScope Analysis
+     Shows: 5 niche cards (★ = recommended, RECOMMENDED badge on #1)
+             each card shows niche text + character count (X/60)
+     User clicks to select preferred niche
+     Buttons: "Copy ViroScope Prompt" + "Open ViroScope" (opens
+              https://www.viroscopeai.com/generate in new tab)
+     Paste box: "Paste ViroScope Results Here"
+     Action: "Generate Claude Prompt" → calls generateClaudePrompt
+
+   STEP 3 — Claude Production Prompt
+     Shows: Generated Claude prompt in monospace code box
+     Button: "Copy Claude Prompt"
+     Paste box: "Paste Claude Video Package Here"
+     Action: "Choose Export Destination" → unlocks step 4
+
+   STEP 4 — Export Destination
+     Card grid: Higgsfield, Gemini, Claude, Runway, Veo, Kling,
+                Editor Brief, YouTube Upload Package
+     Action: "Generate Export Prompt" → calls generateExport
+
+   STEP 5 — Export Output
+     Shows: Final export prompt in code box with destination label
+     Buttons: "Copy Export Prompt", "Save Project", "New Video"
+     Save: calls saveProject, shows project ID on success
+
+   UX details:
+     - Steps auto-scroll into view when unlocked
+     - Toast notification on every copy action
+     - Locked steps are 45% opacity, pointer-events disabled
+     - Completed steps show green border + green step number
+     - Active step shows purple border
+
+3. intelligence_module_registry.json  [MODIFIED]
+   ──────────────────────────────────────────────
+   Entry added for viroscope_claude_video_router
+   Count updated: 535 → 536
+
+   New entry:
+   {
+     "id": "viroscope_claude_video_router",
+     "name": "Viral Video Builder",
+     "type": "workflow_module",
+     "status": "IMPORTED_ACTIVE",
+     "kind": "workflow",
+     "owner": "imported",
+     "dependencies": [],
+     "rules_count": 9,
+     "functions": ["generateNiches","generateClaudePrompt",
+                   "generateExport","saveProject","assess"],
+     "stages": ["generate_niches","generate_claude_prompt",
+                "generate_export","save_project"],
+     "destinations": ["higgsfield","gemini","claude","runway",
+                      "veo","kling","editor_brief",
+                      "youtube_upload_package"],
+     "imported_at": "2026-06-26T00:00:00.000Z"
+   }
+
+================================================================================
+SECTION 6 — HOW TO USE THE NEW MODULE
+================================================================================
+
+VIA BROWSER (recommended):
+  http://localhost:6500/viroscope.html
+  Follow the 5-step guided workflow.
+
+VIA API (for developers / automation):
+
+  Generate niches:
+  POST http://localhost:6500/api/modules/run
+  {
+    "module": "viroscope_claude_video_router",
+    "fn": "generateNiches",
+    "input": {
+      "stage": "generate_niches",
+      "company": "FitnessPro Studio",
+      "industry": "fitness coaching",
+      "offer": "online personal training",
+      "target_audience": "busy professionals over 35",
+      "platform": "TikTok",
+      "language": "English"
+    }
+  }
+
+  Generate Claude prompt:
+  POST /api/modules/run
+  {
+    "module": "viroscope_claude_video_router",
+    "fn": "generateClaudePrompt",
+    "input": {
+      "stage": "generate_claude_prompt",
+      "company": "...",
+      "selected_viroscope_niche": "online personal training for busy professionals",
+      "raw_viroscope_results": "[paste your ViroScope output here]",
+      "platform": "TikTok",
+      "language": "English",
+      "production_style": "modern, dynamic"
+    }
+  }
+
+  Generate export:
+  POST /api/modules/run
+  {
+    "module": "viroscope_claude_video_router",
+    "fn": "generateExport",
+    "input": {
+      "stage": "generate_export",
+      "pasted_claude_result": "[Claude's full video package]",
+      "selected_destination": "higgsfield",
+      "company": "...",
+      "platform": "TikTok"
+    }
+  }
+
+================================================================================
+SECTION 7 — WHERE FILES LIVE LOCALLY
+================================================================================
+
+  pkg770/
+    server.js                                     ← unchanged
+    intelligence_module_registry.json             ← updated (536 modules)
+    intelligence_modules/
+      viroscope_claude_video_router.js            ← NEW
+      [535 existing modules]
+    dashboard/
+      index.html                                  ← unchanged (main dashboard)
+      viroscope.html                              ← NEW (Viral Video Builder UI)
+    runtime/
+      intelligence.js                             ← auto-discovers new module
+      module_runner.js                            ← routes /api/modules/run
+      [other runtime files unchanged]
+    [all other folders unchanged]
+
+================================================================================
+SECTION 8 — GIT / REPO STATUS
+================================================================================
+
+Repository:   yarivtenta-creator/FB
+Branches used:
+  main                              ← base (untouched)
+  claude/project770-complete-n8k3yb ← has registry + docs from Drive mapping
+  claude/project-770-module-jp6vfw  ← THIS SESSION's branch (pushed)
+    Commit: 46cfcdd
+    Files:  intelligence_modules/viroscope_claude_video_router.js
+            dashboard/viroscope.html
+            intelligence_module_registry.json (updated)
+            PKG770 reference/structure docs
+
+================================================================================
+SECTION 9 — RULES ENFORCED IN THIS BUILD
+================================================================================
+
+1. No API calls in the module — pure computation only
+2. No secrets or API keys in any file
+3. ViroScope integration = manual only (copy niche → open URL → paste results)
+4. Claude integration = manual only (copy prompt → paste to claude.ai → paste result)
+5. No iframes, no scraping, no fake APIs
+6. Originality rule hard-coded in Claude prompt:
+   "Never reproduce competitor content. Use only hook structure, pacing principles,
+   audience psychology, topic angle, and format pattern. Every word, scene, and
+   visual must be 100% original."
+7. Module follows exact viral_intelligence.js pattern
+8. Server.js was NOT modified — module is auto-discovered via intelligence.js
+
+================================================================================
+SECTION 10 — KNOWN GAPS / WHAT IS NOT YET DONE
+================================================================================
+
+- ViroScope API integration: NOT implemented (manual only per spec)
+- Claude API integration: NOT implemented (manual only per spec)
+- Higgsfield / Gemini / Runway API: NOT implemented (prompt export only)
+- Project save to disk: server.js would need a /api/modules/save route to
+  write the project JSON to outputs/ — currently saveProject() returns the
+  object but server-side file write is not wired (module is computation only)
+- Dashboard nav link: no link from dashboard/index.html to viroscope.html yet
+  (user navigates directly to /viroscope.html)
+- Multi-project view / project list: not built
+- Intake pre-fill from existing CRM data: not built
+
+================================================================================
+END OF LOG
+================================================================================
