@@ -343,6 +343,8 @@ main { padding-top: 76px; }
 .gift-edu-body p { color: var(--text-muted); margin-bottom: 24px; line-height: 1.7; }
 .gift-edu-body .btn { align-self: flex-start; }
 #page-about .about-grid { grid-template-columns: 1fr 1fr; align-items: start; }
+#page-about .about-media { max-width: 420px; }
+#page-about .about-media img { aspect-ratio: 4/3; }
 @media (max-width: 768px) {
   .gift-grid-2, .gift-edu { grid-template-columns: 1fr; }
   .gift-edu-media { min-height: 200px; }
