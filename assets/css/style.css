@@ -239,11 +239,9 @@ main { padding-top: 76px; }
 .feature-card p { font-size: 0.96rem; color: var(--text-muted); line-height: 1.7; }
 
 /* ============================ ABOUT ============================ */
-.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-.about-media { position: relative; }
-.about-media img { width: 100%; border-radius: var(--radius-lg); object-fit: cover; aspect-ratio: 4/3; position: relative; z-index: 1; }
-.about-media::before { content: ''; position: absolute; top: -18px; right: -18px; width: 55%; height: 55%; border: 2px solid var(--gold); border-radius: var(--radius-lg); z-index: 0; }
-.about-media::after { content: ''; position: absolute; bottom: -18px; left: -18px; width: 40%; height: 40%; background: var(--gold-soft); border-radius: var(--radius-lg); z-index: 0; }
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+.about-media { display: flex; flex-direction: column; gap: 16px; }
+.about-media img { width: 100%; border-radius: var(--radius-lg); object-fit: cover; aspect-ratio: 4/3; }
 .about-text .section-title, .about-text .section-label { text-align: right; }
 .about-text p { color: var(--text-muted); margin-bottom: 16px; font-size: 1.04rem; }
 .about-text p strong { color: var(--gold); }
@@ -344,10 +342,7 @@ main { padding-top: 76px; }
 .gift-edu-body h3 { font-size: 1.6rem; font-weight: 800; color: #fff; margin: 6px 0 12px; }
 .gift-edu-body p { color: var(--text-muted); margin-bottom: 24px; line-height: 1.7; }
 .gift-edu-body .btn { align-self: flex-start; }
-/* About page: keep the portrait from getting oversized */
-#page-about .about-media { max-width: 400px; margin-inline: auto; }
-#page-about .about-media img { aspect-ratio: 1 / 1; }
-#page-about .about-grid { grid-template-columns: 1.2fr 0.8fr; align-items: start; }
+#page-about .about-grid { grid-template-columns: 1fr 1fr; align-items: start; }
 @media (max-width: 768px) {
   .gift-grid-2, .gift-edu { grid-template-columns: 1fr; }
   .gift-edu-media { min-height: 200px; }
@@ -446,7 +441,6 @@ main { padding-top: 76px; }
   .hamburger { display: flex; }
   .about-grid { grid-template-columns: 1fr; gap: 48px; }
   .about-media { order: -1; }
-  .about-media::before, .about-media::after { display: none; }
   .about-text .section-title, .about-text .section-label, .contact-info .section-title, .contact-info .section-label { text-align: center; }
   .process-steps { grid-template-columns: repeat(2, 1fr); }
   .process-steps::before { display: none; }
