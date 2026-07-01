@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ווקס תקליטים · ייצור תקליטים בישראל</title>
+  <meta name="description" content="ייצור תקליטים בישראל — הופכים מוזיקה לתקליט. שירות מלא מהמאסטר ועד לוויניל המוגמר, כולל לייבל עצמאי." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #100d0b;
+      --bg-2: #17130f;
+      --surface: #1e1915;
+      --surface-2: #241e18;
+      --line: #322a22;
+      --text: #f6f1e8;
+      --muted: #b6aa99;
+      --gold: #d9a94e;
+      --gold-2: #e8c179;
+      --wa: #25d366;
+      --wa-dark: #128c4b;
+      --radius: 18px;
+      --maxw: 1180px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Heebo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* Themed fallback shown only if a photo fails to load */
+    .svc-media, .gallery-grid figure, .split .media, .hero-bg, .label-bg {
+      background:
+        radial-gradient(circle at 30% 30%, #2a221a, #14100c 70%),
+        repeating-radial-gradient(circle at 50% 50%, rgba(217,169,78,.06) 0 2px, transparent 2px 5px);
+    }
+    img.img-failed { display: none; }
+
+    .container {
+      width: 100%;
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.82rem;
+      letter-spacing: 0.18em;
+      font-weight: 600;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    h2.section-title {
+      font-size: clamp(1.9rem, 4vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    .section-lead {
+      color: var(--muted);
+      font-size: 1.08rem;
+      max-width: 640px;
+    }
+
+    section { padding: 96px 0; position: relative; }
+
+    /* ---------- Buttons ---------- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 30px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 1.02rem;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+      white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), var(--gold-2));
+      color: #1a1207;
+      box-shadow: 0 12px 30px -12px rgba(217,169,78,.6);
+    }
+    .btn-primary:hover { box-shadow: 0 18px 40px -12px rgba(217,169,78,.75); }
+    .btn-wa {
+      background: var(--wa);
+      color: #04310f;
+    }
+    .btn-wa:hover { background: #2ee06f; }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--line);
+    }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold-2); }
+
+    /* ---------- Header / Nav ---------- */
+    header {
+      position: fixed; inset: 0 0 auto 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      background: rgba(16,13,11,.72);
+      border-bottom: 1px solid transparent;
+      transition: background .3s ease, border-color .3s ease;
+    }
+    header.scrolled {
+      background: rgba(16,13,11,.92);
+      border-bottom-color: var(--line);
+    }
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 72px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 1.22rem; letter-spacing: .02em; }
+    .brand .disc {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: radial-gradient(circle at center, #100d0b 0 22%, var(--gold) 23% 27%, #100d0b 28% 46%, var(--gold-2) 47% 51%, #100d0b 52%);
+      box-shadow: 0 0 0 1px var(--line);
+      animation: spin 6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .nav-links { display: flex; align-items: center; gap: 30px; }
+    .nav-links a { color: var(--muted); font-weight: 500; font-size: .98rem; transition: color .15s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { display: flex; align-items: center; gap: 12px; }
+    .nav-cta .btn { padding: 10px 20px; font-size: .95rem; }
+    .menu-toggle { display: none; background: none; border: 0; color: var(--text); cursor: pointer; }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding-top: 72px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+    }
+    .hero-bg img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-bg::after {
+      content: ''; position: absolute; inset: 0;
+      background:
+        linear-gradient(90deg, rgba(16,13,11,.96) 0%, rgba(16,13,11,.82) 45%, rgba(16,13,11,.55) 100%),
+        linear-gradient(0deg, rgba(16,13,11,.9), rgba(16,13,11,.3));
+    }
+    .hero-inner { position: relative; z-index: 2; max-width: 720px; }
+    .hero h1 {
+      font-size: clamp(2.6rem, 7vw, 5rem);
+      font-weight: 900;
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .hero h1 .accent {
+      background: linear-gradient(120deg, var(--gold), var(--gold-2));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .hero .subtitle {
+      font-size: clamp(1.3rem, 3vw, 1.9rem);
+      font-weight: 500;
+      color: var(--text);
+      margin: 18px 0 14px;
+    }
+    .hero p.desc { color: var(--muted); font-size: 1.12rem; max-width: 520px; margin-bottom: 34px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; }
+    .hero-stats { display: flex; gap: 40px; margin-top: 54px; flex-wrap: wrap; }
+    .hero-stats .stat strong { display: block; font-size: 1.9rem; font-weight: 800; color: var(--gold-2); }
+    .hero-stats .stat span { color: var(--muted); font-size: .92rem; }
+
+    /* ---------- Why Vinyl ---------- */
+    .why { background: var(--bg-2); }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 52px; }
+    .feature {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      transition: transform .2s ease, border-color .2s ease;
+    }
+    .feature:hover { transform: translateY(-4px); border-color: var(--gold); }
+    .feature .ic {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: grid; place-items: center;
+      background: linear-gradient(135deg, rgba(217,169,78,.18), rgba(232,193,121,.08));
+      color: var(--gold-2); font-size: 1.5rem; margin-bottom: 18px;
+    }
+    .feature h3 { font-size: 1.22rem; font-weight: 700; margin-bottom: 8px; }
+    .feature p { color: var(--muted); font-size: .98rem; }
+
+    /* ---------- Services ---------- */
+    .svc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 52px; }
+    .svc-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: transform .2s ease, border-color .2s ease;
+    }
+    .svc-card:hover { transform: translateY(-4px); border-color: var(--gold); }
+    .svc-media { aspect-ratio: 4/3; overflow: hidden; }
+    .svc-media img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+    .svc-card:hover .svc-media img { transform: scale(1.06); }
+    .svc-body { padding: 24px; }
+    .svc-body h3 { font-size: 1.28rem; font-weight: 700; margin-bottom: 8px; }
+    .svc-body p { color: var(--muted); font-size: .97rem; margin-bottom: 14px; }
+    .svc-body .more { color: var(--gold-2); font-weight: 600; font-size: .95rem; }
+
+    /* ---------- Gallery ---------- */
+    .gallery { background: var(--bg-2); }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: 200px;
+      gap: 16px; margin-top: 52px;
+    }
+    .gallery-grid figure {
+      overflow: hidden; border-radius: 14px; position: relative;
+      border: 1px solid var(--line);
+    }
+    .gallery-grid img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+    .gallery-grid figure:hover img { transform: scale(1.08); }
+    .gallery-grid .wide { grid-column: span 2; }
+    .gallery-grid .tall { grid-row: span 2; }
+
+    /* ---------- Pricing ---------- */
+    .price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 52px; align-items: stretch; }
+    .price-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 34px 30px;
+      display: flex; flex-direction: column;
+      position: relative;
+    }
+    .price-card.featured {
+      border-color: var(--gold);
+      background: linear-gradient(180deg, var(--surface-2), var(--surface));
+      box-shadow: 0 24px 60px -30px rgba(217,169,78,.5);
+    }
+    .price-card .tag {
+      position: absolute; top: -13px; inset-inline-start: 30px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-2));
+      color: #1a1207; font-weight: 700; font-size: .8rem;
+      padding: 5px 14px; border-radius: 999px;
+    }
+    .price-card h3 { font-size: 1.3rem; font-weight: 700; }
+    .price-card .qty { color: var(--muted); font-size: .95rem; margin-bottom: 18px; }
+    .price-card .amount { font-size: 2.6rem; font-weight: 900; color: var(--gold-2); line-height: 1; }
+    .price-card .amount small { font-size: 1rem; font-weight: 500; color: var(--muted); }
+    .price-card ul { list-style: none; margin: 22px 0 28px; display: grid; gap: 11px; }
+    .price-card li { color: var(--muted); font-size: .97rem; display: flex; gap: 10px; }
+    .price-card li::before { content: '✓'; color: var(--gold); font-weight: 800; }
+    .price-card .btn { width: 100%; justify-content: center; margin-top: auto; }
+
+    /* ---------- Gift Cards ---------- */
+    .gift { background: var(--bg-2); }
+    .split { display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px; align-items: center; }
+    .split .media { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); aspect-ratio: 5/4; }
+    .split .media img { width: 100%; height: 100%; object-fit: cover; }
+    .gift ul.perks { list-style: none; margin: 24px 0 30px; display: grid; gap: 12px; }
+    .gift ul.perks li { display: flex; gap: 12px; color: var(--muted); }
+    .gift ul.perks li b { color: var(--text); font-weight: 600; }
+    .gift ul.perks li::before {
+      content: '🎁'; font-size: 1.1rem;
+    }
+
+    /* ---------- Label ---------- */
+    .label-sec {
+      position: relative; overflow: hidden;
+    }
+    .label-bg { position: absolute; inset: 0; z-index: 0; }
+    .label-bg img { width: 100%; height: 100%; object-fit: cover; }
+    .label-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(16,13,11,.94), rgba(16,13,11,.7) 60%, rgba(16,13,11,.55)); }
+    .label-inner { position: relative; z-index: 2; max-width: 640px; }
+    .label-inner .btn { margin-top: 26px; }
+
+    /* ---------- Final CTA ---------- */
+    .final {
+      text-align: center;
+      background:
+        radial-gradient(1000px 500px at 50% -10%, rgba(217,169,78,.14), transparent 60%),
+        var(--bg);
+    }
+    .final h2 { font-size: clamp(2.1rem, 5vw, 3.4rem); font-weight: 900; letter-spacing: -0.02em; margin-bottom: 16px; }
+    .final p { color: var(--muted); font-size: 1.15rem; max-width: 560px; margin: 0 auto 34px; }
+    .final .hero-actions { justify-content: center; }
+
+    /* ---------- Footer ---------- */
+    footer { background: var(--bg-2); border-top: 1px solid var(--line); padding: 56px 0 34px; }
+    .foot-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 32px; }
+    footer .brand { margin-bottom: 14px; }
+    footer p.about { color: var(--muted); font-size: .95rem; max-width: 300px; }
+    footer h4 { font-size: .95rem; letter-spacing: .06em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+    footer ul { list-style: none; display: grid; gap: 9px; }
+    footer ul a { color: var(--muted); font-size: .95rem; }
+    footer ul a:hover { color: var(--text); }
+    .foot-bottom {
+      margin-top: 44px; padding-top: 22px; border-top: 1px solid var(--line);
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+      color: var(--muted); font-size: .88rem;
+    }
+
+    /* ---------- Floating WhatsApp ---------- */
+    .fab-wa {
+      position: fixed; z-index: 90; inset-block-end: 24px; inset-inline-start: 24px;
+      width: 58px; height: 58px; border-radius: 50%;
+      background: var(--wa); display: grid; place-items: center;
+      box-shadow: 0 12px 30px -8px rgba(37,211,102,.6);
+      transition: transform .2s ease;
+    }
+    .fab-wa:hover { transform: scale(1.08); }
+    .fab-wa svg { width: 30px; height: 30px; fill: #fff; }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 940px) {
+      .grid-3, .svc-grid, .price-grid { grid-template-columns: 1fr 1fr; }
+      .foot-grid { grid-template-columns: 1fr 1fr; }
+      .split { grid-template-columns: 1fr; gap: 32px; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 720px) {
+      .nav-links { display: none; }
+      .nav-cta .btn-ghost { display: none; }
+      section { padding: 72px 0; }
+      .grid-3, .svc-grid, .price-grid { grid-template-columns: 1fr; }
+      .foot-grid { grid-template-columns: 1fr; }
+      .hero-stats { gap: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Header ===== -->
+  <header id="site-header">
+    <div class="container nav">
+      <a href="#" class="brand"><span class="disc" aria-hidden="true"></span> ווקס תקליטים</a>
+      <nav class="nav-links">
+        <a href="#why">למה תקליט</a>
+        <a href="#services">שירותים</a>
+        <a href="#gallery">גלריה</a>
+        <a href="#pricing">מחירים</a>
+        <a href="#gift">גיפט קארד</a>
+        <a href="#label">לייבל</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="https://wa.me/972501234567" class="btn btn-ghost" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="#contact" class="btn btn-primary">התחילו פרויקט</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Hero ===== -->
+  <section class="hero" id="top">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1461360228754-6e81c478b882?auto=format&fit=crop&w=1920&q=80"
+           alt="תקליט ויניל מסתובב על פטיפון" loading="eager" />
+    </div>
+    <div class="container hero-inner">
+      <span class="eyebrow">Made in Israel · הלחיצה חוזרת</span>
+      <h1>ייצור תקליטים <span class="accent">בישראל</span></h1>
+      <p class="subtitle">הופכים מוזיקה לתקליט.</p>
+      <p class="desc">מהמאסטר הדיגיטלי ועד לוויניל הפיזי שאתם אוחזים ביד — ליווי מלא, איכות אולפן וגימור שאפשר להרגיש.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn btn-primary">התחילו פרויקט</a>
+        <a href="https://wa.me/972501234567" class="btn btn-wa" target="_blank" rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm5.8 14.05c-.24.68-1.42 1.32-1.95 1.36-.5.05-1.14.07-1.84-.11-.42-.13-.97-.31-1.66-.61-2.92-1.26-4.83-4.2-4.98-4.39-.15-.2-1.19-1.58-1.19-3.01s.75-2.14 1.02-2.43c.27-.29.58-.36.78-.36.19 0 .39 0 .56.01.18.01.42-.07.66.5.24.58.83 2.01.9 2.16.07.15.12.32.02.51-.09.19-.14.31-.28.48-.14.17-.29.37-.42.5-.14.14-.28.29-.12.57.16.29.71 1.17 1.53 1.9 1.05.94 1.94 1.23 2.22 1.37.28.14.44.12.6-.07.17-.19.69-.8.87-1.08.18-.29.36-.24.61-.14.25.09 1.58.75 1.85.88.27.14.45.2.52.32.07.12.07.68-.17 1.36z"/></svg>
+          דברו איתנו ב-WhatsApp
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><strong>+400</strong><span>תקליטים שיוצרו</span></div>
+        <div class="stat"><strong>180 גרם</strong><span>ויניל פרימיום</span></div>
+        <div class="stat"><strong>100%</strong><span>ייצור מקומי</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Why Vinyl ===== -->
+  <section class="why" id="why">
+    <div class="container">
+      <span class="eyebrow">Why Vinyl</span>
+      <h2 class="section-title">למה דווקא תקליט?</h2>
+      <p class="section-lead">בעידן של קבצים חולפים, התקליט הוא הדבר האמיתי — אובייקט פיזי, צליל חם ורגע שנשאר.</p>
+      <div class="grid-3">
+        <div class="feature">
+          <div class="ic">♪</div>
+          <h3>צליל אנלוגי חם</h3>
+          <p>עומק, טקסטורה ודינמיקה שאין להם תחליף — הצליל שהאמן התכוון אליו.</p>
+        </div>
+        <div class="feature">
+          <div class="ic">◎</div>
+          <h3>אובייקט אספנות</h3>
+          <p>עטיפה, לייבל וויניל שמרגישים ביד. יצירה שאפשר להחזיק, לא רק להאזין.</p>
+        </div>
+        <div class="feature">
+          <div class="ic">✶</div>
+          <h3>ערך שנשאר</h3>
+          <p>תקליט הוא נכס. הוא עובר בין דורות ורק צובר ערך ומשמעות עם השנים.</p>
+        </div>
+        <div class="feature">
+          <div class="ic">✦</div>
+          <h3>חוויית האזנה</h3>
+          <p>שמים צד, יושבים ומקשיבים. התקליט מחזיר את הכבוד להאזנה מלאה.</p>
+        </div>
+        <div class="feature">
+          <div class="ic">⚙</div>
+          <h3>שליטה מלאה</h3>
+          <p>מהמאסטרינג ועד הגימור — כל שלב בפיקוח שלכם, בלי פשרות על האיכות.</p>
+        </div>
+        <div class="feature">
+          <div class="ic">✧</div>
+          <h3>מיתוג פיזי</h3>
+          <p>לאמנים ולייבלים: מוצר מרצ' שמוכר את עצמו וממתג את המוזיקה שלכם.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Services Preview ===== -->
+  <section id="services">
+    <div class="container">
+      <span class="eyebrow">Services</span>
+      <h2 class="section-title">השירותים שלנו</h2>
+      <p class="section-lead">ליווי מקצה לקצה — כל מה שצריך כדי להפוך את המוזיקה שלכם לתקליט מוגמר.</p>
+      <div class="svc-grid">
+        <article class="svc-card">
+          <div class="svc-media">
+            <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=800&q=80" alt="אולפן מאסטרינג עם ציוד מקצועי" loading="lazy" />
+          </div>
+          <div class="svc-body">
+            <h3>מאסטרינג לוויניל</h3>
+            <p>הכנת המאסטר בהתאמה מדויקת למגבלות ולעוצמה של פורמט הוויניל.</p>
+            <span class="more">פרטים ←</span>
+          </div>
+        </article>
+        <article class="svc-card">
+          <div class="svc-media">
+            <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?auto=format&fit=crop&w=800&q=80" alt="תהליך הטבעת תקליטים ויניל" loading="lazy" />
+          </div>
+          <div class="svc-body">
+            <h3>הטבעה וייצור</h3>
+            <p>ייצור ויניל 180 גרם באיכות פרימיום, בצבעים מלאים ובכל כמות.</p>
+            <span class="more">פרטים ←</span>
+          </div>
+        </article>
+        <article class="svc-card">
+          <div class="svc-media">
+            <img src="https://images.unsplash.com/photo-1495364141860-b0d03eccd065?auto=format&fit=crop&w=800&q=80" alt="עיצוב עטיפות תקליטים" loading="lazy" />
+          </div>
+          <div class="svc-body">
+            <h3>עיצוב עטיפות</h3>
+            <p>עיצוב עטיפה, שרוול ולייבל — מכריכה ראשונה ועד המוצר בהדפסה.</p>
+            <span class="more">פרטים ←</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Gallery Preview ===== -->
+  <section class="gallery" id="gallery">
+    <div class="container">
+      <span class="eyebrow">Gallery</span>
+      <h2 class="section-title">גלריה</h2>
+      <p class="section-lead">מבחר עבודות שיצאו מהאולפן שלנו — צבעים, גימורים ועטיפות.</p>
+      <div class="gallery-grid">
+        <figure class="wide tall">
+          <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1000&q=80" alt="תקליט ויניל על פטיפון" loading="lazy" />
+        </figure>
+        <figure>
+          <img src="https://images.unsplash.com/photo-1535992165812-68d1861aa71e?auto=format&fit=crop&w=600&q=80" alt="תקליט בצבע חם" loading="lazy" />
+        </figure>
+        <figure>
+          <img src="https://images.unsplash.com/photo-1483412033650-1015ddeb83d1?auto=format&fit=crop&w=600&q=80" alt="פטיפון וזרוע ניגון" loading="lazy" />
+        </figure>
+        <figure class="wide">
+          <img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=1000&q=80" alt="אוסף תקליטים בארגז" loading="lazy" />
+        </figure>
+        <figure>
+          <img src="https://images.unsplash.com/photo-1445985543470-41fba5c3144a?auto=format&fit=crop&w=600&q=80" alt="תקליט שחור מבריק" loading="lazy" />
+        </figure>
+        <figure>
+          <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80" alt="פרט מאקרו של חריצי תקליט" loading="lazy" />
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Pricing Preview ===== -->
+  <section id="pricing">
+    <div class="container">
+      <span class="eyebrow">Pricing</span>
+      <h2 class="section-title">מחירים</h2>
+      <p class="section-lead">חבילות שקופות לכל שלב — מהדמו הראשון ועד הפצה מלאה. המחירים למנת ייצור.</p>
+      <div class="price-grid">
+        <div class="price-card">
+          <h3>סינגל</h3>
+          <p class="qty">מנה מ-100 יחידות</p>
+          <div class="amount">₪39 <small>/ יחידה</small></div>
+          <ul>
+            <li>ויניל 7״ / 180 גרם</li>
+            <li>מאסטרינג בסיסי</li>
+            <li>שרוול לבן סטנדרטי</li>
+            <li>בדיקת איכות</li>
+          </ul>
+          <a href="#contact" class="btn btn-ghost">בחירת חבילה</a>
+        </div>
+        <div class="price-card featured">
+          <span class="tag">הכי פופולרי</span>
+          <h3>אלבום מלא</h3>
+          <p class="qty">מנה מ-200 יחידות</p>
+          <div class="amount">₪69 <small>/ יחידה</small></div>
+          <ul>
+            <li>ויניל 12״ / 180 גרם</li>
+            <li>מאסטרינג מלא לוויניל</li>
+            <li>עטיפה מודפסת בהדפסה איכותית</li>
+            <li>עד 2 צבעי ויניל לבחירה</li>
+            <li>ליווי אישי לאורך התהליך</li>
+          </ul>
+          <a href="#contact" class="btn btn-primary">בחירת חבילה</a>
+        </div>
+        <div class="price-card">
+          <h3>לייבל / מהדורה</h3>
+          <p class="qty">מנה מ-500 יחידות</p>
+          <div class="amount">בהתאמה</div>
+          <ul>
+            <li>ייצור בקנה מידה מלא</li>
+            <li>גימורים מיוחדים וגלופה</li>
+            <li>עטיפת גייטפולד אפשרית</li>
+            <li>ניהול פרויקט מלא</li>
+          </ul>
+          <a href="#contact" class="btn btn-ghost">קבלת הצעה</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Gift Cards Preview ===== -->
+  <section class="gift" id="gift">
+    <div class="container split">
+      <div class="media">
+        <img src="https://images.unsplash.com/photo-1607779097040-26e80aa78e66?auto=format&fit=crop&w=900&q=80" alt="תקליט ויניל כמתנה עטופה" loading="lazy" />
+      </div>
+      <div>
+        <span class="eyebrow">Gift Cards</span>
+        <h2 class="section-title">גיפט קארד</h2>
+        <p class="section-lead">המתנה המושלמת לחובבי מוזיקה — שוברי מתנה לייצור תקליט אישי, בכל סכום.</p>
+        <ul class="perks">
+          <li><span><b>שובר דיגיטלי מיידי</b> — נשלח למייל תוך דקות, מוכן להענקה.</span></li>
+          <li><span><b>גמישות מלאה</b> — ניתן לממש על כל שירות באתר.</span></li>
+          <li><span><b>עיצוב אישי</b> — הוספת ברכה ושם המקבל.</span></li>
+          <li><span><b>תוקף שנה</b> — בלי לחץ, בזמן שנוח.</span></li>
+        </ul>
+        <a href="#contact" class="btn btn-primary">לרכישת גיפט קארד</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Independent Label ===== -->
+  <section class="label-sec" id="label">
+    <div class="label-bg">
+      <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1920&q=80" alt="אולפן הקלטות עם ציוד מוזיקלי" loading="lazy" />
+    </div>
+    <div class="container label-inner">
+      <span class="eyebrow">Independent Label</span>
+      <h2 class="section-title">אנחנו גם לייבל עצמאי</h2>
+      <p class="section-lead">מעבר לייצור — אנחנו בית לאמנים. חותמים, מלווים ומוציאים לאור מוזיקה מקורית בישראל, מהרעיון ועד המדף.</p>
+      <p class="section-lead" style="margin-top:14px;">אם יש לכם מוזיקה שאתם מאמינים בה, בואו נדבר על להוציא אותה לאור יחד — כפרויקט אמנותי מלא, לא רק כהזמנת ייצור.</p>
+      <a href="#contact" class="btn btn-primary">להצטרפות ללייבל</a>
+    </div>
+  </section>
+
+  <!-- ===== Final CTA ===== -->
+  <section class="final" id="contact">
+    <div class="container">
+      <span class="eyebrow">בואו נתחיל</span>
+      <h2>המוזיקה שלכם ראויה לתקליט.</h2>
+      <p>ספרו לנו על הפרויקט ונחזור אליכם עם הצעה מותאמת — ליווי מלא, מכאן ועד הוויניל המוגמר.</p>
+      <div class="hero-actions">
+        <a href="https://wa.me/972501234567" class="btn btn-wa" target="_blank" rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm5.8 14.05c-.24.68-1.42 1.32-1.95 1.36-.5.05-1.14.07-1.84-.11-.42-.13-.97-.31-1.66-.61-2.92-1.26-4.83-4.2-4.98-4.39-.15-.2-1.19-1.58-1.19-3.01s.75-2.14 1.02-2.43c.27-.29.58-.36.78-.36.19 0 .39 0 .56.01.18.01.42-.07.66.5.24.58.83 2.01.9 2.16.07.15.12.32.02.51-.09.19-.14.31-.28.48-.14.17-.29.37-.42.5-.14.14-.28.29-.12.57.16.29.71 1.17 1.53 1.9 1.05.94 1.94 1.23 2.22 1.37.28.14.44.12.6-.07.17-.19.69-.8.87-1.08.18-.29.36-.24.61-.14.25.09 1.58.75 1.85.88.27.14.45.2.52.32.07.12.07.68-.17 1.36z"/></svg>
+          דברו איתנו ב-WhatsApp
+        </a>
+        <a href="mailto:hello@vox-vinyl.co.il" class="btn btn-ghost">שליחת מייל</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer>
+    <div class="container">
+      <div class="foot-grid">
+        <div>
+          <div class="brand"><span class="disc" aria-hidden="true"></span> ווקס תקליטים</div>
+          <p class="about">ייצור תקליטים בישראל ולייבל עצמאי. הופכים מוזיקה לתקליט — מהמאסטר ועד הוויניל שביד.</p>
+        </div>
+        <div>
+          <h4>ניווט</h4>
+          <ul>
+            <li><a href="#why">למה תקליט</a></li>
+            <li><a href="#services">שירותים</a></li>
+            <li><a href="#gallery">גלריה</a></li>
+            <li><a href="#pricing">מחירים</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>עוד</h4>
+          <ul>
+            <li><a href="#gift">גיפט קארד</a></li>
+            <li><a href="#label">הלייבל</a></li>
+            <li><a href="#contact">התחילו פרויקט</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>יצירת קשר</h4>
+          <ul>
+            <li><a href="https://wa.me/972501234567" target="_blank" rel="noopener">WhatsApp</a></li>
+            <li><a href="mailto:hello@vox-vinyl.co.il">hello@vox-vinyl.co.il</a></li>
+            <li><a href="tel:+972501234567">050-123-4567</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 2026 ווקס תקליטים · כל הזכויות שמורות.</span>
+        <span>נבנה באהבה למוזיקה בישראל 🎵</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp -->
+  <a href="https://wa.me/972501234567" class="fab-wa" target="_blank" rel="noopener" aria-label="דברו איתנו ב-WhatsApp">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm5.8 14.05c-.24.68-1.42 1.32-1.95 1.36-.5.05-1.14.07-1.84-.11-.42-.13-.97-.31-1.66-.61-2.92-1.26-4.83-4.2-4.98-4.39-.15-.2-1.19-1.58-1.19-3.01s.75-2.14 1.02-2.43c.27-.29.58-.36.78-.36.19 0 .39 0 .56.01.18.01.42-.07.66.5.24.58.83 2.01.9 2.16.07.15.12.32.02.51-.09.19-.14.31-.28.48-.14.17-.29.37-.42.5-.14.14-.28.29-.12.57.16.29.71 1.17 1.53 1.9 1.05.94 1.94 1.23 2.22 1.37.28.14.44.12.6-.07.17-.19.69-.8.87-1.08.18-.29.36-.24.61-.14.25.09 1.58.75 1.85.88.27.14.45.2.52.32.07.12.07.68-.17 1.36z"/></svg>
+  </a>
+
+  <script>
+    // Header background on scroll
+    var header = document.getElementById('site-header');
+    var onScroll = function () {
+      if (window.scrollY > 24) header.classList.add('scrolled');
+      else header.classList.remove('scrolled');
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // Graceful fallback: if any photo fails to load, reveal the themed panel
+    // behind it instead of a broken-image icon.
+    Array.prototype.forEach.call(document.images, function (img) {
+      img.addEventListener('error', function () { img.classList.add('img-failed'); });
+    });
+  </script>
+
+</body>
+</html>
