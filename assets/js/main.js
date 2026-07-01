@@ -170,8 +170,9 @@
       var phone = (form.querySelector('#phone') || {}).value || '';
       var type = form.querySelector('#projectType');
       var typeTxt = type ? (type.options[type.selectedIndex] || {}).text || '' : '';
+      var qty = (form.querySelector('#quantity') || {}).value || '';
       var msg = (form.querySelector('#message') || {}).value || '';
-      var text = 'שלום, אני ' + name + '.\nסוג פרויקט: ' + typeTxt + '\nטלפון: ' + phone + '\n' + msg;
+      var text = 'שלום, אני ' + name + '.\nסוג פרויקט: ' + typeTxt + (qty ? '\nכמות: ' + qty : '') + '\nטלפון: ' + phone + '\n' + msg;
       var success = form.querySelector('.form-success');
       if (success) success.classList.add('show');
       window.open(WA + '?text=' + encodeURIComponent(text), '_blank');
