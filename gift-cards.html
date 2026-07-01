@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>כרטיס מתנה | תקליט ויניל בהתאמה אישית</title>
+  <meta name="description" content="כרטיס מתנה פרימיום לתקליט ויניל 12 אינץ' בהתאמה אישית — המתנה המושלמת למוזיקאי, DJ או חובב מוזיקה." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Frank+Ruhl+Libre:wght@500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0e0e10;
+      --bg-2: #16161a;
+      --panel: #1c1c21;
+      --panel-2: #23232a;
+      --ink: #f4f1ea;
+      --muted: #a9a49b;
+      --gold: #d4af37;
+      --gold-soft: #e8cf7e;
+      --line: rgba(212, 175, 55, 0.22);
+      --radius: 18px;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+      --maxw: 1180px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Heebo', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3 { font-family: 'Frank Ruhl Libre', 'Heebo', serif; line-height: 1.2; }
+
+    a { color: inherit; text-decoration: none; }
+
+    .wrap { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 0.82rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--gold-soft); font-weight: 500;
+    }
+    .eyebrow::before { content: ""; width: 34px; height: 1px; background: var(--gold); opacity: 0.7; }
+
+    /* ---------- Header ---------- */
+    header {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(14, 14, 16, 0.82);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .nav { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 1.15rem; letter-spacing: 0.02em; }
+    .brand .disc {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: radial-gradient(circle at 50% 50%, #2a2a2f 0 18%, #0d0d0f 19% 21%, #202024 22% 46%, #0d0d0f 47% 49%, #202024 50% 100%);
+      border: 1px solid var(--line);
+    }
+    .brand b { color: var(--gold); }
+    .nav-links { display: flex; gap: 28px; font-size: 0.95rem; color: var(--muted); }
+    .nav-links a { transition: color 0.2s; }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-cta {
+      padding: 10px 22px; border-radius: 999px; font-weight: 600; font-size: 0.9rem;
+      background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+      color: #16130a; box-shadow: 0 8px 20px rgba(212, 175, 55, 0.28);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(212, 175, 55, 0.38); }
+
+    /* ---------- Hero ---------- */
+    .hero { position: relative; padding: 96px 0 88px; overflow: hidden; }
+    .hero::before {
+      content: ""; position: absolute; inset: 0;
+      background:
+        radial-gradient(720px 420px at 82% 8%, rgba(212, 175, 55, 0.16), transparent 60%),
+        radial-gradient(620px 520px at 6% 92%, rgba(120, 90, 200, 0.10), transparent 60%);
+      pointer-events: none;
+    }
+    .hero-grid { position: relative; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center; }
+    .hero h1 { font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 900; margin: 18px 0 20px; }
+    .hero h1 span { color: var(--gold); display: block; }
+    .hero p.lead { font-size: 1.18rem; color: var(--muted); max-width: 30em; margin-bottom: 32px; }
+    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 15px 30px; border-radius: 999px; font-weight: 600; font-size: 1rem; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), var(--gold-soft)); color: #16130a;
+      box-shadow: 0 12px 30px rgba(212, 175, 55, 0.30);
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 18px 38px rgba(212, 175, 55, 0.42); }
+    .btn-ghost { border: 1px solid var(--line); color: var(--ink); background: rgba(255,255,255,0.02); }
+    .btn-ghost:hover { border-color: var(--gold); transform: translateY(-3px); }
+
+    .hero-visual { position: relative; }
+    .hero-photo {
+      position: relative; border-radius: 24px; overflow: hidden;
+      box-shadow: var(--shadow); border: 1px solid rgba(255, 255, 255, 0.06);
+      aspect-ratio: 4 / 5;
+      background: linear-gradient(145deg, #26262c, #131316);
+    }
+    .hero-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .hero-photo::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 40%, rgba(14,14,16,0.55));
+    }
+    .spin-disc {
+      position: absolute; width: 190px; height: 190px; border-radius: 50%; bottom: -42px; inset-inline-start: -42px;
+      background:
+        radial-gradient(circle at 50% 50%,
+          #c9a24a 0 12%, #0c0c0e 13% 15%,
+          #1b1b1f 16% 44%, #0c0c0e 45% 47%,
+          #1b1b1f 48% 74%, #0c0c0e 75% 77%, #1b1b1f 78% 100%);
+      border: 4px solid #0c0c0e; box-shadow: var(--shadow);
+      animation: spin 9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .badge-float {
+      position: absolute; top: 22px; inset-inline-end: 22px;
+      background: rgba(14,14,16,0.72); backdrop-filter: blur(8px);
+      border: 1px solid var(--line); border-radius: 14px; padding: 12px 16px;
+      font-size: 0.85rem; color: var(--gold-soft); font-weight: 600;
+    }
+
+    /* ---------- Section base ---------- */
+    section { position: relative; }
+    .section-pad { padding: 84px 0; }
+    .section-head { text-align: center; max-width: 42em; margin: 0 auto 54px; }
+    .section-head h2 { font-size: clamp(1.9rem, 3.6vw, 2.8rem); font-weight: 900; margin: 16px 0 14px; }
+    .section-head p { color: var(--muted); font-size: 1.1rem; }
+    .alt { background: var(--bg-2); }
+
+    /* ---------- Product / specs ---------- */
+    .product-grid { display: grid; grid-template-columns: 0.92fr 1.08fr; gap: 56px; align-items: center; }
+    .product-photo {
+      border-radius: 22px; overflow: hidden; box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,0.06); aspect-ratio: 1 / 1;
+      background: linear-gradient(145deg, #26262c, #131316);
+    }
+    .product-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .spec-list { list-style: none; display: grid; gap: 14px; }
+    .spec {
+      display: flex; gap: 16px; align-items: flex-start;
+      background: var(--panel); border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 14px; padding: 16px 18px; transition: border-color 0.2s, transform 0.2s;
+    }
+    .spec:hover { border-color: var(--line); transform: translateX(-4px); }
+    .spec .ic {
+      flex: 0 0 42px; height: 42px; border-radius: 11px; display: grid; place-items: center;
+      background: rgba(212,175,55,0.10); color: var(--gold); font-size: 1.15rem;
+      border: 1px solid var(--line);
+    }
+    .spec .txt strong { display: block; font-size: 1.02rem; font-weight: 700; }
+    .spec .txt em { font-style: normal; color: var(--muted); font-size: 0.9rem; }
+
+    /* ---------- Feature cards (vinyl options) ---------- */
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .card {
+      background: var(--panel); border: 1px solid rgba(255,255,255,0.05);
+      border-radius: var(--radius); overflow: hidden; transition: transform 0.25s, border-color 0.25s;
+    }
+    .card:hover { transform: translateY(-6px); border-color: var(--line); }
+    .card-media { aspect-ratio: 16 / 11; background: linear-gradient(145deg, #26262c, #131316); overflow: hidden; }
+    .card-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .card-body { padding: 20px 22px 24px; }
+    .card-body h3 { font-size: 1.2rem; margin-bottom: 8px; }
+    .card-body p { color: var(--muted); font-size: 0.95rem; }
+    .chip { display: inline-block; font-size: 0.78rem; color: var(--gold-soft); border: 1px solid var(--line); border-radius: 999px; padding: 3px 12px; margin-bottom: 12px; }
+
+    /* ---------- Gift card ---------- */
+    .gift-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+    .giftcard-3d {
+      position: relative; border-radius: 20px; padding: 34px 32px; min-height: 300px;
+      background:
+        radial-gradient(120% 140% at 100% 0%, rgba(212,175,55,0.28), transparent 55%),
+        linear-gradient(150deg, #202026, #101012);
+      border: 1px solid var(--line); box-shadow: var(--shadow);
+      display: flex; flex-direction: column; justify-content: space-between;
+      transform: rotate(-2deg); transition: transform 0.35s;
+    }
+    .giftcard-3d:hover { transform: rotate(0deg) scale(1.02); }
+    .giftcard-3d .gc-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .gc-disc {
+      width: 68px; height: 68px; border-radius: 50%;
+      background: radial-gradient(circle at 50% 50%, #d4af37 0 14%, #0c0c0e 15% 17%, #1b1b1f 18% 100%);
+      border: 3px solid #0c0c0e;
+    }
+    .giftcard-3d h3 { font-size: 1.7rem; }
+    .giftcard-3d .gc-label { color: var(--gold-soft); letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.78rem; }
+    .gc-code {
+      font-family: 'Heebo', monospace; letter-spacing: 0.28em; font-size: 1.15rem; font-weight: 700;
+      color: var(--ink); direction: ltr; text-align: left;
+    }
+    .gc-foot { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 0.85rem; }
+
+    .gift-features { list-style: none; display: grid; gap: 16px; }
+    .gift-features li { display: flex; gap: 14px; align-items: flex-start; }
+    .gift-features .tick {
+      flex: 0 0 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+      background: linear-gradient(135deg, var(--gold), var(--gold-soft)); color: #16130a; font-weight: 800; font-size: 0.85rem;
+    }
+    .gift-features strong { display: block; }
+    .gift-features span { color: var(--muted); font-size: 0.92rem; }
+
+    .tagline {
+      margin-top: 30px; padding: 20px 24px; border-radius: 14px;
+      background: rgba(212,175,55,0.08); border: 1px solid var(--line);
+      font-size: 1.15rem; font-weight: 600; color: var(--gold-soft); text-align: center;
+    }
+
+    /* ---------- CTA banner ---------- */
+    .cta {
+      text-align: center; padding: 72px 0;
+      background:
+        radial-gradient(700px 300px at 50% 0%, rgba(212,175,55,0.14), transparent 60%),
+        var(--bg-2);
+    }
+    .cta h2 { font-size: clamp(1.8rem, 3.4vw, 2.6rem); margin-bottom: 14px; }
+    .cta p { color: var(--muted); max-width: 34em; margin: 0 auto 28px; font-size: 1.08rem; }
+
+    /* ---------- Footer ---------- */
+    footer { border-top: 1px solid rgba(255,255,255,0.06); padding: 40px 0; color: var(--muted); font-size: 0.9rem; }
+    .foot-grid { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .hero-grid, .product-grid, .gift-grid { grid-template-columns: 1fr; gap: 40px; }
+      .cards { grid-template-columns: 1fr; }
+      .hero { padding: 64px 0; }
+      .section-pad { padding: 60px 0; }
+    }
+    @media (max-width: 520px) {
+      .hero-actions { flex-direction: column; }
+      .btn { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#top"><span class="disc" aria-hidden="true"></span> ויניל <b>סטודיו</b></a>
+      <nav class="nav-links">
+        <a href="#product">התקליט</a>
+        <a href="#options">אפשרויות</a>
+        <a href="#giftcard">כרטיס מתנה</a>
+      </nav>
+      <a class="nav-cta" href="#giftcard">רכשו כרטיס מתנה</a>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">כרטיס מתנה · Gift Card</span>
+        <h1>מתנה שמנגנת לנצח<span>תקליט ויניל בהתאמה אישית</span></h1>
+        <p class="lead">העניקו חוויה שאי אפשר לשכוח: השיר או האלבום האהוב, חרוט על תקליט ויניל אמיתי של 12 אינץ' — עם עטיפה ותוויות מרכז מעוצבות אישית.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#giftcard">בחרו כרטיס מתנה →</a>
+          <a class="btn btn-ghost" href="#product">איך זה עובד</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-photo">
+          <img
+            src="https://images.unsplash.com/photo-1483412033650-1015ddeb83d1?auto=format&fit=crop&w=1000&q=80"
+            alt="תקליטי ויניל בהתאמה אישית"
+            loading="eager"
+            onerror="this.style.display='none';this.parentElement.classList.add('img-fallback');" />
+          <span class="badge-float">12&Prime; · 33⅓ RPM</span>
+        </div>
+        <div class="spin-disc" aria-hidden="true"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Product + specs -->
+  <section class="section-pad" id="product">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Custom Vinyl Record</span>
+        <h2>תקליט ויניל בהתאמה אישית</h2>
+        <p>כל הפרטים שהופכים את המתנה למושלמת — מהפורמט ועד לתוויות המרכז.</p>
+      </div>
+
+      <div class="product-grid">
+        <div class="product-photo">
+          <img
+            src="https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=900&q=80"
+            alt="תקליט ויניל 12 אינץ' על פטיפון"
+            loading="lazy"
+            onerror="this.style.display='none';this.parentElement.classList.add('img-fallback');" />
+        </div>
+
+        <ul class="spec-list">
+          <li class="spec">
+            <span class="ic" aria-hidden="true">◉</span>
+            <span class="txt"><strong>ויניל 12 אינץ' מותאם · Custom 12 inch vinyl</strong><em>תקליט בגודל מלא באיכות אולפן</em></span>
+          </li>
+          <li class="spec">
+            <span class="ic" aria-hidden="true">♫</span>
+            <span class="txt"><strong>שיר אחד או אלבום שלם · One song or one album</strong><em>אתם בוחרים מה נחרט בפנים</em></span>
+          </li>
+          <li class="spec">
+            <span class="ic" aria-hidden="true">⏱</span>
+            <span class="txt"><strong>עד 30 דקות בסך הכל · Up to 30 minutes total</strong><em>מספיק לאלבום EP מלא</em></span>
+          </li>
+          <li class="spec">
+            <span class="ic" aria-hidden="true">↔</span>
+            <span class="txt"><strong>15 דקות לכל צד · 15 minutes per side</strong><em>צד A וצד B, בדיוק כמו פעם</em></span>
+          </li>
+          <li class="spec">
+            <span class="ic" aria-hidden="true">✎</span>
+            <span class="txt"><strong>עטיפה מותאמת אישית · Custom sleeve</strong><em>תמונה, כיתוב והקדשה משלכם</em></span>
+          </li>
+          <li class="spec">
+            <span class="ic" aria-hidden="true">◎</span>
+            <span class="txt"><strong>תוויות מרכז מותאמות · Custom center labels</strong><em>עיצוב ייחודי בלב התקליט</em></span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vinyl color / options -->
+  <section class="section-pad alt" id="options">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Black / white / colored vinyl</span>
+        <h2>ויניל שחור, לבן או צבעוני</h2>
+        <p>בחרו את הגוון שמספר את הסיפור שלכם — מקלאסי ועד נועז.</p>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <div class="card-media">
+            <img src="https://images.unsplash.com/photo-1495639225769-f9d15fa900e5?auto=format&fit=crop&w=800&q=80"
+                 alt="ויניל שחור קלאסי" loading="lazy"
+                 onerror="this.style.display='none';this.parentElement.parentElement.querySelector('.card-media').classList.add('img-fallback');" />
+          </div>
+          <div class="card-body">
+            <span class="chip">Black vinyl</span>
+            <h3>ויניל שחור</h3>
+            <p>הקלאסיקה הנצחית — צליל חם ומראה אלגנטי שלא יוצא מהאופנה.</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-media">
+            <img src="https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=800&q=80"
+                 alt="ויניל לבן" loading="lazy"
+                 onerror="this.style.display='none';this.parentElement.classList.add('img-fallback');" />
+          </div>
+          <div class="card-body">
+            <span class="chip">White vinyl</span>
+            <h3>ויניל לבן</h3>
+            <p>נקי, מודרני ומינימליסטי — הצהרת עיצוב שקטה ומרשימה.</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-media">
+            <img src="https://images.unsplash.com/photo-1594623930572-300a3011d9ae?auto=format&fit=crop&w=800&q=80"
+                 alt="ויניל צבעוני" loading="lazy"
+                 onerror="this.style.display='none';this.parentElement.classList.add('img-fallback');" />
+          </div>
+          <div class="card-body">
+            <span class="chip">Colored vinyl</span>
+            <h3>ויניל צבעוני</h3>
+            <p>מגוון גוונים חיים ואפקטים מיוחדים שהופכים כל תקליט ליצירת אמנות.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gift card -->
+  <section class="section-pad" id="giftcard">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Premium Gift Card</span>
+        <h2>כרטיס מתנה פרימיום</h2>
+        <p>תנו לאהובים לבחור בעצמם את השיר, הצבע והעיצוב — אתם רק נותנים את החוויה.</p>
+      </div>
+
+      <div class="gift-grid">
+        <!-- Visual card mockup -->
+        <div class="giftcard-3d">
+          <div class="gc-top">
+            <div>
+              <div class="gc-label">Premium Gift Card</div>
+              <h3>ויניל סטודיו</h3>
+            </div>
+            <span class="gc-disc" aria-hidden="true"></span>
+          </div>
+          <div>
+            <div class="gc-label" style="margin-bottom:6px;">Gift code · קוד מתנה</div>
+            <div class="gc-code">VINYL-2026-GIFT</div>
+          </div>
+          <div class="gc-foot">
+            <span>תקליט ויניל בהתאמה אישית</span>
+            <span>12&Prime;</span>
+          </div>
+        </div>
+
+        <!-- Features -->
+        <div>
+          <ul class="gift-features">
+            <li>
+              <span class="tick" aria-hidden="true">✓</span>
+              <span><strong>כרטיס מתנה דיגיטלי · Digital gift card</strong><span>נשלח מיידית במייל, מוכן להענקה תוך שניות.</span></span>
+            </li>
+            <li>
+              <span class="tick" aria-hidden="true">✓</span>
+              <span><strong>כרטיס מתנה פיזי · Physical gift card</strong><span>כרטיס מודפס ואיכותי שמגיע עד הבית באריזת מתנה.</span></span>
+            </li>
+            <li>
+              <span class="tick" aria-hidden="true">✓</span>
+              <span><strong>הודעה אישית · Personal message</strong><span>הוסיפו ברכה או הקדשה משלכם לכל כרטיס.</span></span>
+            </li>
+            <li>
+              <span class="tick" aria-hidden="true">✓</span>
+              <span><strong>קוד מתנה · Gift code</strong><span>קוד ייחודי למימוש קל ומהיר באתר.</span></span>
+            </li>
+          </ul>
+
+          <div class="tagline">המתנה המושלמת למוזיקאי, DJ או חובב מוזיקה 🎁</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="wrap">
+      <span class="eyebrow" style="justify-content:center;">מוכנים להפתיע?</span>
+      <h2>העניקו את החוויה שמתנגנת לנצח</h2>
+      <p>כרטיס מתנה דיגיטלי או פיזי לתקליט ויניל בהתאמה אישית — מתנה שתיזכר הרבה אחרי שהמוזיקה תיגמר.</p>
+      <a class="btn btn-primary" href="#giftcard">רכשו כרטיס מתנה עכשיו →</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="wrap foot-grid">
+      <a class="brand" href="#top"><span class="disc" aria-hidden="true"></span> ויניל <b>סטודיו</b></a>
+      <span>© 2026 ויניל סטודיו · כל הזכויות שמורות</span>
+    </div>
+  </footer>
+
+  <style>
+    /* Graceful image fallback: textured vinyl gradient if a photo fails to load */
+    .img-fallback {
+      background:
+        radial-gradient(circle at 50% 50%, rgba(212,175,55,0.20) 0 8%, transparent 9%),
+        repeating-radial-gradient(circle at 50% 50%, #1b1b1f 0 3px, #121215 3px 6px),
+        linear-gradient(145deg, #26262c, #131316) !important;
+    }
+    .img-fallback::before {
+      content: "🎵"; position: absolute; inset: 0; display: grid; place-items: center;
+      font-size: 2rem; opacity: 0.5;
+    }
+    .card-media.img-fallback, .product-photo.img-fallback, .hero-photo.img-fallback { position: relative; }
+  </style>
+
+</body>
+</html>
