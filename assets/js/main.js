@@ -38,7 +38,10 @@
       window.scrollTo({ top: 0, behavior: 'auto' });
       // re-trigger reveals on the newly shown page
       requestAnimationFrame(function () { revealNow(target); });
-      if (push !== false) history.replaceState(null, '', '#' + id);
+      if (push !== false) {
+        try { history.replaceState(null, '', '#' + id); }
+        catch (_) { location.hash = id; }
+      }
       closeMobile();
     }
 
