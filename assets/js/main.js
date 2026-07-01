@@ -4,7 +4,7 @@
 (function () {
   'use strict';
 
-  var WA = 'https://wa.me/972523610464';
+  var WA = 'https://wa.me/972535315340';
 
   document.addEventListener('DOMContentLoaded', function () {
     initRouter();

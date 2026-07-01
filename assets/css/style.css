@@ -219,6 +219,16 @@ main { padding-top: 76px; }
 .svc-features { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .svc-features span { font-size: 0.75rem; font-weight: 600; color: var(--gold); background: var(--gold-soft); padding: 5px 12px; border-radius: 50px; }
 
+/* ============================ DETAILED SERVICES GRID ============================ */
+.svc-detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.svc-detail-card { background: var(--card); border-radius: var(--radius-lg); padding: 30px 28px; border: 1px solid rgba(255,255,255,0.05); border-top: 3px solid var(--gold); }
+.svc-detail-card h3 { font-size: 1.15rem; font-weight: 800; color: #fff; margin-bottom: 14px; }
+.svc-detail-card ul { display: flex; flex-direction: column; gap: 8px; }
+.svc-detail-card li { font-size: 0.9rem; color: var(--text-muted); padding-right: 18px; position: relative; line-height: 1.6; }
+.svc-detail-card li::before { content: '✦'; position: absolute; right: 0; color: var(--gold); font-size: 0.65rem; top: 4px; }
+@media (max-width: 1024px) { .svc-detail-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .svc-detail-grid { grid-template-columns: 1fr; } }
+
 /* ============================ WHY / FEATURES ============================ */
 .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
 .feature-card { background: var(--card); border-radius: var(--radius-lg); padding: 38px 30px; border: 1px solid rgba(255,255,255,0.05); border-top: 3px solid var(--gold); transition: transform var(--transition), box-shadow var(--transition); }
@@ -264,6 +274,12 @@ main { padding-top: 76px; }
 .gallery-zoom { position: absolute; top: 50%; left: 50%; width: 52px; height: 52px; border-radius: 50%; background: var(--gold); display: grid; place-items: center; transform: translate(-50%,-50%) scale(0.5); opacity: 0; transition: all var(--transition); }
 .gallery-item:hover .gallery-zoom { opacity: 1; transform: translate(-50%,-50%) scale(1); }
 .gallery-zoom svg { width: 22px; height: 22px; stroke: var(--black); fill: none; stroke-width: 2.5; }
+
+/* 3×3 Gallery grid */
+.gallery-3x3 { grid-template-columns: repeat(3, 1fr); }
+.gallery-3x3 .gallery-item { aspect-ratio: 1; }
+@media (max-width: 768px) { .gallery-3x3 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .gallery-3x3 { grid-template-columns: repeat(2, 1fr); } }
 
 /* Lightbox */
 .lightbox { position: fixed; inset: 0; z-index: 3000; background: rgba(0,0,0,0.96); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity var(--transition), visibility var(--transition); }
