@@ -153,9 +153,18 @@ main { padding-top: 76px; }
 .page-hero { position: relative; padding: 92px 0 68px; text-align: center; overflow: hidden; background: var(--black-2); border-bottom: 1px solid var(--gold-line); }
 .page-hero::after { content: ''; position: absolute; inset: 0; background: radial-gradient(70% 120% at 50% 0%, rgba(201,168,76,0.08), transparent 60%); }
 .page-hero .container { position: relative; z-index: 2; }
-.page-hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 900; color: #fff; letter-spacing: -0.5px; margin-bottom: 14px; }
-.page-hero h1 .hl { color: var(--gold); }
-.page-hero p { font-size: 1.1rem; color: var(--text-muted); max-width: 620px; margin: 0 auto; }
+.page-hero h1, .page-head h1 { font-size: clamp(2.6rem, 6.4vw, 4.2rem); font-weight: 900; color: #fff; letter-spacing: -0.5px; margin-bottom: 16px; line-height: 1.07; }
+.page-hero h1 .hl, .page-head h1 .hl { color: var(--gold); }
+.page-hero p, .page-head p { font-size: 1.16rem; color: var(--text-muted); max-width: 720px; margin: 0 auto; }
+/* Compact page header (no banner) — moved up, just title + subtitle */
+.page-head { text-align: center; padding: 124px 0 48px; background: var(--black-2); border-bottom: 1px solid var(--gold-line); }
+/* Video banner header — subtle, strong dark overlay so it doesn't distract */
+.page-hero-video { padding: 152px 0 72px; background: var(--black); }
+.page-hero-video::after { display: none; }
+.page-hero-media { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+.page-hero-media video { width: 100%; height: 100%; object-fit: cover; }
+.page-hero-overlay { position: absolute; inset: 0; z-index: 1; background: linear-gradient(rgba(8,8,10,0.80), rgba(8,8,10,0.90)); }
+.page-hero-video p { color: var(--text-light); opacity: 0.92; }
 .breadcrumb { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 18px; }
 .breadcrumb a { color: var(--gold); cursor: pointer; }
 
@@ -291,6 +300,29 @@ main { padding-top: 76px; }
 .gift-card p { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 20px; }
 .gift-banner { background: linear-gradient(120deg, #1a1710, #0f0e0b); border: 1px solid var(--gold-line); border-radius: var(--radius-xl); padding: 48px; text-align: center; margin-bottom: 48px; position: relative; overflow: hidden; }
 .gift-banner::after { content: '🎁'; position: absolute; font-size: 12rem; opacity: 0.05; left: -20px; top: -30px; }
+/* Gift cards with images (2-up) + education/discount band */
+.gift-grid-2 { grid-template-columns: repeat(2, 1fr); max-width: 900px; margin: 0 auto; }
+.gift-grid-2 .gift-card { padding: 0; overflow: hidden; }
+.gift-media { position: relative; aspect-ratio: 16/10; overflow: hidden; }
+.gift-media img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+.gift-card:hover .gift-media img { transform: scale(1.06); }
+.gift-media::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(20,19,15,0.94), transparent 55%); }
+.gift-price { position: absolute; z-index: 2; bottom: 14px; inset-inline-start: 22px; font-size: 1.8rem; font-weight: 900; color: var(--gold); text-shadow: 0 2px 12px rgba(0,0,0,0.7); }
+.gift-grid-2 .gift-inner { padding: 24px 28px 30px; }
+.gift-edu { display: grid; grid-template-columns: 1fr 1fr; margin-top: 40px; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--gold-line); background: linear-gradient(140deg, #1a1710, #0f0e0b); }
+.gift-edu-media { position: relative; min-height: 260px; }
+.gift-edu-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.gift-edu-media::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to left, rgba(20,19,15,0.85), transparent 60%); }
+.gift-edu-body { padding: 44px 46px; display: flex; flex-direction: column; justify-content: center; }
+.gift-edu-body h3 { font-size: 1.6rem; font-weight: 800; color: #fff; margin: 6px 0 12px; }
+.gift-edu-body p { color: var(--text-muted); margin-bottom: 24px; line-height: 1.7; }
+.gift-edu-body .btn { align-self: flex-start; }
+/* About page: keep the portrait from getting oversized */
+#page-about .about-media { max-width: 470px; margin-inline: auto; }
+@media (max-width: 768px) {
+  .gift-grid-2, .gift-edu { grid-template-columns: 1fr; }
+  .gift-edu-media { min-height: 200px; }
+}
 
 /* ============================ FAQ / BEFORE YOU CALL ============================ */
 .faq-list { max-width: 820px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
