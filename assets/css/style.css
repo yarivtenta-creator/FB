@@ -157,11 +157,16 @@ main { padding-top: 76px; }
 .page-hero h1 .hl, .page-head h1 .hl { color: var(--gold); }
 .page-hero p, .page-head p { font-size: 1.16rem; color: var(--text-muted); max-width: 720px; margin: 0 auto; }
 /* Compact page header (no banner) — moved up, just title + subtitle */
-.page-head { text-align: center; padding: 124px 0 48px; background: var(--black-2); border-bottom: 1px solid var(--gold-line); }
-/* First content section on pages with no header — clear the fixed navbar */
-.section.page-first { padding-top: 134px; }
+/* Uniform page header — same top height on every page, clean (no band) */
+.page-head { text-align: center; padding: 120px 0 0; }
+.page-head + .section { padding-top: 46px; }
+/* First content section on pages with no title header — same top height */
+.section.page-first { padding-top: 120px; }
+/* Gift intro sits in a padded box — trim section top so its heading aligns */
+#page-gift .section.page-first { padding-top: 74px; }
 /* Video banner header — subtle, strong dark overlay so it doesn't distract */
-.page-hero-video { padding: 152px 0 72px; background: var(--black); }
+.page-hero-video { padding: 120px 0 46px; background: var(--black); }
+.page-hero-video + .section { padding-top: 60px; }
 .page-hero-video::after { display: none; }
 .page-hero-media { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
 .page-hero-media video { width: 100%; height: 100%; object-fit: cover; }
