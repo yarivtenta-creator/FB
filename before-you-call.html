@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="לפני שמתקשרים ל-The Vinyl Lab Israel — צ'ק-ליסט קצר של הפרטים שכדאי להכין כדי שנוכל לתת הצעת מחיר מדויקת ולוח זמנים אמין: פורמט, כמות, אורך מוזיקה, מאסטרינג, עיצוב עטיפה, זכויות ואישורים ועוד.">
+  <title>לפני שמתקשרים | The Vinyl Lab Israel</title>
+  <link rel="icon" href="assets/images/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    /* ---- Logo sizing (logo asset is square; keep it compact) ---- */
+    .nav-logo img { height: 44px; width: auto; }
+    .footer-brand .nav-logo img { height: 52px; width: auto; margin-bottom: 12px; }
+
+    /* ---- Page hero (matches site page-hero pattern) ---- */
+    .page-hero {
+      position: relative;
+      min-height: 46vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background-size: cover;
+      background-position: center;
+    }
+    .page-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(10,10,10,0.72) 0%, rgba(10,10,10,0.86) 100%);
+    }
+    .page-hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 760px;
+    }
+    .page-hero-content h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 900;
+      color: var(--gold);
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .page-hero-subtitle {
+      font-size: 1.15rem;
+      color: var(--text-light);
+      line-height: 1.7;
+      margin: 0 auto;
+      max-width: 640px;
+    }
+
+    /* ---- Intro strip ---- */
+    .bec-intro {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto 3.5rem;
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      line-height: 1.85;
+    }
+
+    /* ---- Checklist grid ---- */
+    .bec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.75rem;
+    }
+    .bec-card {
+      background: var(--dark-gray);
+      border: 1px solid rgba(201, 168, 76, 0.18);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+    }
+    .bec-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(201, 168, 76, 0.5);
+      box-shadow: var(--shadow);
+    }
+    .bec-card-img {
+      position: relative;
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+    }
+    .bec-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .bec-card:hover .bec-card-img img { transform: scale(1.05); }
+    .bec-num {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: var(--black);
+      font-weight: 800;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+    .bec-card-body { padding: 1.5rem; flex: 1; }
+    .bec-card-body h3 {
+      color: var(--gold);
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+    .bec-card-body p {
+      color: var(--text-muted);
+      line-height: 1.75;
+      margin-bottom: 1rem;
+    }
+    .bec-list { list-style: none; margin: 0; padding: 0; }
+    .bec-list li {
+      position: relative;
+      padding-right: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-light);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .bec-list li::before {
+      content: "✓";
+      position: absolute;
+      right: 0;
+      top: 0;
+      color: var(--gold);
+      font-weight: 700;
+    }
+    .bec-formats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .bec-tag {
+      border: 1px solid rgba(201, 168, 76, 0.45);
+      color: var(--gold);
+      border-radius: 999px;
+      padding: 0.3rem 0.9rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* ---- Legal box ---- */
+    .legal-box {
+      border: 2px solid var(--gold);
+      border-radius: 10px;
+      padding: 2rem;
+      background: rgba(201, 168, 76, 0.06);
+      margin: 3.5rem auto 0;
+      max-width: 900px;
+    }
+    .legal-box h3 { color: var(--gold); margin-bottom: 1rem; font-size: 1.2rem; }
+    .legal-box p { color: var(--text-light); line-height: 1.85; margin: 0; }
+
+    /* ---- Contact CTA ---- */
+    .bec-cta {
+      text-align: center;
+      background: linear-gradient(135deg, #141414 0%, #1f1a10 100%);
+      border-top: 1px solid rgba(201, 168, 76, 0.15);
+      border-bottom: 1px solid rgba(201, 168, 76, 0.15);
+    }
+    .bec-cta h2 { color: var(--gold); font-size: 2rem; font-weight: 800; margin-bottom: 0.75rem; }
+    .bec-cta p { color: var(--text-muted); max-width: 560px; margin: 0 auto 2rem; line-height: 1.8; }
+    .bec-cta-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
+    }
+    .bec-phone {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--gold);
+      direction: ltr;
+    }
+    @media (max-width: 600px) {
+      .bec-card-body { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="assets/images/logo-header.png" alt="The Vinyl Lab Israel" onerror="this.style.display='none'">
+      <span class="nav-logo-text">The Vinyl Lab Israel</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html#about">מי אנחנו</a>
+      <a href="index.html#services">שירותים</a>
+      <a href="index.html#gallery">גלריה</a>
+      <a href="pages/pricing.html">מחירים</a>
+      <a href="before-you-call.html" class="active">לפני שמתקשרים</a>
+      <a href="pages/contact.html">צור קשר</a>
+    </nav>
+    <button class="hamburger" id="hamburger" aria-label="תפריט">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="page-hero" style="background-image: url('assets/images/hero-main-vinyl-lab.webp');">
+  <div class="page-hero-overlay"></div>
+  <div class="container page-hero-content">
+    <h1>לפני שמתקשרים</h1>
+    <p class="page-hero-subtitle">כמה דקות של הכנה חוסכות ימים של התלבטות. ריכזנו את כל מה שכדאי שיהיה מולכם לפני השיחה — כדי שנוכל לתת לכם הצעת מחיר מדויקת ולוח זמנים אמין כבר בפנייה הראשונה.</p>
+  </div>
+</section>
+
+<!-- CHECKLIST -->
+<section class="section section-dark">
+  <div class="container">
+    <p class="bec-intro">אין צורך שכל הפרטים יהיו סגורים — גם מה שעדיין פתוח עוזר לנו להבין את הפרויקט. עברו על הצ'ק-ליסט וסמנו לעצמכם מה כבר ידוע ומה נשמח לעזור לכם לגבש יחד.</p>
+
+    <div class="bec-grid">
+
+      <!-- 1. פורמט -->
+      <article class="bec-card">
+        <div class="bec-card-img">
+          <span class="bec-num">01</span>
+          <img src="assets/images/vinyl-record-on-turntable.webp" alt="תקליט ויניל על פטיפון" loading="lazy">
+        </div>
+        <div class="bec-card-body">
+          <h3>פורמט</h3>
+          <div class="bec-formats">
+            <span class="bec-tag">ויניל</span>
+            <span class="bec-tag">CD</span>
+            <span class="bec-tag">קסטה</span>
+            <span class="bec-tag">המרות מדיה</span>
+          </div>
+          <p>באיזה פורמט תרצו להוציא את המוזיקה? כל פורמט מגיע עם אפשרויות, זמני ייצור ומחירים שונים.</p>
+          <ul class="bec-list">
+            <li>ויניל — 7", 10" או 12"; שחור או צבעוני</li>
+            <li>CD — רפליקציה או צריבה, אריזה מותאמת</li>
+            <li>קסטה — כולל עיצוב J-card</li>
+            <li>המרות מדיה — דיגיטציה של הקלטות ישנות לוויניל/CD</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 2. כמות -->
+      <article class="bec-card">
+        <div class="bec-card-img">
+          <span class="bec-num">02</span>
+          <img src="assets/images/vinyl-stack.webp" alt="ערימת תקליטי ויניל" loading="lazy">
+        </div>
+        <div class="bec-card-body">
+          <h3>כמות</h3>
+          <p>כמה עותקים אתם צריכים? הכמות משפיעה ישירות על המחיר לעותק ועל בחירת מפעל הלחיצה.</p>
+          <ul class="bec-list">
+            <li>מהדורה אישית / אספנית קטנה או ייצור מסחרי?</li>
+            <li>לוויניל המינימום הרגיל הוא כ-100 עותקים</li>
+            <li>ל-CD ולקסטות יש גמישות רבה יותר בכמויות</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 3. אורך מוזיקה -->
+      <article class="bec-card">
+        <div class="bec-card-img">
+          <span class="bec-num">03</span>
+          <img src="assets/images/black-vinyl-closeup.webp" alt="תקליט ויניל שחור מקרוב" loading="lazy">
+        </div>
+        <div class="bec-card-body">
+          <h3>אורך מוזיקה</h3>
+          <p>מהו האורך הכולל של החומר, וכמה רצועות? האורך קובע את הפורמט ואת מהירות הסיבוב האפשרית בוויניל.</p>
+          <ul class="bec-list">
+            <li>אורך כולל בדקות ומספר הרצועות</li>
+            <li>חלוקה בין צד A לצד B (בוויניל)</li>
+            <li>אורך רב מדי לצד עלול להשפיע על עוצמה ואיכות</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 4. מאסטרינג -->
+      <article class="bec-card">
+        <div class="bec-card-img">
+          <span class="bec-num">04</span>
+          <img src="assets/images/mastering-console.jpeg" alt="קונסולת מאסטרינג בסטודיו" loading="lazy">
+        </div>
+        <div class="bec-card-body">
+          <h3>מאסטרינג</h3>
+          <p>האם החומר כבר עבר מאסטרינג, ובמיוחד מאסטרינג מותאם לוויניל? זה שלב קריטי לאיכות התוצר הסופי.</p>
+          <ul class="bec-list">
+            <li>יש כבר מאסטר, או שתרצו שנבצע מאסטרינג?</li>
+            <li>מאסטרינג לוויניל שונה ממאסטרינג דיגיטלי</li>
+            <li>אנחנו מבצעים מאסטרינג High-End ב-Live Sound Studio</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 5. עיצוב עטיפה -->
+      <article class="bec-card">
+        <div class="bec-card-img">
+          <span class="bec-num">05</span>
+          <img src="assets/images/gatefold-cover-open.webp" alt="עטיפת gatefold פתוחה" loading="lazy">
+        </div>
+        <div class="bec-card-body">
+          <h3>עיצוב עטיפה</h3>
+          <p>יש לכם כבר artwork מוכן, או שתרצו שנעצב עבורכם? נבדוק שהקבצים עומדים בדרישות הייצור.</p>
+          <ul class="bec-list">
+            <li>עיצוב מוכן — נבדוק רזולוציה, פרופיל צבע ו-bleed</li>
+            <li>עיצוב מלא אצלנו — עטיפה, מדבקה, בוקלט ו-J-card</li>
+            <li>סוג האריזה: פשוטה, gatefold, slipcase ועוד</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 6. זכויות ואישורים -->
+      <article class="bec-card">
+        <div class="bec-card-img">
+          <span class="bec-num">06</span>
+          <img src="assets/images/album-booklet.jpeg" alt="בוקלט אלבום מודפס" loading="lazy">
+        </div>
+        <div class="bec-card-body">
+          <h3>זכויות ואישורים</h3>
+          <p>ודאו מראש שיש בידיכם את כל הזכויות הנדרשות לתוכן. זהו תנאי לתחילת הייצור (ראו הצהרה מלאה בהמשך).</p>
+          <ul class="bec-list">
+            <li>האם אתם הבעלים / היוצרים של כל החומר?</li>
+            <li>כיסויים (covers) דורשים רישיון מבעל הזכויות</li>
+            <li>אישורי ACUM / Federation לפי אופי ההפצה</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 7. עטיפה מודפסת או גנרית -->
+      <article class="bec-card">
+        <div class="bec-card-img">
+          <span class="bec-num">07</span>
+          <img src="assets/images/printing-process.jpeg" alt="תהליך הדפסה בסטודיו" loading="lazy">
+        </div>
+        <div class="bec-card-body">
+          <h3>עטיפה מודפסת או גנרית</h3>
+          <p>תרצו עטיפה מודפסת ומעוצבת בהתאמה אישית, או שמעטפה גנרית סטנדרטית מספיקה לכם?</p>
+          <ul class="bec-list">
+            <li>מודפסת — עיצוב והדפסה רחבת-פורמט בסטודיו</li>
+            <li>גנרית — שרוול לבן/שחור סטנדרטי, חסכוני יותר</li>
+            <li>ההחלטה משפיעה על מחיר ועל לוח הזמנים</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 8. לוח זמנים -->
+      <article class="bec-card">
+        <div class="bec-card-img">
+          <span class="bec-num">08</span>
+          <img src="assets/images/customer-project-award.webp" alt="פרויקט לקוח מוגמר" loading="lazy">
+        </div>
+        <div class="bec-card-body">
+          <h3>לוח זמנים</h3>
+          <p>יש תאריך יעד? הופעה, שחרור אלבום או אירוע? כדאי לתכנן מראש — ייצור פיזי לוקח זמן.</p>
+          <ul class="bec-list">
+            <li>ויניל: כ-8–16 שבועות במפעל + זמן הכנה</li>
+            <li>CD: כ-2–4 שבועות · קסטות: כ-3–6 שבועות</li>
+            <li>ציינו דדליין קריטי כבר בשיחה הראשונה</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 9. טלפון / WhatsApp -->
+      <article class="bec-card">
+        <div class="bec-card-img">
+          <span class="bec-num">09</span>
+          <img src="assets/images/finsih4.jpeg" alt="פרויקט ויניל מוגמר של לקוח" loading="lazy">
+        </div>
+        <div class="bec-card-body">
+          <h3>טלפון / WhatsApp</h3>
+          <p>השאירו דרך ליצירת קשר נוחה, ותנו לנו כמה מילים על הפרויקט — כך נחזור אליכם עם תשובות ממוקדות.</p>
+          <ul class="bec-list">
+            <li>מספר טלפון / WhatsApp לחזרה מהירה</li>
+            <li>קישור להאזנה לחומר (אם יש)</li>
+            <li>WhatsApp: <a href="https://wa.me/972523610464" target="_blank" rel="noopener" style="color:var(--gold);">052-361-0464</a></li>
+          </ul>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- LEGAL NOTE -->
+    <div class="legal-box" id="legal">
+      <h3>הצהרת זכויות — חשוב לקרוא</h3>
+      <p>כל הזכויות, הרישיונות והאישורים הנדרשים לייצור, שכפול והפצה של התוכן המוזיקלי הם באחריות המזמין בלבד. The Vinyl Lab Israel רשאית לסרב לייצור חומר שלגביו קיים חשש להפרת זכויות יוצרים או זכויות מבצעים.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT CTA -->
+<section class="section bec-cta">
+  <div class="container">
+    <h2>מוכנים לדבר איתנו?</h2>
+    <p>אספתם את הפרטים? מעולה. גם אם לא הכול סגור — התקשרו או שלחו הודעה, ונתקדם יחד משם.</p>
+    <div class="bec-cta-actions">
+      <a href="tel:+972523610464" class="bec-phone" aria-label="התקשרו אלינו">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.18z"/></svg>
+        052-361-0464
+      </a>
+      <a href="https://wa.me/972523610464" class="btn-whatsapp" target="_blank" rel="noopener">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        דברו איתנו ב-WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/images/logo-header.png" alt="The Vinyl Lab Israel" onerror="this.style.display='none'">
+        <span class="nav-logo-text">The Vinyl Lab Israel</span>
+      </a>
+      <p class="footer-tagline">נולדנו מתוך אהבה למוזיקה ולוויניל</p>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>שירותים</h4>
+        <a href="pages/mastering.html">מאסטרינג</a>
+        <a href="pages/vinyl-production.html">ייצור ויניל</a>
+        <a href="pages/cd-production.html">תקליטורים</a>
+        <a href="pages/cassettes.html">קסטות</a>
+        <a href="pages/design-packaging.html">עיצוב ואריזות</a>
+      </div>
+      <div class="footer-col">
+        <h4>מידע</h4>
+        <a href="pages/pricing.html">מחירים וחבילות</a>
+        <a href="before-you-call.html">לפני שמתקשרים</a>
+        <a href="index.html#about">מי אנחנו</a>
+      </div>
+      <div class="footer-col">
+        <h4>צור קשר</h4>
+        <a href="pages/contact.html">טופס יצירת קשר</a>
+        <a href="https://wa.me/972523610464" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="tel:+972523610464">052-361-0464</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2024 The Vinyl Lab Israel. כל הזכויות שמורות. | <a href="before-you-call.html#legal">הצהרת זכויות</a></p>
+  </div>
+</footer>
+
+<!-- WHATSAPP FLOAT -->
+<a href="https://wa.me/972523610464" class="whatsapp-float" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>
