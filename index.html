@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="The Vinyl Lab Israel — ייצור תקליטים בישראל. הופכים מוזיקה לתקליט: ויניל, CD, קסטות אודיו, מאסטרינג אנלוגי, עיצוב ואריזות.">
+<meta name="theme-color" content="#0a0a0a">
+<title>The Vinyl Lab Israel — ייצור תקליטים בישראל | ויניל · CD · קסטות · מאסטרינג</title>
+<link rel="icon" type="image/png" href="assets/images/favicon.png">
+<link rel="apple-touch-icon" href="assets/images/logo-mark.png">
+<link rel="stylesheet" href="assets/css/style.css">
+<noscript><style>.reveal{opacity:1!important;transform:none!important}.page{display:block!important}</style></noscript>
+</head>
+<body>
+
+<!-- ============ NAVBAR ============ -->
+<header class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a class="nav-logo" data-nav="home" aria-label="The Vinyl Lab Israel — דף הבית">
+      <img class="nav-logo-img" src="assets/images/logo-header.png" alt="The Vinyl Lab Israel · ויניל לאב ישראל" width="1217" height="470">
+    </a>
+    <nav class="nav-links">
+      <a data-nav="home">דף הבית</a>
+      <a data-nav="about">מי אנחנו</a>
+      <a data-nav="services">שירותים</a>
+      <a data-nav="gallery">גלריה</a>
+      <a data-nav="pricing">מחירים</a>
+      <a data-nav="gift">גיפט קארדס</a>
+      <a data-nav="before">לפני שמתקשרים</a>
+      <a data-nav="contact">צור קשר</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-ghost" href="https://wa.me/972523610464" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>
+        דברו איתנו
+      </a>
+    </div>
+    <button class="hamburger" aria-label="תפריט"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<!-- ============ MOBILE MENU ============ -->
+<div class="mobile-menu">
+  <a data-nav="home">דף הבית</a>
+  <a data-nav="about">מי אנחנו</a>
+  <a data-nav="services">שירותים</a>
+  <a data-nav="gallery">גלריה</a>
+  <a data-nav="pricing">מחירים</a>
+  <a data-nav="gift">גיפט קארדס</a>
+  <a data-nav="before">לפני שמתקשרים</a>
+  <a data-nav="contact">צור קשר</a>
+  <a class="btn btn-whatsapp" href="https://wa.me/972523610464" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    WhatsApp
+  </a>
+</div>
+
+<main>
+
+<!-- ==================================================================
+     PAGE: HOME  (built to match "Homepage design" reference)
+     ================================================================== -->
+<div class="page" id="page-home">
+
+  <!-- HERO: turntable video/still, right-aligned headline -->
+  <section class="hero hero-right">
+    <div class="hero-media">
+      <video id="heroVideo" autoplay muted loop playsinline poster="assets/images/Vinyl record on turntable.webp">
+        <source src="assets/video/banner.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <span class="hero-badge">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 13a3 3 0 110-6 3 3 0 010 6z"/></svg>
+        The Vinyl Lab Israel · הפקה פיזית מלאה
+      </span>
+      <h1 class="hero-title">ייצור תקליטים <span class="hl">בישראל</span></h1>
+      <p class="hero-subtitle-lead">הופכים מוזיקה לתקליט.</p>
+      <p class="hero-subtitle">מתקליט אחד אישי ועד ייצור מסחרי בכמויות גדולות – אנחנו מלווים אתכם מהקבצים, המאסטרינג והעיצוב ועד לתקליט מוכן ביד.</p>
+      <div class="hero-buttons">
+        <a class="btn btn-primary" data-nav="contact">התחילו פרויקט
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <a class="btn btn-ghost btn-wa-outline" href="https://wa.me/972523610464" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          דברו איתנו ב-WhatsApp
+        </a>
+      </div>
+    </div>
+    <div class="hero-scroll"><span>גללו למטה</span><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+  </section>
+
+  <!-- VALUE PROPS BAR (6 icons, per reference) -->
+  <section class="valueprops">
+    <div class="valueprops-grid">
+      <div class="vp-item"><div class="vp-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/></svg></div><h4>יוצרים מתקליט אחד</h4><p>גם כמויות קטנות</p></div>
+      <div class="vp-item"><div class="vp-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="6"/><path d="M15 4.5a6 6 0 010 11M20 6a6 6 0 010 9"/></svg></div><h4>כמויות מסחריות</h4><p>מ-100 יחידות</p></div>
+      <div class="vp-item"><div class="vp-icon"><svg viewBox="0 0 24 24"><path d="M2 12h3l2-7 4 14 3-9 2 4h6"/></svg></div><h4>מאסטרינג אנלוגי</h4><p>צליל חם ומדויק</p></div>
+      <div class="vp-item"><div class="vp-icon"><svg viewBox="0 0 24 24"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 21V7M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg></div><h4>עיצוב ואריזות</h4><p>הכל בבית אחד</p></div>
+      <div class="vp-item"><div class="vp-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg></div><h4>CD וקסטות</h4><p>ייצור ושכפול</p></div>
+      <div class="vp-item"><div class="vp-icon"><svg viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg></div><h4>ליווי אישי</h4><p>מההתחלה עד הסוף</p></div>
+    </div>
+  </section>
+
+  <!-- CATEGORY GRID (5 edge-to-edge cards, per reference) -->
+  <section class="cat-section">
+      <div class="cat-grid cat-grid-flush">
+        <div class="cat-card reveal" data-nav="gallery">
+          <img src="assets/images/Finished customer project.jpeg" alt="גלריה — הפרויקטים שלנו">
+          <div class="cat-scrim"></div>
+          <div class="cat-body"><span class="cat-kicker">גלריה</span><h3>הפרויקטים שלנו</h3><span class="btn btn-ghost">לצפייה</span></div>
+        </div>
+        <div class="cat-card reveal reveal-d1" data-nav="services">
+          <img src="assets/images/mastering-console.jpeg" alt="שירותים — כל מה שאתם צריכים">
+          <div class="cat-scrim"></div>
+          <div class="cat-body"><span class="cat-kicker">שירותים</span><h3>כל מה שאתם צריכים</h3><span class="btn btn-ghost">לפרטים</span></div>
+        </div>
+        <div class="cat-card reveal reveal-d2" data-nav="pricing">
+          <img src="assets/images/vinyl-stack.webp" alt="מחירים — פתרונות לכל תקציב">
+          <div class="cat-scrim"></div>
+          <div class="cat-body"><span class="cat-kicker">מחירים</span><h3>פתרונות לכל תקציב</h3><span class="btn btn-ghost">לפרטים</span></div>
+        </div>
+        <div class="cat-card reveal reveal-d3" data-nav="gift">
+          <img src="assets/images/Deluxe packaging.jpeg" alt="גיפט קארדס — מתנה שמנגנת">
+          <div class="cat-scrim"></div>
+          <div class="cat-body"><span class="cat-kicker">גיפט קארדס</span><h3>מתנה שמנגנת</h3><span class="btn btn-ghost">לפרטים</span></div>
+        </div>
+        <div class="cat-card reveal reveal-d4" data-nav="services">
+          <img src="assets/images/WhatsApp Image 2026-06-12 at 11.08.34.jpeg" alt="המרות מדיה — מהאנלוגי לדיגיטלי">
+          <div class="cat-scrim"></div>
+          <div class="cat-body"><span class="cat-kicker">המרות מדיה</span><h3>מהאנלוגי לדיגיטלי</h3><span class="btn btn-ghost">לפרטים</span></div>
+        </div>
+      </div>
+  </section>
+
+  <!-- MARQUEE STRIP -->
+  <div class="strip">
+    <div class="strip-track">
+      <span class="strip-item">ויניל</span><span class="strip-item">מאסטרינג אנלוגי</span><span class="strip-item">CD</span><span class="strip-item">קסטות אודיו</span><span class="strip-item">עיצוב ואריזות</span><span class="strip-item">מהדורות מוגבלות</span><span class="strip-item">אולפן הקלטות</span>
+      <span class="strip-item">ויניל</span><span class="strip-item">מאסטרינג אנלוגי</span><span class="strip-item">CD</span><span class="strip-item">קסטות אודיו</span><span class="strip-item">עיצוב ואריזות</span><span class="strip-item">מהדורות מוגבלות</span><span class="strip-item">אולפן הקלטות</span>
+    </div>
+  </div>
+
+  <!-- WHY VINYL -->
+  <section class="section section-darker">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">למה ויניל</span>
+        <h2 class="section-title">לא עוד קובץ. <span class="hl">יצירה שאפשר להחזיק ביד.</span></h2>
+        <p class="section-subtitle">בעידן הסטרימינג, הפקה פיזית היא הצהרה — היא אומרת שהמוזיקה שלכם שווה להיות אובייקט אמיתי.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card reveal reveal-d1">
+          <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+          <h3>צליל חם ואמיתי</h3>
+          <p>הצליל האנלוגי של ויניל עמוק, חם ובלתי אמצעי. זו לא רק שמיעה — זו חוויה של חיבור אמיתי למוזיקה, ליוצר וליצירה.</p>
+        </div>
+        <div class="feature-card reveal reveal-d2">
+          <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7.4-6.3-4.6L5.7 21.4 8 14 2 9.4h7.6z"/></svg></div>
+          <h3>ערך של אספנות</h3>
+          <p>כל תקליט הוא פריט ייחודי. מהדורות מוגבלות יוצרות נדירות, ערך ומשמעות — משהו שלא ניתן לשכפל אינסוף פעמים.</p>
+        </div>
+        <div class="feature-card reveal reveal-d3">
+          <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></div>
+          <h3>יצירת אמנות שלמה</h3>
+          <p>הכיסוי, הבוקלט, המדבקה, האריזה — הכל חלק מהיצירה. לא רק מוזיקה, אלא חפץ שאוהבים, שמציגים, שמעבירים הלאה בין דורות.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO WE ARE -->
+  <section class="section section-dark">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-media reveal">
+          <img src="assets/images/Alex Eisenberg portrait.webp" alt="אלכס אייזנברג — Live Sound Studio">
+        </div>
+        <div class="about-text reveal reveal-d1">
+          <span class="section-label">מי אנחנו</span>
+          <h2 class="section-title">מוזיקאים, אספנים <span class="hl">ואנשי אודיו</span></h2>
+          <p>The Vinyl Lab Israel הוא שיתוף פעולה בין <strong>The Vinyl Lab</strong> לבין <strong>Live Sound Studio</strong>, בבעלות אלכס אייזנברג — מוזיקאי בינלאומי, גיטריסט, מהנדס סאונד, מפיק ואיש אולפן עם ניסיון של למעלה מ־30 שנה.</p>
+          <p>אנחנו לא רק מייצרים תקליטים — אנחנו חיים את המוזיקה. כל פרויקט מקבל את אותה תשומת לב ואהבה שהיינו מעניקים לאלבום שלנו עצמנו.</p>
+          <div class="about-stats">
+            <div><div class="stat-num">30+</div><div class="stat-label">שנות ניסיון</div></div>
+            <div><div class="stat-num">100%</div><div class="stat-label">מאסטרינג אנלוגי</div></div>
+            <div><div class="stat-num">A→Z</div><div class="stat-label">ליווי מלא</div></div>
+          </div>
+          <a class="btn btn-ghost" data-nav="about">הכירו אותנו לעומק</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES (bento) -->
+  <section class="section section-darker">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">ויניל לאב ישראל מציעה</span>
+        <h2 class="section-title">הפקה פיזית מלאה — <span class="hl">מהמאסטר ועד האריזה</span></h2>
+      </div>
+      <div class="bento">
+        <div class="bento-card hero-tile span-8 reveal" data-nav="services">
+          <img src="assets/images/vinyl-production-01.webp" alt="ייצור תקליטי ויניל">
+          <div class="bento-scrim"></div>
+          <div class="bento-body">
+            <div class="bento-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/></svg></div>
+            <h3>ייצור תקליטי ויניל</h3>
+            <p>ניהול מלא של הפקת ויניל מול מפעלי לחיצה מקצועיים — קבצים, טסט־פרסינג, צבעים ובקרת איכות.</p>
+            <span class="bento-link">קרא עוד →</span>
+          </div>
+        </div>
+        <div class="bento-card span-4 reveal reveal-d1" data-nav="services">
+          <img src="assets/images/mastering.webp" alt="מאסטרינג לוויניל">
+          <div class="bento-scrim"></div>
+          <div class="bento-body">
+            <div class="bento-icon"><svg viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></div>
+            <h3>מאסטרינג לוויניל</h3>
+            <p>מאסטרינג אנלוגי 100% בציוד High-End.</p>
+            <span class="bento-link">קרא עוד →</span>
+          </div>
+        </div>
+        <div class="bento-card span-4 reveal reveal-d1" data-nav="services">
+          <img src="assets/images/cd-production.webp" alt="ייצור CD">
+          <div class="bento-scrim"></div>
+          <div class="bento-body">
+            <div class="bento-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg></div>
+            <h3>ייצור CD</h3>
+            <p>גלאס־מאסטר, רפליקציה ואריזות מותאמות.</p>
+            <span class="bento-link">קרא עוד →</span>
+          </div>
+        </div>
+        <div class="bento-card span-4 reveal reveal-d2" data-nav="services">
+          <img src="assets/images/cassette-production.webp" alt="קסטות אודיו">
+          <div class="bento-scrim"></div>
+          <div class="bento-body">
+            <div class="bento-icon"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="8" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/><path d="M8 12h8"/></svg></div>
+            <h3>קסטות אודיו</h3>
+            <p>קסטות צבעוניות, מודפסות, עיצוב J-card.</p>
+            <span class="bento-link">קרא עוד →</span>
+          </div>
+        </div>
+        <div class="bento-card span-4 reveal reveal-d3" data-nav="services">
+          <img src="assets/images/Printing process.jpeg" alt="עיצוב ואריזות">
+          <div class="bento-scrim"></div>
+          <div class="bento-body">
+            <div class="bento-icon"><svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></div>
+            <h3>עיצוב ואריזות</h3>
+            <p>כיסויים, בוקלטים, הדפסה רחבת־פורמט.</p>
+            <span class="bento-link">קרא עוד →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIMITED EDITIONS -->
+  <section class="section section-dark">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <span class="section-label">מהדורות מוגבלות</span>
+          <h2 class="section-title">Collector <span class="hl">Editions</span></h2>
+          <p>חבילות פיזיות מיוחדות עם ויניל, CD, קסטה ועיצוב בלעדי — מהדורות מוגבלות במספר עותקים, עם תשומת לב לכל פרט.</p>
+          <p>מהדורה מוגבלת הופכת את האלבום שלכם לפריט אספנות אמיתי: מספור ידני, אריזת דלוקס, וחומרים שמרגישים יוקרה מהרגע שמחזיקים אותם.</p>
+          <a class="btn btn-primary" data-nav="contact">בואו נתכנן מהדורה</a>
+        </div>
+        <div class="about-media reveal reveal-d1">
+          <img src="assets/images/Gatefold cover open.webp" alt="מהדורה מוגבלת — כריכת gatefold">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY PREVIEW -->
+  <section class="section section-darker">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">גלריה</span>
+        <h2 class="section-title">פרויקטים <span class="hl">שיצאו מהסטודיו</span></h2>
+        <p class="section-subtitle">מבחר עבודות אמיתיות של לקוחות — מהמאסטר ועד המוצר המוגמר.</p>
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-item big reveal"><img src="assets/images/Finished customer project %232.jpeg" alt="פרויקט לקוח מוגמר"><div class="gallery-ov"><span>פרויקט לקוח</span></div><span class="gallery-zoom"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span></div>
+        <div class="gallery-item reveal reveal-d1"><img src="assets/images/gallery-project-01.webp" alt="ויניל + כיסוי"><div class="gallery-ov"><span>ויניל + כיסוי</span></div><span class="gallery-zoom"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span></div>
+        <div class="gallery-item reveal reveal-d2"><img src="assets/images/finsih4.jpeg" alt="מהדורה צבעונית"><div class="gallery-ov"><span>מהדורה צבעונית</span></div><span class="gallery-zoom"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span></div>
+        <div class="gallery-item wide reveal reveal-d1"><img src="assets/images/customer-project-award.webp" alt="פרויקט לקוח מוערך"><div class="gallery-ov"><span>עבודת אולפן</span></div><span class="gallery-zoom"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span></div>
+      </div>
+      <div style="text-align:center;margin-top:40px;">
+        <a class="btn btn-ghost" data-nav="gallery">לגלריה המלאה</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING PREVIEW -->
+  <section class="section section-dark">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">מחירים</span>
+        <h2 class="section-title">חבילות <span class="hl">שקופות</span></h2>
+        <p class="section-subtitle">כל פרויקט הוא ייחודי — המחירים למטה הם נקודת פתיחה. לקבלת הצעה מדויקת, דברו איתנו.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="price-card reveal">
+          <div class="price-name">מאסטרינג</div>
+          <div class="price-desc">מאסטרינג אנלוגי מותאם לוויניל</div>
+          <div class="price-amount"><span class="from">החל מ־</span>₪<span class="cur"> </span>350</div>
+          <div class="price-period">לשיר · הצעה לפי פרויקט</div>
+          <div class="price-divider"></div>
+          <ul class="price-features">
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>ציוד High-End ופרי־אמפים Neve</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>התאמה מדויקת לחריצה</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>גרסאות תיקון כלולות</li>
+          </ul>
+          <a class="btn btn-ghost" data-nav="contact">לפרטים</a>
+        </div>
+        <div class="price-card featured reveal reveal-d1">
+          <span class="price-tag">הכי פופולרי</span>
+          <div class="price-name">חבילת ויניל מלאה</div>
+          <div class="price-desc">מאסטר · לחיצה · עיצוב · אריזה</div>
+          <div class="price-amount"><span class="from">החל מ־</span>₪<span class="cur"> </span>4,900</div>
+          <div class="price-period">למהדורה · לפי כמות עותקים</div>
+          <div class="price-divider"></div>
+          <ul class="price-features">
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>ניהול מלא מול מפעל הלחיצה</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>עיצוב כיסוי ובוקלט</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>טסט־פרסינג ובקרת איכות</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>ליווי אישי לאורך כל הדרך</li>
+          </ul>
+          <a class="btn btn-primary" data-nav="contact">קבלו הצעה</a>
+        </div>
+        <div class="price-card reveal reveal-d2">
+          <div class="price-name">CD / קסטות</div>
+          <div class="price-desc">הפקה פיזית באיכות גבוהה</div>
+          <div class="price-amount"><span class="from">החל מ־</span>₪<span class="cur"> </span>1,900</div>
+          <div class="price-period">למהדורה · לפי כמות</div>
+          <div class="price-divider"></div>
+          <ul class="price-features">
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>רפליקציה / דופליקציה</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>עיצוב J-card / דיגיפאק</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>אריזה מלאה ומוכנה</li>
+          </ul>
+          <a class="btn btn-ghost" data-nav="contact">לפרטים</a>
+        </div>
+      </div>
+      <p class="price-note">* המחירים להתרשמות בלבד ומשתנים לפי כמות, חומרים ומפרט. לתמחור מדויק — דברו איתנו.</p>
+      <div style="text-align:center;margin-top:20px;"><a class="btn btn-ghost" data-nav="pricing">לכל המחירים והחבילות</a></div>
+    </div>
+  </section>
+
+  <!-- GIFT CARDS PREVIEW -->
+  <section class="section section-darker">
+    <div class="container">
+      <div class="gift-banner reveal">
+        <span class="section-label">גיפט קארדס</span>
+        <h2 class="section-title">מתנה <span class="hl">למי שאוהב מוזיקה</span></h2>
+        <p class="section-subtitle" style="margin:0 auto 26px;">שובר מתנה של The Vinyl Lab — לחבר שרוצה להוציא אלבום, למוזיקאי בהתחלה, או לכל מי שחולם על תקליט משלו.</p>
+        <a class="btn btn-primary" data-nav="gift">לרכישת גיפט קארד</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="cta-band">
+    <div class="container reveal">
+      <h2>מוכנים להפוך את המוזיקה שלכם לאובייקט?</h2>
+      <p>ספרו לנו על הפרויקט — נחזור אליכם עם הצעה מותאמת אישית.</p>
+      <div class="cta-band-buttons">
+        <a class="btn btn-primary" data-nav="contact">התחילו פרויקט עכשיו</a>
+        <a class="btn btn-whatsapp" href="https://wa.me/972523610464" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+</div><!-- /home -->
+
+
+<div class="page" id="page-about">
+  <section class="page-hero"><div class="container"><div class="breadcrumb"><a data-nav="home">דף הבית</a> / מי אנחנו</div><h1>מי <span class="hl">אנחנו</span></h1><p>מוזיקאים, אספנים ואנשי אודיו שחיים ונושמים מוזיקה.</p></div></section>
+  <section class="section section-dark">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-media reveal">
+          <img src="assets/images/Alex Eisenberg portrait.webp" alt="אלכס אייזנברג — Live Sound Studio">
+        </div>
+        <div class="about-text reveal reveal-d1">
+          <span class="section-label">הסיפור שלנו</span>
+          <h2 class="section-title">נולדנו מתוך <span class="hl">אהבה למוזיקה</span></h2>
+          <p>The Vinyl Lab Israel (ויניל לאב ישראל) הוא שיתוף פעולה בין <strong>The Vinyl Lab</strong> לבין <strong>Live Sound Studio</strong> בכרמיאל, בבעלות אלכס אייזנברג — מוזיקאי בינלאומי, גיטריסט, מהנדס סאונד, מפיק ואיש אולפן עם ניסיון של למעלה מ־30 שנה בבניית אולפנים, מאסטרינג, הקלטה והפקה מוזיקלית.</p>
+          <p>לצד הייצור המקומי, The Vinyl Lab Israel מייצגת בישראל את <strong>AD Records Europe</strong> לייצור ויניל מסחרי בכמויות גדולות — כך שאנחנו מלווים כל פרויקט, מתקליט אישי בודד ועד מהדורות מסחריות מלאות.</p>
+          <p>עבורנו, תקליט הוא הרבה יותר ממוצר — הוא חוויה, זיכרון ויצירת אמנות שאפשר להחזיק ביד. אנחנו לא רק מייצרים תקליטים — אנחנו חיים את המוזיקה.</p>
+          <p>כל פרויקט מקבל את אותה תשומת לב ואהבה שהיינו מעניקים לאלבום שלנו עצמנו.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section section-darker">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">איך זה עובד</span>
+        <h2 class="section-title">מהרעיון <span class="hl">ועד המוצר ביד</span></h2>
+        <p class="section-subtitle">תהליך מסודר ושקוף — אתם תמיד יודעים באיזה שלב נמצא הפרויקט.</p>
+      </div>
+      <div class="process-steps">
+        <div class="process-step reveal reveal-d1">
+          <div class="step-num">1</div>
+          <h3>שיחת ייעוץ</h3>
+          <p>מבינים את החזון, הכמות והתקציב.</p>
+        </div>
+        <div class="process-step reveal reveal-d2">
+          <div class="step-num">2</div>
+          <h3>מאסטר ועיצוב</h3>
+          <p>מאסטרינג אנלוגי ועיצוב אריזה.</p>
+        </div>
+        <div class="process-step reveal reveal-d3">
+          <div class="step-num">3</div>
+          <h3>ייצור ובקרה</h3>
+          <p>לחיצה, טסט־פרסינג ובקרת איכות.</p>
+        </div>
+        <div class="process-step reveal reveal-d4">
+          <div class="step-num">4</div>
+          <h3>מסירה</h3>
+          <p>המוצר המוגמר מגיע אליכם.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="cta-band"><div class="container reveal"><h2>יש לכם מוזיקה? יש לנו את הידע.</h2><p>בואו נדבר על הפרויקט שלכם — בלי התחייבות.</p><div class="cta-band-buttons"><a class="btn btn-primary" data-nav="contact">התחילו פרויקט</a><a class="btn btn-whatsapp" href="https://wa.me/972523610464" target="_blank" rel="noopener">WhatsApp</a></div></div></section>
+</div>
+
+<div class="page" id="page-gift">
+  <section class="page-hero"><div class="container"><div class="breadcrumb"><a data-nav="home">דף הבית</a> / גיפט קארדס</div><h1>גיפט <span class="hl">קארדס</span></h1><p>המתנה המושלמת לכל מי שאוהב מוזיקה וחולם על תקליט משלו.</p></div></section>
+  <section class="section section-dark">
+    <div class="container">
+      <div class="gift-banner reveal">
+        <h2 class="section-title">מתנה <span class="hl">שמנגנת</span></h2>
+        <p class="section-subtitle">שובר מתנה של The Vinyl Lab — לחבר שרוצה להוציא אלבום, למוזיקאי בתחילת הדרך, או לכל מי שחולם להחזיק את המוזיקה שלו ביד. תקף לכל השירותים שלנו.</p>
+      </div>
+      <div class="gift-grid">
+        <div class="gift-card reveal reveal-d1">
+          <div class="gift-inner">
+            <div class="gift-icon"><svg viewBox="0 0 24 24"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg></div>
+            <div class="gift-value">₪250</div>
+            <h3>שובר קלאסי</h3>
+            <p>מושלם כתוספת למאסטרינג של שיר בודד או להתחלה קטנה.</p>
+            <a class="btn btn-ghost" data-nav="contact">רכשו שובר</a>
+          </div>
+        </div>
+        <div class="gift-card reveal reveal-d2">
+          <div class="gift-inner">
+            <div class="gift-icon"><svg viewBox="0 0 24 24"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg></div>
+            <div class="gift-value">₪500</div>
+            <h3>שובר פרימיום</h3>
+            <p>ההצעה הפופולרית ביותר — תרומה משמעותית לכל פרויקט הפקה.</p>
+            <a class="btn btn-primary" data-nav="contact">רכשו שובר</a>
+          </div>
+        </div>
+        <div class="gift-card reveal reveal-d3">
+          <div class="gift-inner">
+            <div class="gift-icon"><svg viewBox="0 0 24 24"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg></div>
+            <div class="gift-value">בהתאמה</div>
+            <h3>שובר בסכום חופשי</h3>
+            <p>בחרו כל סכום שתרצו — אנחנו נעצב שובר אישי ומרשים.</p>
+            <a class="btn btn-ghost" data-nav="contact">דברו איתנו</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="cta-band"><div class="container reveal"><h2>רוצים להעניק גיפט קארד?</h2><p>שלחו לנו הודעה ונסדר לכם שובר מעוצב תוך זמן קצר.</p><div class="cta-band-buttons"><a class="btn btn-primary" data-nav="contact">לרכישת שובר</a><a class="btn btn-whatsapp" href="https://wa.me/972523610464" target="_blank" rel="noopener">WhatsApp</a></div></div></section>
+</div>
+
+<div class="page" id="page-before">
+  <section class="page-hero"><div class="container"><div class="breadcrumb"><a data-nav="home">דף הבית</a> / לפני שמתקשרים</div><h1>לפני <span class="hl">שמתקשרים</span></h1><p>כמה דברים שכדאי לדעת — כדי שהשיחה איתנו תהיה מדויקת ויעילה.</p></div></section>
+  <section class="section section-dark">
+    <div class="container">
+      <div class="byc-intro reveal">
+        <span class="section-label">כדי שנוכל לעזור מהר</span>
+        <h2 class="section-title">מה כדאי <span class="hl">להכין מראש</span></h2>
+      </div>
+      <div class="byc-checklist">
+        <div class="byc-check reveal reveal-d1">
+          <div class="byc-check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+          <div>
+            <h4>קבצי המאסטר</h4>
+            <p>WAV באיכות גבוהה (24bit/44.1kHz ומעלה). אין מאסטר? נדאג לזה יחד.</p>
+          </div>
+        </div>
+        <div class="byc-check reveal reveal-d2">
+          <div class="byc-check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+          <div>
+            <h4>כמות עותקים</h4>
+            <p>הכמות משפיעה מאוד על המחיר. גם הערכה גסה עוזרת לנו לתמחר.</p>
+          </div>
+        </div>
+        <div class="byc-check reveal reveal-d1">
+          <div class="byc-check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+          <div>
+            <h4>חומרי עיצוב</h4>
+            <p>יש כבר artwork? מעולה. אין? צוות העיצוב שלנו ישמח לעזור.</p>
+          </div>
+        </div>
+        <div class="byc-check reveal reveal-d2">
+          <div class="byc-check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+          <div>
+            <h4>לוח זמנים</h4>
+            <p>ייצור פיזי לוקח זמן. ספרו לנו אם יש תאריך יעד (הופעה, שחרור).</p>
+          </div>
+        </div>
+        <div class="byc-check reveal reveal-d1">
+          <div class="byc-check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+          <div>
+            <h4>הפורמט הרצוי</h4>
+            <p>ויניל, CD, קסטה או חבילה משולבת? לא בטוחים — נעזור לבחור.</p>
+          </div>
+        </div>
+        <div class="byc-check reveal reveal-d2">
+          <div class="byc-check-icon"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+          <div>
+            <h4>התקציב</h4>
+            <p>טווח תקציב מאפשר לנו להתאים את המפרט האידיאלי עבורכם.</p>
+          </div>
+        </div>
+      </div>
+      <div class="byc-intro reveal">
+        <h2 class="section-title">שאלות <span class="hl">נפוצות</span></h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item reveal">
+          <button class="faq-q">כמה זמן לוקח לייצר ויניל?<span class="faq-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>
+          <div class="faq-a"><div class="faq-a-in">תלוי במפעל, בכמות ובעונה — בדרך כלל בין 8 ל־14 שבועות מרגע אישור הטסט־פרסינג. נעדכן אתכם בזמנים המדויקים לפני התחלת ההפקה.</div></div>
+        </div>
+        <div class="faq-item reveal">
+          <button class="faq-q">מה הכמות המינימלית להזמנה?<span class="faq-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>
+          <div class="faq-a"><div class="faq-a-in">לוויניל, המינימום המקובל במפעלים הוא לרוב 100–300 עותקים. ל־CD וקסטות ניתן להפיק גם כמויות קטנות יותר. דברו איתנו ונמצא את הפתרון שמתאים לכם.</div></div>
+        </div>
+        <div class="faq-item reveal">
+          <button class="faq-q">אין לי מאסטר מוכן — אתם יכולים לעזור?<span class="faq-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>
+          <div class="faq-a"><div class="faq-a-in">בהחלט. Live Sound Studio מציע מאסטרינג אנלוגי מלא, וגם הקלטה, מיקס והפקה. נביא את המוזיקה שלכם למצב מושלם לפני הייצור.</div></div>
+        </div>
+        <div class="faq-item reveal">
+          <button class="faq-q">אתם מעצבים את הכיסוי והאריזה?<span class="faq-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>
+          <div class="faq-a"><div class="faq-a-in">כן. צוות העיצוב שלנו מעצב כיסויים, בוקלטים, מדבקות ו־J-cards, כולל הדפסה רחבת־פורמט בסטודיו. יש לכם artwork מוכן? גם זה מצוין.</div></div>
+        </div>
+        <div class="faq-item reveal">
+          <button class="faq-q">איך מקבלים הצעת מחיר?<span class="faq-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>
+          <div class="faq-a"><div class="faq-a-in">הכי מהיר — שלחו הודעת WhatsApp או מלאו את טופס יצירת הקשר עם הפרטים (פורמט, כמות, לוח זמנים). נחזור אליכם עם הצעה מותאמת אישית.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="cta-band"><div class="container reveal"><h2>מוכנים לדבר?</h2><p>עכשיו שיש לכם את כל המידע — בואו נתחיל.</p><div class="cta-band-buttons"><a class="btn btn-primary" data-nav="contact">צרו קשר</a><a class="btn btn-whatsapp" href="https://wa.me/972523610464" target="_blank" rel="noopener">WhatsApp</a></div></div></section>
+</div>
+
+
+<div class="page" id="page-services">
+  <section class="page-hero"><div class="container"><div class="breadcrumb"><a data-nav="home">דף הבית</a> / שירותים</div><h1>השירותים של <span class="hl">The Vinyl Lab Israel</span></h1><p>הפקה פיזית מלאה — מהמאסטר ועד האריזה. הכל תחת קורת גג אחת, ויניל לאב ישראל.</p></div></section>
+  <section class="section section-dark">
+    <div class="container">
+      <div class="bento svc-bento">
+        <div class="bento-card span-8 hero-tile reveal" data-nav="contact">
+          <img src="assets/images/vinyl-production-01.webp" alt="ייצור תקליטי ויניל">
+          <div class="bento-scrim"></div>
+          <div class="bento-body">
+            <div class="bento-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/></svg></div>
+            <h3>ייצור תקליטי ויניל</h3>
+            <p>ניהול מלא של הפקת ויניל מול מפעלי לחיצה מקצועיים — קבצים, טסט־פרסינג, צבעים מיוחדים ובקרת איכות בכל שלב. 7&quot; · 10&quot; · 12&quot;.</p>
+            <span class="bento-link">פרטים נוספים →</span>
+          </div>
+        </div>
+        <div class="bento-card span-4 tall reveal" data-nav="contact">
+          <img src="assets/images/mastering.webp" alt="מאסטרינג לוויניל">
+          <div class="bento-scrim"></div>
+          <div class="bento-body">
+            <div class="bento-icon"><svg viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></div>
+            <h3>מאסטרינג לוויניל</h3>
+            <p>מאסטרינג אנלוגי 100% בציוד High-End ופרי־אמפים Neve, בהתאמה מדויקת לתהליך החריצה — צליל חם, עמוק ומדויק.</p>
+            <span class="bento-link">פרטים נוספים →</span>
+          </div>
+        </div>
+        <div class="bento-card span-4 reveal" data-nav="contact">
+          <img src="assets/images/vinyl-stack.webp" alt="ייצור ויניל מסחרי">
+          <div class="bento-scrim"></div>
+          <div class="bento-body">
+            <div class="bento-icon"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+            <h3>ייצור ויניל מסחרי</h3>
+            <p>הפקה בכמויות גדולות מ־100 יחידות, בשיתוף AD Records Europe — תמחור מדורג וניהול לוגיסטי מלא.</p>
+            <span class="bento-link">פרטים נוספים →</span>
+          </div>
+        </div>
+        <div class="bento-card span-4 reveal" data-nav="contact">
+          <img src="assets/images/cd-production.webp" alt="ייצור CD">
+          <div class="bento-scrim"></div>
+          <div class="bento-body">
+            <div class="bento-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg></div>
+            <h3>ייצור CD</h3>
+            <p>גלאס־מאסטר, רפליקציה ודופליקציה באיכות גבוהה, עם אריזות jewel-case, דיגיפאק ו־mini-LP.</p>
+            <span class="bento-link">פרטים נוספים →</span>
+          </div>
+        </div>
+        <div class="bento-card span-4 reveal" data-nav="contact">
+          <img src="assets/images/cassette-production.webp" alt="ייצור קסטות">
+          <div class="bento-scrim"></div>
+          <div class="bento-body">
+            <div class="bento-icon"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="8" cy="12" r="1.5"/><circle cx="16" cy="12" r="1.5"/><path d="M8 12h8"/></svg></div>
+            <h3>ייצור קסטות</h3>
+            <p>שכפול קסטות בזמן אמת על מכונות סרט יפניות — צבעוניות, מודפסות, עם עיצוב J-card ואריזה מלאה.</p>
+            <span class="bento-link">פרטים נוספים →</span>
+          </div>
+        </div>
+        <div class="bento-card span-6 reveal" data-nav="contact">
+          <img src="assets/images/Printing process.jpeg" alt="עיצוב ואריזות">
+          <div class="bento-scrim"></div>
+          <div class="bento-body">
+            <div class="bento-icon"><svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></div>
+            <h3>עיצוב ואריזות</h3>
+            <p>עיצוב כיסויים, בוקלטים, מדבקות ו־J-cards, כולל הדפסה רחבת־פורמט בבית — אריזות gatefold ומהדורות דלוקס.</p>
+            <span class="bento-link">פרטים נוספים →</span>
+          </div>
+        </div>
+        <div class="bento-card span-6 reveal" data-nav="contact">
+          <img src="assets/images/studio atmos.webp" alt="אולפן הקלטות">
+          <div class="bento-scrim"></div>
+          <div class="bento-body">
+            <div class="bento-icon"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></div>
+            <h3>אולפן הקלטות</h3>
+            <p>Live Sound Studio בכרמיאל — חדר בקרה מקצועי להקלטה, עריכה, מיקס והפקה מוזיקלית בליווי מהנדס סאונד ותיק.</p>
+            <span class="bento-link">פרטים נוספים →</span>
+          </div>
+        </div>
+        <div class="bento-card span-6 reveal" data-nav="contact">
+          <img src="assets/images/WhatsApp Image 2026-06-12 at 11.08.34.jpeg" alt="המרת מדיה">
+          <div class="bento-scrim"></div>
+          <div class="bento-body">
+            <div class="bento-icon"><svg viewBox="0 0 24 24"><path d="M21 2v6h-6M3 12a9 9 0 0115-6.7L21 8M3 22v-6h6M21 12a9 9 0 01-15 6.7L3 16"/></svg></div>
+            <h3>המרת מדיה</h3>
+            <p>העברת הקלטות ישנות — CD, DVD, DAT, קסטות, סלילים, ויניל וסרט אנלוגי — לקבצים דיגיטליים נקיים, לשימור ולהפקה מחדש.</p>
+            <span class="bento-link">פרטים נוספים →</span>
+          </div>
+        </div>
+        <div class="bento-card span-6 reveal" data-nav="contact">
+          <img src="assets/images/Gatefold cover open.webp" alt="מהדורות מוגבלות">
+          <div class="bento-scrim"></div>
+          <div class="bento-body">
+            <div class="bento-icon"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7.4-6.3-4.6L5.7 21.4 8 14 2 9.4h7.6z"/></svg></div>
+            <h3>מהדורות מוגבלות</h3>
+            <p>חבילות פיזיות מיוחדות עם ויניל, CD, קסטה ועיצוב בלעדי — מהדורות ממוספרות במספר עותקים מוגבל.</p>
+            <span class="bento-link">פרטים נוספים →</span>
+          </div>
+        </div>
+      </div>
+      <div class="svc-cta-wide reveal">
+        <a class="btn btn-primary btn-full" href="https://wa.me/972523610464" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/></svg>
+          בואו נדבר על הפרויקט שלכם
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-gallery">
+  <section class="page-hero"><div class="container"><div class="breadcrumb"><a data-nav="home">דף הבית</a> / גלריה</div><h1>גלריית עבודות — <span class="hl">The Vinyl Lab Israel</span></h1><p>פרויקטים אמיתיים שיצאו מהסטודיו שלנו — לחצו על תמונה להגדלה.</p></div></section>
+  <section class="section section-dark">
+    <div class="container">
+      <div class="gallery-grid">
+        <div class="gallery-item big reveal"><img src="assets/images/Finished customer project %232.jpeg" alt="פרויקט לקוח מוגמר"><div class="gallery-ov"><span>פרויקט לקוח מוגמר</span></div><span class="gallery-zoom"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span></div>
+        <div class="gallery-item reveal"><img src="assets/images/gallery-project-01.webp" alt="ויניל + כיסוי"><div class="gallery-ov"><span>ויניל + כיסוי</span></div><span class="gallery-zoom"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span></div>
+        <div class="gallery-item reveal"><img src="assets/images/Finished customer project %233.jpeg" alt="ויניל מודפס"><div class="gallery-ov"><span>ויניל מודפס</span></div><span class="gallery-zoom"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span></div>
+        <div class="gallery-item reveal"><img src="assets/images/finsih4.jpeg" alt="מהדורה צבעונית"><div class="gallery-ov"><span>מהדורה צבעונית</span></div><span class="gallery-zoom"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span></div>
+        <div class="gallery-item tall reveal"><img src="assets/images/WhatsApp Image 2026-06-12 at 11.08.36 (2).jpeg" alt="עבודת אולפן"><div class="gallery-ov"><span>עבודת אולפן</span></div><span class="gallery-zoom"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span></div>
+        <div class="gallery-item reveal"><img src="assets/images/gallery-project-03.webp" alt="ויניל צבעוני"><div class="gallery-ov"><span>ויניל צבעוני</span></div><span class="gallery-zoom"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span></div>
+        <div class="gallery-item reveal"><img src="assets/images/Finished customer project.jpeg" alt="פרויקט מוגמר"><div class="gallery-ov"><span>פרויקט מוגמר</span></div><span class="gallery-zoom"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span></div>
+        <div class="gallery-item wide reveal"><img src="assets/images/WhatsApp Image 2026-06-12 at 11.08.37.jpeg" alt="מאחורי הקלעים"><div class="gallery-ov"><span>מאחורי הקלעים</span></div><span class="gallery-zoom"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span></div>
+        <div class="gallery-item reveal"><img src="assets/images/Gatefold cover open.webp" alt="כריכת gatefold"><div class="gallery-ov"><span>כריכת gatefold</span></div><span class="gallery-zoom"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span></div>
+        <div class="gallery-item reveal"><img src="assets/images/Album booklet.jpeg" alt="בוקלט אלבום"><div class="gallery-ov"><span>בוקלט אלבום</span></div><span class="gallery-zoom"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span></div>
+      </div>
+      <div style="text-align:center;margin-top:44px;"><a class="btn btn-primary" data-nav="contact">דברו איתנו על הפרויקט הבא</a></div>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-pricing">
+  <section class="page-hero"><div class="container"><div class="breadcrumb"><a data-nav="home">דף הבית</a> / מחירים</div><h1>מחירים <span class="hl">וחבילות</span></h1><p>שקיפות מלאה. המחירים למטה הם נקודת פתיחה — כל פרויקט מתומחר אישית על ידי The Vinyl Lab Israel.</p></div></section>
+
+  <!-- VINYL PRICE LIST (7" / 10" / 12") -->
+  <section class="section section-dark">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">מחירון ויניל</span>
+        <h2 class="section-title">ייצור תקליטים — <span class="hl">מחיר לפי גודל</span></h2>
+        <p class="section-subtitle">מתקליט אחד אישי ועד כמויות. ככל שהכמות גדֵלה, המחיר לעותק יורד. המחירים הם להתרשמות — לתמחור מדויק דברו איתנו.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="price-card reveal">
+          <div class="price-name">תקליט 7&quot;</div>
+          <div class="price-desc">אידיאלי לסינגל · אורך אופטימלי עד 3.5 דק&#39; לצד</div>
+          <div class="price-amount"><span class="from">עותק בודד</span>₪<span class="cur"> </span>350</div>
+          <div class="price-period">₪2,000 ל־10 עותקים</div>
+          <div class="price-divider"></div>
+          <ul class="price-features">
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>עותק בודד — ₪350</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>10 עותקים — ₪2,000</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>אורך אופטימלי — 3.5 דק&#39; לצד</li>
+          </ul>
+          <a class="btn btn-ghost" data-nav="contact">להזמנה</a>
+        </div>
+        <div class="price-card featured reveal reveal-d1">
+          <span class="price-tag">הכי פופולרי</span>
+          <div class="price-name">תקליט 12&quot;</div>
+          <div class="price-desc">סטנדרט האלבום · אורך אופטימלי עד 18 דק&#39; לצד</div>
+          <div class="price-amount"><span class="from">עותק בודד</span>₪<span class="cur"> </span>550</div>
+          <div class="price-period">₪2,500 ל־10 עותקים</div>
+          <div class="price-divider"></div>
+          <ul class="price-features">
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>עותק בודד — ₪550</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>10 עותקים — ₪2,500</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>אורך אופטימלי — 18 דק&#39; לצד</li>
+          </ul>
+          <a class="btn btn-primary" data-nav="contact">קבלו הצעה</a>
+        </div>
+        <div class="price-card reveal reveal-d2">
+          <div class="price-name">תקליט 10&quot;</div>
+          <div class="price-desc">פורמט EP מיוחד · אורך אופטימלי עד 9 דק&#39; לצד</div>
+          <div class="price-amount"><span class="from">עותק בודד</span>₪<span class="cur"> </span>450</div>
+          <div class="price-period">₪2,250 ל־10 עותקים</div>
+          <div class="price-divider"></div>
+          <ul class="price-features">
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>עותק בודד — ₪450</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>10 עותקים — ₪2,250</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>אורך אופטימלי — 9 דק&#39; לצד</li>
+          </ul>
+          <a class="btn btn-ghost" data-nav="contact">להזמנה</a>
+        </div>
+      </div>
+      <p class="price-note">* המחירים לייצור תקליט שחור, להתרשמות בלבד, ומשתנים לפי כמות, צבע, חומרים ומפרט. חריגה מהאורך האופטימלי לצד עלולה להשפיע על עוצמת השמע ואיכות הצליל — נשמח לייעץ.</p>
+    </div>
+  </section>
+
+  <!-- COMMERCIAL PRODUCTION FACTS -->
+  <section class="section section-darker">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">ייצור מסחרי</span>
+        <h2 class="section-title">כמויות גדולות — <span class="hl">The Vinyl Lab Israel × AD Records Europe</span></h2>
+        <p class="section-subtitle">The Vinyl Lab Israel מייצגת בישראל את <strong>AD Records Europe</strong> לייצור ויניל מסחרי. לצד ייצור מקומי מהיר לכמויות קטנות — הפקה מסחרית מלאה באירופה לכמויות גדולות.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card reveal reveal-d1">
+          <div class="feature-icon"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+          <h3>הפקה מקומית מהירה</h3>
+          <p>כמויות קטנות מיוצרות אצלנו בישראל, עם זמן אספקה מהיר של כ־3 ימים בלבד — מושלם לסינגלים ומהדורות אישיות.</p>
+        </div>
+        <div class="feature-card reveal reveal-d2">
+          <div class="feature-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/></svg></div>
+          <h3>ייצור מסחרי מ־100 יחידות</h3>
+          <p>הפקה מסחרית מלאה החל מ־100 עותקים ומעלה, בשיתוף AD Records Europe — תמחור מדורג לפי כמות וניהול לוגיסטי מלא.</p>
+        </div>
+        <div class="feature-card reveal reveal-d3">
+          <div class="feature-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+          <h3>הפקה באירופה</h3>
+          <p>ייצור מסחרי בכמויות גדולות במפעלי AD Records Europe, עם זמן אספקה ממוצע של כ־45 יום ובקרת איכות מלאה.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OTHER SERVICES PRICING -->
+  <section class="section section-dark">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">שירותים נוספים</span>
+        <h2 class="section-title">מאסטרינג · CD · <span class="hl">קסטות</span></h2>
+      </div>
+      <div class="pricing-grid">
+        <div class="price-card reveal">
+          <div class="price-name">מאסטרינג אנלוגי</div>
+          <div class="price-desc">מאסטרינג אנלוגי 100% מותאם לוויניל</div>
+          <div class="price-amount"><span class="from">החל מ־</span>₪<span class="cur"> </span>350</div>
+          <div class="price-period">לשיר · הצעה לפי פרויקט</div>
+          <div class="price-divider"></div>
+          <ul class="price-features">
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>ציוד High-End ופרי־אמפים Neve</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>התאמה מדויקת לחריצת ויניל</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>גרסאות תיקון כלולות</li>
+          </ul>
+          <a class="btn btn-ghost" data-nav="contact">לפרטים</a>
+        </div>
+        <div class="price-card reveal reveal-d1">
+          <div class="price-name">ייצור CD</div>
+          <div class="price-desc">גלאס־מאסטר, רפליקציה ואריזה</div>
+          <div class="price-amount"><span class="from">הצעה</span>אישית</div>
+          <div class="price-period">לפי כמות ומפרט</div>
+          <div class="price-divider"></div>
+          <ul class="price-features">
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>רפליקציה / דופליקציה</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>עיצוב דיגיפאק / jewel-case</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>הדפסה מלאה בסטודיו</li>
+          </ul>
+          <a class="btn btn-ghost" data-nav="contact">לפרטים</a>
+        </div>
+        <div class="price-card reveal reveal-d2">
+          <div class="price-name">שכפול קסטות</div>
+          <div class="price-desc">שכפול בזמן אמת על מכונות סרט יפניות</div>
+          <div class="price-amount"><span class="from">הצעה</span>אישית</div>
+          <div class="price-period">לפי כמות ומפרט</div>
+          <div class="price-divider"></div>
+          <ul class="price-features">
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>שכפול Real-Time איכותי</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>קסטות צבעוניות ומודפסות</li>
+            <li><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>עיצוב J-card ואריזה מלאה</li>
+          </ul>
+          <a class="btn btn-ghost" data-nav="contact">לפרטים</a>
+        </div>
+      </div>
+      <p class="price-note">* כל המחירים להתרשמות בלבד ומשתנים לפי כמות עותקים, חומרים, מפרט ועיצוב. לתמחור מדויק ומחייב — דברו איתנו ונשמח לבנות הצעה מותאמת אישית.</p>
+      <div style="text-align:center;margin-top:28px;"><a class="btn btn-whatsapp" href="https://wa.me/972523610464">קבלו הצעת מחיר בוואטסאפ</a></div>
+    </div>
+  </section>
+</div>
+
+
+<!-- ==================================================================
+     PAGE: CONTACT
+     ================================================================== -->
+<div class="page" id="page-contact">
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb"><a data-nav="home">דף הבית</a> / צור קשר</div>
+      <h1>בואו <span class="hl">נדבר</span></h1>
+      <p>ספרו לנו על הפרויקט — נחזור אליכם עם הצעה מותאמת אישית.</p>
+    </div>
+  </section>
+
+  <section class="section section-dark">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-info reveal">
+          <span class="section-label">פרטי התקשרות</span>
+          <h2 class="section-title">כאן בשבילכם</h2>
+          <p>The Vinyl Lab Israel — ויניל לאב ישראל כאן בשבילכם. הדרך המהירה ביותר להתחיל היא WhatsApp, אבל אפשר גם למלא את הטופס ונחזור אליכם.</p>
+          <div class="contact-details">
+            <div class="cd-item"><div class="cd-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg></div><div class="cd-text"><strong>טלפון</strong><a href="tel:+972523610464">052-361-0464</a></div></div>
+            <div class="cd-item"><div class="cd-icon"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg></div><div class="cd-text"><strong>אימייל</strong><a href="mailto:info@thevinyllab.co.il">info@thevinyllab.co.il</a></div></div>
+            <div class="cd-item"><div class="cd-icon"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413" fill="#c9a84c" stroke="none"/></svg></div><div class="cd-text"><strong>WhatsApp</strong><a href="https://wa.me/972523610464" target="_blank" rel="noopener">שלחו הודעה עכשיו</a></div></div>
+            <div class="cd-item"><div class="cd-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="cd-text"><strong>שעות פעילות</strong><span>בתיאום מראש</span></div></div>
+          </div>
+        </div>
+
+        <form class="contact-form reveal reveal-d1" id="contactForm">
+          <div class="form-row">
+            <div class="form-group"><label for="name">שם מלא *</label><input type="text" id="name" name="name" required placeholder="השם שלכם"></div>
+            <div class="form-group"><label for="phone">טלפון *</label><input type="tel" id="phone" name="phone" required placeholder="050-0000000"></div>
+          </div>
+          <div class="form-group"><label for="email">אימייל</label><input type="email" id="email" name="email" placeholder="your@email.com"></div>
+          <div class="form-group"><label for="projectType">סוג פרויקט *</label>
+            <select id="projectType" name="projectType" required>
+              <option value="">בחרו סוג פרויקט...</option>
+              <option value="vinyl">ייצור ויניל</option>
+              <option value="mastering">מאסטרינג</option>
+              <option value="cd">תקליטור (CD)</option>
+              <option value="cassette">קסטה אודיו</option>
+              <option value="design">עיצוב ואריזות</option>
+              <option value="studio">אולפן הקלטות</option>
+              <option value="media">המרת מדיה</option>
+              <option value="bundle">חבילה / מהדורה מוגבלת</option>
+              <option value="other">אחר</option>
+            </select>
+          </div>
+          <div class="form-group"><label for="message">ספרו לנו על הפרויקט</label><textarea id="message" name="message" placeholder="כמות עותקים, לוח זמנים, ומה חשוב לכם..."></textarea></div>
+          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">שלחו — וקבלו מענה מהיר</button>
+          <div class="form-success">תודה! נפתח עבורכם WhatsApp עם הפרטים — פשוט לחצו שליחה ונחזור אליכם.</div>
+        </form>
+      </div>
+    </div>
+  </section>
+</div><!-- /contact -->
+
+
+</main>
+
+<!-- ============ FOOTER (shared) ============ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="nav-logo footer-logo" data-nav="home" aria-label="The Vinyl Lab Israel">
+          <img class="footer-logo-img" src="assets/images/logo-header.png" alt="The Vinyl Lab Israel · ויניל לאב ישראל" width="1217" height="470">
+        </a>
+        <p><strong>The Vinyl Lab Israel</strong> · ויניל לאב ישראל<br>ייצור תקליטים בישראל | מאסטרינג | CD | קסטות | עיצוב ואריזות</p>
+        <div class="footer-socials">
+          <a class="footer-social" href="https://wa.me/972523610464" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg></a>
+          <a class="footer-social" href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+      </div>
+      </div>
+      <div class="footer-col">
+        <h4>שירותים</h4>
+        <a data-nav="services">מאסטרינג לוויניל</a>
+        <a data-nav="services">ייצור ויניל</a>
+        <a data-nav="services">ייצור CD</a>
+        <a data-nav="services">קסטות אודיו</a>
+        <a data-nav="services">עיצוב ואריזות</a>
+      </div>
+      <div class="footer-col">
+        <h4>מידע</h4>
+        <a data-nav="about">מי אנחנו</a>
+        <a data-nav="gallery">גלריה</a>
+        <a data-nav="pricing">מחירים וחבילות</a>
+        <a data-nav="gift">גיפט קארדס</a>
+        <a data-nav="before">לפני שמתקשרים</a>
+      </div>
+      <div class="footer-col">
+        <h4>צור קשר</h4>
+        <a data-nav="contact">טופס יצירת קשר</a>
+        <a href="https://wa.me/972523610464" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="mailto:info@thevinyllab.co.il">info@thevinyllab.co.il</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 The Vinyl Lab Israel · ויניל לאב ישראל. כל הזכויות שמורות.</p>
+      <p>The Vinyl Lab × Live Sound Studio · כרמיאל</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ FLOATING ============ -->
+<a class="whatsapp-float" href="https://wa.me/972523610464" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+<button class="back-to-top" aria-label="חזרה למעלה"><svg viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg></button>
+
+<!-- ============ LIGHTBOX ============ -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-btn lb-close" aria-label="סגור">✕</button>
+  <button class="lb-btn lb-prev" aria-label="הקודם">‹</button>
+  <button class="lb-btn lb-next" aria-label="הבא">›</button>
+  <img src="" alt="">
+</div>
+
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>
+
+
+
+
