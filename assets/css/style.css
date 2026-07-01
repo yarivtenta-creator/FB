@@ -158,6 +158,8 @@ main { padding-top: 76px; }
 .page-hero p, .page-head p { font-size: 1.16rem; color: var(--text-muted); max-width: 720px; margin: 0 auto; }
 /* Compact page header (no banner) — moved up, just title + subtitle */
 .page-head { text-align: center; padding: 124px 0 48px; background: var(--black-2); border-bottom: 1px solid var(--gold-line); }
+/* First content section on pages with no header — clear the fixed navbar */
+.section.page-first { padding-top: 134px; }
 /* Video banner header — subtle, strong dark overlay so it doesn't distract */
 .page-hero-video { padding: 152px 0 72px; background: var(--black); }
 .page-hero-video::after { display: none; }
