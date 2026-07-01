@@ -1,0 +1,32 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Module Registry</title><style>
+:root{--bg:#0a0e14;--line:#1f2937;--ink:#e6edf3;--muted:#8b98a9;--green:#2ecc71;--yellow:#f5c542;--accent:#4ea1ff;--mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:13px;padding:24px}
+h1{font-size:16px}h1 b{color:var(--accent)}.note{color:var(--muted);font-size:12px;margin-bottom:14px}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px 9px;border-bottom:1px solid #1a2230;font-size:12px}
+th{color:var(--muted);text-transform:uppercase;font-size:10px;letter-spacing:1px}.muted{color:var(--muted)}
+.installed{color:var(--green)}.available{color:var(--yellow)}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.installed .dot{background:var(--green)}.available .dot{background:var(--yellow)}
+</style></head><body>
+<h1>Module <b>Registry</b></h1>
+<div class="note">PRIORITY 6 · installed modules · name · version · status · installed date · dependencies · health</div>
+<table id="t"><thead><tr><th>Module</th><th>Ver</th><th>Status</th><th>Installed</th><th>Dependencies</th><th>Health</th></tr></thead><tbody></tbody></table>
+<script>
+const M=[
+ {name:"Broker AI OS v2 Core",version:"2.0.0",status:"installed",installed_date:"2026-06-03",dependencies:["express"],health:"ok"},
+ {name:"Health Panel",version:"1.0.0",status:"installed",installed_date:"2026-06-03",dependencies:["core"],health:"ok"},
+ {name:"Governance Pack",version:"1.0.0",status:"installed",installed_date:"2026-06-03",dependencies:["core"],health:"ok"},
+ {name:"T4 Mock Connector",version:"1.0.0",status:"installed",installed_date:"2026-06-03",dependencies:["core"],health:"mock"},
+ {name:"n8n Registry",version:"1.0.0",status:"installed",installed_date:"2026-06-03",dependencies:["core"],health:"ok"},
+ {name:"Backup Center",version:"1.0.0",status:"available",installed_date:"—",dependencies:["core"],health:"not_installed"},
+ {name:"Agent Control Center v2",version:"2.0.0",status:"available",installed_date:"—",dependencies:["core"],health:"not_installed"},
+ {name:"Audit Center",version:"1.0.0",status:"available",installed_date:"—",dependencies:["core","governance"],health:"not_installed"},
+ {name:"Data Hub",version:"1.0.0",status:"available",installed_date:"—",dependencies:["core"],health:"not_installed"},
+ {name:"Signal Explainer",version:"1.0.0",status:"available",installed_date:"—",dependencies:["core","signal_board"],health:"not_installed"},
+ {name:"System Map",version:"1.0.0",status:"available",installed_date:"—",dependencies:["core"],health:"not_installed"},
+ {name:"Config Center",version:"1.0.0",status:"available",installed_date:"—",dependencies:["core"],health:"not_installed"},
+ {name:"Integration Readiness Center",version:"1.0.0",status:"available",installed_date:"—",dependencies:["core"],health:"not_installed"}];
+document.querySelector('#t tbody').innerHTML=M.map(m=>
+ `<tr><td>${m.name}</td><td class="muted">${m.version}</td><td class="${m.status}"><span class="dot"></span>${m.status}</td>
+  <td class="muted">${m.installed_date}</td><td class="muted">${m.dependencies.join(', ')}</td><td class="muted">${m.health}</td></tr>`).join('');
+</script></body></html>

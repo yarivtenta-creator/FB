@@ -1,0 +1,30 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Data Hub</title><style>
+:root{--bg:#0a0e14;--panel:#111722;--line:#1f2937;--ink:#e6edf3;--muted:#8b98a9;--green:#2ecc71;--yellow:#f5c542;--accent:#4ea1ff;--mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:13px;padding:24px}
+h1{font-size:16px}h1 b{color:var(--accent)}.note{color:var(--muted);font-size:12px;margin-bottom:14px}
+.prov{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+button{font-family:var(--mono);font-size:11px;cursor:pointer;background:#161d2b;color:var(--ink);border:1px solid var(--line);padding:5px 11px;border-radius:4px}
+button:hover,button.on{border-color:var(--accent);color:var(--accent)}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px 9px;border-bottom:1px solid #1a2230;font-size:12px}
+th{color:var(--muted);text-transform:uppercase;font-size:10px;letter-spacing:1px}.muted{color:var(--muted)}
+.tag{font-size:10px;color:var(--yellow);border:1px solid var(--line);border-radius:3px;padding:1px 5px}
+</style></head><body>
+<h1>Data <b>Hub</b></h1>
+<div class="note">PRIORITY 3 · unified data layer · mock adapters only · future agents consume DATA_HUB, not providers · no live connections</div>
+<div class="prov" id="prov"></div>
+<table id="t"><thead><tr><th>Provider</th><th>Kind</th><th>Symbol</th><th>Value</th><th>Unit</th><th>Time</th><th></th></tr></thead><tbody></tbody></table>
+<script>
+const DATA={
+ alpaca:[{kind:'quote',symbol:'AAPL',value:203.10,unit:'USD',ts:'2026-06-03T14:00:00Z'},{kind:'quote',symbol:'NVDA',value:1180.42,unit:'USD',ts:'2026-06-03T14:00:00Z'}],
+ t4_mock:[{kind:'future',symbol:'ES',value:5312.25,unit:'idx',ts:'2026-06-03T14:00:00Z'},{kind:'future',symbol:'NQ',value:18920.50,unit:'idx',ts:'2026-06-03T14:00:00Z'}],
+ news_mock:[{kind:'headline',symbol:'NVDA',value:'Chipmaker momentum (mock)',unit:'text',ts:'2026-06-03T13:58:00Z'}],
+ econ_calendar_mock:[{kind:'event',symbol:'US-CPI',value:'CPI 13:30 ET (mock)',unit:'text',ts:'2026-06-03T13:30:00Z'}],
+ internal_signals:[{kind:'signal',symbol:'AAPL',value:'breakout 0.41 (mock)',unit:'score',ts:'2026-06-03T13:35:00Z'}]};
+const provs=["all",...Object.keys(DATA)];let cur="all";
+function rows(){let r=[];Object.keys(DATA).forEach(p=>{if(cur==='all'||cur===p)DATA[p].forEach(x=>r.push({provider:p,...x}))});return r.sort((a,b)=>b.ts.localeCompare(a.ts));}
+function render(){document.getElementById('prov').innerHTML=provs.map(p=>`<button class="${p===cur?'on':''}" onclick="setP('${p}')">${p}</button>`).join('');
+ document.querySelector('#t tbody').innerHTML=rows().map(r=>
+  `<tr><td class="accent">${r.provider}</td><td class="muted">${r.kind}</td><td>${r.symbol}</td><td>${r.value}</td><td class="muted">${r.unit}</td><td class="muted">${r.ts}</td><td><span class="tag">mock</span></td></tr>`).join('');}
+function setP(p){cur=p;render();}render();
+</script></body></html>

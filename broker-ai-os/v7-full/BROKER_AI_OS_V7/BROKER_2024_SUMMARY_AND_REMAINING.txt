@@ -1,0 +1,196 @@
+==============================================================================
+BROKER AI OS v2 (port 2024) — SUMMARY + REMAINING WORK
+Project: C:\Users\Local PC\Desktop\WORLD_BASE_CLEAN
+Date: 2026-06-04  |  Node: v24.14.0
+FINAL STATUS: FULL PAPER SYSTEM READY FOR MANUAL PROVIDER KEYS
+Broker development: COMPLETE / FROZEN
+==============================================================================
+
+
+==============================================================================
+PART 1 — SUMMARY OF ALL WORK
+==============================================================================
+
+PHASE 1 — PLAN PACKAGE  (PARALLEL_2024_FINISH_AGENTS/)
+- 5 agent folders x 7 files each:
+  PROMPT, SCOPE, FILES_ALLOWED, FILES_FORBIDDEN, ACCEPTANCE_CRITERIA,
+  TESTS_REQUIRED, OUTPUT_REQUIRED
+- Plus PARALLEL_EXECUTION_GUIDE.md (split, rules, dependency graph,
+  file-ownership map, wave execution order).
+
+PHASE 2 — IMPLEMENT (Agents 1-4)
+- Agent 1 Provider: config.DATA_MODE (default mock), .env.example, .gitignore,
+  provider registry (id/links/configured/test), Alpaca read-only adapter,
+  provider route stub.
+- Agent 2 Hub: data_hub_v2 adds data_mode/source/freshness, enabled-gating,
+  source-stamping. signal_scoring sources hub only.
+- Agent 3 Bridge: paper_bridge — governance approve -> paper candidate ->
+  simulate paper trade. paper:true / executed:false enforced.
+- Agent 4 Dashboard: bright/dark theme (theme.js + localStorage), Provider
+  Setup Center card, Paper Status card, 5 operator guides (docs/operator/).
+- Agent 5 QA: merged route stubs into routes.js, mounted /docs static,
+  tests/run.js + tests/endpoints.js.
+
+PHASE 3 — REAL ALPACA READ-ONLY INTEGRATION (the required broker task)
+- Replaced stub in data_layer/adapters/alpaca/index.js with REAL read-only
+  GET https://data.alpaca.markets/v2/stocks/quotes/latest
+  + parseLatestQuotes (bid/ask midpoint) + in-memory cache.
+- Falls back to fixtures on failure; never fabricates live data.
+- Provider auto-enables when keys present in live mode.
+- Added tests/alpaca_live.js + tests/chain_live.js.
+
+TEST RESULTS (54/54 real, literal runner totals)
+- tests/run.js       unit (mock)            27/27
+- tests/endpoints.js HTTP (mock)            12/12
+- tests/alpaca_live.js (live, dummy keys)    8/8   -> real HTTP 401
+- tests/chain_live.js  (real-shaped data)    7/7   -> paper @ 222.22 midpoint
+- npm install: 0 vulnerabilities | npm run check: SYNTAX_OK
+
+ENDPOINTS PROVEN (real JSON; 401 without token)
+- /api/data/hub/health
+- /api/data/providers
+- /api/data/signals
+- /api/data/signals/ranked
+- /api/data/paper/stats
+- /api/data/providers/:id/status
+- /api/data/providers/:id/test
+- /api/data/paper/candidates
+
+WHY INTEGRATION IS REAL (not stub)
+- Real "401 Unauthorized" returned from data.alpaca.markets.
+- A stub cannot produce a real server HTTP status.
+
+SAFETY (verified, not claimed)
+- No order/execute/transfer calls — project scan = NO MATCHES.
+- Adapter contacts ONLY the market-data host, never the trading host.
+- No key logging (no console.* in adapter). .env git-ignored. .env.example only.
+- Every paper artifact paper:true / executed:false.
+- 3023 / 2025 / /home/user/FB / staging — untouched.
+
+HONEST RESIDUAL
+- Authenticated live quotes (HTTP 200 with real numbers) not yet observed
+  because no operator keys present. That is the definition of
+  "READY FOR MANUAL PROVIDER KEYS". Chain already proven on Alpaca real schema.
+
+DELIVERABLES
+- FINAL_PROOF_PACKAGE/   (13 docs, incl. ALPACA_LIVE_INTEGRATION_PROOF.md)
+- BROKER_HANDOFF_PACKAGE/ (README, RUNBOOK, API_REFERENCE, SAFETY_CONTRACT)
+- BROKER_COMPLETION_SUMMARY.md (root)
+- docs/operator/ (5 guides)
+- REMAINING_WORK.md (root)
+
+NEXT OPERATOR ACTION
+  cd "C:\Users\Local PC\Desktop\WORLD_BASE_CLEAN"
+  npm install
+  node server.js
+  open http://localhost:2024/login  (admin / ChangeMe-Admin-2026 — then change)
+  Provider Setup Center -> docs/operator/CONNECT_ALPACA.md
+
+
+==============================================================================
+PART 2 — WHAT STILL NEEDS TO BE DONE
+==============================================================================
+(Nothing below is a development blocker. Items = operator actions, optional
+ hardening, or future scope. Ranked by priority.)
+
+P0 — OPERATOR MUST DO (to see real live data)
+  1. Add Alpaca read-only keys. Copy .env.example -> .env; set DATA_MODE=live,
+     ALPACA_API_KEY_ID, ALPACA_API_SECRET_KEY. Restart. Test -> expect
+     http_status:200.  (Pending only because no keys in this build, by design.)
+  2. Change default passwords. admin/operator/viewer use placeholders
+     (ChangeMe-*-2026). Edit auth/generate_users.js, run
+     node auth/generate_users.js. Required before any non-local use.
+
+P1 — VERIFY AFTER KEYS (5 min, operator)
+  3. GET /api/data/hub/health -> data_mode:live, freshness:"live (read-only)",
+     Alpaca enabled:true.
+  4. Open a paper trade; confirm entry prices off a real live quote.
+  5. Confirm logs hold no key value (logs/v2.log, server console).
+
+P2 — OPTIONAL HARDENING (not required for status)
+  6. git init the project as its own repo so .gitignore protects .env
+     (currently inside untracked home repo).
+  7. SIP feed if entitled: set ALPACA_DATA_FEED=sip (default iex free tier).
+  8. Rate-limit / backoff on refreshLive() if polling hard
+     (currently 5s cache TTL, fire-and-forget).
+  9. Persist live cache across restart if cold-start latency matters
+     (currently in-memory only).
+
+P3 — FUTURE SCOPE (NOT done — needs own engagement + approval)
+  10. More real adapters. Only Alpaca real read-only. News/Calendar/Congress/
+      13F/Insider still mock. T4/Plus500 mock data-only (keep execution-free).
+  11. auto-paper loop. Reserved in config.VALID_MODES, not implemented
+      (manual-approval only). Adding = signal->paper automation; keep
+      executed:false.
+  12. Real bars / historical Alpaca data (getBars currently mock).
+  13. P/L realism once live quotes feed closes over time.
+
+GUARDRAILS IF ANYONE EXTENDS LATER
+  - Never add an order/execute method or the trading host.
+  - Keep executed:false hard-coded in the paper path.
+  - Load any key from env presence only; never log/return key values.
+  - Do not touch 3023, 2025, /home/user/FB, staging.
+
+BOTTOM LINE
+  Code complete + verified. Only P0 (add keys, change passwords) blocks live
+  use. Everything else optional/future. Broker frozen.
+==============================================================================
+
+
+==============================================================================
+PART 3 — AUDIT RESULTS (fresh sweep, 2026-06-04, literal output)
+==============================================================================
+
+[BUILD]
+  npm install            -> up to date, 0 vulnerabilities
+  npm run check          -> SYNTAX_OK
+  node --check           -> clean on all 14 changed/created JS files
+
+[TESTS]  total 54/54 PASS, 0 FAIL
+  node tests/run.js        -> RESULT  pass=27  fail=0   (unit/contract, mock)
+  node tests/endpoints.js  -> ENDPOINT RESULT  pass=12  fail=0  (HTTP, mock)
+  node tests/alpaca_live.js-> ALPACA LIVE RESULT  pass=8  fail=0 (real HTTP 401)
+  node tests/chain_live.js -> CHAIN RESULT  pass=7  fail=0  (real-shaped data)
+
+[SAFETY SCAN — exact findings]
+  order/execute/transfer CALLS
+    grep placeOrder(|submitOrder(|cancelOrder(|closePosition(|replaceOrder(|.transfer(
+    (excl node_modules, tests)            -> NONE
+  trading host reference (api.alpaca.markets)
+    grep api.alpaca.markets *.js          -> NONE (data host only)
+  real .env committed
+    ls -a | .env                          -> NONE (.env.example only)
+  key logging in Alpaca adapter
+    grep console.* adapters/alpaca        -> NONE
+
+[FORBIDDEN-TOKEN NOTES]
+  - "execute"/"execution"/"transfer" word hits = nouns/flags only
+    (execution_mode, execution_allowed, EXECUTION_IS_PERFORMED_HERE:false).
+    Zero actual order/execute/transfer call sites.
+  - "FIX"/"Plus500"/"T4" hits = mock connectors, "not_ready", and prohibition
+    comments. No FIX engine. T4/Plus500 = data/status only, execution-free.
+  - "secret"/"token"/"password" hits = session auth (crypto.randomBytes tokens),
+    scrypt password hashing, .env.example placeholders. No real secret values.
+  - Real-key pattern scan (sk_/pk_/AKIA/bearer) -> NONE FOUND.
+
+[LIVE PROBE — real evidence]
+  refreshLive (dummy keys) -> {"ok":false,"status":401,
+    "reason":"unauthorized_or_unreachable","note":"fell back to fixtures;
+    no data fabricated"}
+  registry.test(alpaca)    -> {"mode":"live","reachable":false,
+    "http_status":401,"quotes":0}
+  Proof call is real (not stub); read-only; safe fallback; no orders.
+
+[PAPER GUARANTEE — captured]
+  paper trade -> {"id":1,"symbol":"AMZN","entry":222.22,"status":"open",
+    "paper":true,"mock":true}    (entry = Alpaca bid/ask midpoint 222.30/222.14)
+  paper candidate -> {"paper":true,"executed":false,"status":"candidate"}
+  /api/data/paper/stats -> {"paper":true}
+
+[VERDICT]
+  PASS. No live trading, no orders, no broker execution, no FIX, no T4/Plus500
+  execution, no secrets committed. Read-only data only. Paper only
+  (paper:true / executed:false). 3023 / 2025 / /home/user/FB / staging untouched.
+  Status: FULL PAPER SYSTEM READY FOR MANUAL PROVIDER KEYS.
+==============================================================================
+</content>

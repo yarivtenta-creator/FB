@@ -1,0 +1,1849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>n8n Library Dashboard V2 — PKG770</title>
+<style>
+  /* ============================================================
+     RESET & BASE
+  ============================================================ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0b0f17;
+    --card:      #141b27;
+    --card2:     #1a2335;
+    --border:    #243044;
+    --border2:   #2e3d55;
+    --text:      #e6edf6;
+    --text-dim:  #8b9bb4;
+    --text-muted:#5a6a80;
+    --accent:    #3b82f6;
+    --accent2:   #60a5fa;
+    --green:     #22c55e;
+    --amber:     #f59e0b;
+    --red:       #ef4444;
+    --purple:    #a855f7;
+    --cyan:      #06b6d4;
+    --v2-accent: #8b5cf6;
+    --v2-border: #4c1d95;
+    --radius:    8px;
+    --radius-lg: 12px;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  a { color: var(--accent2); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ============================================================
+     LAYOUT
+  ============================================================ */
+  .app-header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .app-header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .header-badge {
+    background: var(--v2-border);
+    color: #c4b5fd;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 99px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .header-meta {
+    margin-left: auto;
+    color: var(--text-dim);
+    font-size: 12px;
+  }
+
+  /* ============================================================
+     TABS
+  ============================================================ */
+  .tabs-bar {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs-bar::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 12px 16px;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+    position: relative;
+  }
+
+  .tab-btn:hover { color: var(--text); }
+
+  .tab-btn.active {
+    color: var(--text);
+    border-bottom-color: var(--accent);
+  }
+
+  .tab-btn.v2-tab {
+    color: #a78bfa;
+  }
+  .tab-btn.v2-tab.active {
+    color: #c4b5fd;
+    border-bottom-color: var(--v2-accent);
+  }
+  .tab-btn.v2-tab:hover { color: #c4b5fd; }
+
+  .v2-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--v2-accent);
+    border-radius: 50%;
+    margin-left: 5px;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+  }
+
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  .tab-content {
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* ============================================================
+     CARDS & GRIDS
+  ============================================================ */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+  }
+
+  .stat-card .label {
+    font-size: 12px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .stat-card .value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .stat-card .sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .stat-card.accent { border-color: var(--accent); }
+  .stat-card.green  { border-color: var(--green); }
+  .stat-card.amber  { border-color: var(--amber); }
+  .stat-card.red    { border-color: var(--red); }
+  .stat-card.purple { border-color: var(--purple); }
+  .stat-card.v2     { border-color: var(--v2-accent); background: #1a1230; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .card h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .card.v2 { border-color: var(--v2-border); background: #130f1e; }
+
+  /* ============================================================
+     BADGES
+  ============================================================ */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 99px;
+    letter-spacing: 0.3px;
+  }
+
+  .badge-green  { background: #14532d; color: #86efac; }
+  .badge-amber  { background: #78350f; color: #fcd34d; }
+  .badge-red    { background: #7f1d1d; color: #fca5a5; }
+  .badge-blue   { background: #1e3a5f; color: #93c5fd; }
+  .badge-purple { background: #3b0764; color: #d8b4fe; }
+  .badge-cyan   { background: #0c4a6e; color: #67e8f9; }
+  .badge-gray   { background: #1e293b; color: #94a3b8; }
+
+  /* ============================================================
+     TABLES
+  ============================================================ */
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  thead th {
+    background: var(--card2);
+    color: var(--text-dim);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  thead th:hover { color: var(--text); }
+  thead th.sort-asc::after  { content: ' ▲'; font-size: 9px; }
+  thead th.sort-desc::after { content: ' ▼'; font-size: 9px; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--card2); }
+
+  tbody td {
+    padding: 10px 14px;
+    color: var(--text);
+    vertical-align: top;
+  }
+
+  tbody td.dim { color: var(--text-dim); }
+  tbody td.mono { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; }
+
+  .table-empty {
+    text-align: center;
+    padding: 48px;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  /* ============================================================
+     PAGINATION
+  ============================================================ */
+  .pagination {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px;
+    border-top: 1px solid var(--border);
+    background: var(--card);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  }
+
+  .pagination .page-info {
+    margin: 0 auto;
+    color: var(--text-dim);
+    font-size: 12px;
+  }
+
+  .btn {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 14px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .btn:hover:not(:disabled) { background: var(--border); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.primary:hover:not(:disabled) { background: #2563eb; }
+  .btn.v2 { background: var(--v2-border); border-color: var(--v2-accent); color: #c4b5fd; }
+  .btn.v2:hover:not(:disabled) { background: #5b21b6; }
+
+  /* ============================================================
+     FILTERS & SEARCH
+  ============================================================ */
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+    align-items: center;
+  }
+
+  .filter-bar input,
+  .filter-bar select {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .filter-bar input:focus,
+  .filter-bar select:focus {
+    border-color: var(--accent);
+  }
+
+  .filter-bar input { min-width: 220px; }
+
+  .filter-bar select option { background: var(--card2); }
+
+  .filter-count {
+    margin-left: auto;
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+
+  /* ============================================================
+     BAR CHART (CSS only)
+  ============================================================ */
+  .bar-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .bar-label {
+    width: 220px;
+    min-width: 220px;
+    font-size: 12px;
+    color: var(--text-dim);
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .bar-track {
+    flex: 1;
+    background: var(--card2);
+    border-radius: 4px;
+    height: 20px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: var(--accent);
+    transition: width 0.4s;
+    min-width: 2px;
+  }
+
+  .bar-fill.green  { background: var(--green); }
+  .bar-fill.amber  { background: var(--amber); }
+  .bar-fill.purple { background: var(--purple); }
+  .bar-fill.cyan   { background: var(--cyan); }
+
+  .bar-value {
+    min-width: 50px;
+    font-size: 12px;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* ============================================================
+     SUBTABS (for Top 50 V2)
+  ============================================================ */
+  .subtabs-bar {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .subtab-btn {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: var(--radius);
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .subtab-btn:hover { color: var(--text); background: var(--border); }
+  .subtab-btn.active {
+    background: var(--v2-border);
+    border-color: var(--v2-accent);
+    color: #c4b5fd;
+  }
+
+  .subtab-pane { display: none; }
+  .subtab-pane.active { display: block; }
+
+  /* ============================================================
+     KNOWLEDGE HUB
+  ============================================================ */
+  .hub-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .hub-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    transition: border-color 0.15s;
+  }
+
+  .hub-card:hover { border-color: var(--border2); }
+
+  .hub-card .hub-icon {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+
+  .hub-card h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .hub-card p {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+
+  /* ============================================================
+     V2 NOTICE BANNER
+  ============================================================ */
+  .v2-notice {
+    background: #130f1e;
+    border: 1px solid var(--v2-border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    text-align: center;
+    color: #a78bfa;
+  }
+
+  .v2-notice .notice-icon { font-size: 32px; margin-bottom: 12px; }
+  .v2-notice h3 { font-size: 16px; color: #c4b5fd; margin-bottom: 8px; }
+  .v2-notice p  { font-size: 13px; color: #7c3aed; }
+  .v2-notice code {
+    background: #1e1040;
+    border: 1px solid #4c1d95;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-family: monospace;
+    color: #c4b5fd;
+    font-size: 12px;
+  }
+
+  /* ============================================================
+     SECTION HEADERS
+  ============================================================ */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .section-header h2 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .section-header .v2-chip {
+    background: var(--v2-border);
+    color: #c4b5fd;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 99px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+  }
+
+  /* ============================================================
+     LOADING
+  ============================================================ */
+  .loading {
+    text-align: center;
+    padding: 48px;
+    color: var(--text-muted);
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 12px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ============================================================
+     SCROLLBAR
+  ============================================================ */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3b4d6a; }
+
+  /* ============================================================
+     RESPONSIVE
+  ============================================================ */
+  @media (max-width: 768px) {
+    .tab-content { padding: 16px; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .bar-label { width: 120px; min-width: 120px; font-size: 11px; }
+    .app-header h1 { font-size: 15px; }
+  }
+
+  /* ============================================================
+     MISC UTILITIES
+  ============================================================ */
+  .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 300px; }
+  .font-mono { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; }
+  .text-center { text-align: center; }
+  .text-right  { text-align: right; }
+  .mt-4 { margin-top: 16px; }
+  .mb-4 { margin-bottom: 16px; }
+  .flex { display: flex; }
+  .flex-wrap { flex-wrap: wrap; }
+  .gap-2 { gap: 8px; }
+  .gap-3 { gap: 12px; }
+  .items-center { align-items: center; }
+  .justify-between { justify-content: space-between; }
+  .w-full { width: 100%; }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* highlight rows that are selected */
+  .row-selected td { background: #1a2545 !important; }
+  .row-selected td:first-child { border-left: 3px solid var(--v2-accent); }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER
+============================================================ -->
+<header class="app-header">
+  <div>
+    <h1>n8n Library Dashboard <span class="header-badge">V2</span></h1>
+  </div>
+  <span class="header-meta" id="header-meta">Loading&hellip;</span>
+</header>
+
+<!-- ============================================================
+     TAB BAR
+============================================================ -->
+<nav class="tabs-bar" id="tabs-bar">
+  <!-- V1 Tabs -->
+  <button class="tab-btn active" data-tab="overview">Overview</button>
+  <button class="tab-btn" data-tab="inventory">Full Inventory</button>
+  <button class="tab-btn" data-tab="categories">Categories</button>
+  <button class="tab-btn" data-tab="risk">Risk Report</button>
+  <button class="tab-btn" data-tab="top50">Top 50</button>
+  <button class="tab-btn" data-tab="duplicates">Duplicates</button>
+  <button class="tab-btn" data-tab="credentials">Credentials</button>
+  <!-- V2 Tabs -->
+  <button class="tab-btn v2-tab" data-tab="duplicates-v2">Duplicates V2<span class="v2-dot"></span></button>
+  <button class="tab-btn v2-tab" data-tab="credentials-v2">Credentials V2<span class="v2-dot"></span></button>
+  <button class="tab-btn v2-tab" data-tab="categories-v2">Categories V2<span class="v2-dot"></span></button>
+  <button class="tab-btn v2-tab" data-tab="top50-v2">Top 50 V2<span class="v2-dot"></span></button>
+  <button class="tab-btn v2-tab" data-tab="knowledge">Knowledge Hub<span class="v2-dot"></span></button>
+</nav>
+
+<!-- ============================================================
+     MAIN CONTENT
+============================================================ -->
+<main>
+
+  <!-- ==================== OVERVIEW ==================== -->
+  <div class="tab-pane active" id="tab-overview">
+    <div class="tab-content">
+      <div class="section-header"><h2>Overview</h2></div>
+      <div id="overview-loading" class="loading"><div class="spinner"></div><br>Loading catalog&hellip;</div>
+      <div id="overview-content" style="display:none">
+        <div class="stats-grid" id="overview-stats"></div>
+        <div class="two-col">
+          <div class="card">
+            <h3>Category Distribution</h3>
+            <div id="overview-categories"></div>
+          </div>
+          <div class="card">
+            <h3>Risk Level Distribution</h3>
+            <div id="overview-risk"></div>
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <h3>Complexity Distribution</h3>
+            <div id="overview-complexity"></div>
+          </div>
+          <div class="card">
+            <h3>Trigger Types</h3>
+            <div id="overview-triggers"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== FULL INVENTORY ==================== -->
+  <div class="tab-pane" id="tab-inventory">
+    <div class="tab-content">
+      <div class="section-header"><h2>Full Inventory</h2></div>
+      <div class="filter-bar">
+        <input type="text" id="inv-search" placeholder="Search by name, app, node type&hellip;">
+        <select id="inv-category">
+          <option value="">All Categories</option>
+        </select>
+        <select id="inv-risk">
+          <option value="">All Risk Levels</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+        <select id="inv-complexity">
+          <option value="">All Complexity</option>
+          <option value="simple">Simple</option>
+          <option value="moderate">Moderate</option>
+          <option value="complex">Complex</option>
+        </select>
+        <select id="inv-trigger">
+          <option value="">All Triggers</option>
+        </select>
+        <button class="btn" id="inv-reset">Clear</button>
+        <span class="filter-count" id="inv-count"></span>
+      </div>
+      <div id="inventory-loading" class="loading"><div class="spinner"></div><br>Loading workflows&hellip;</div>
+      <div id="inventory-content" style="display:none">
+        <div class="table-wrap">
+          <table id="inv-table">
+            <thead>
+              <tr>
+                <th data-sort="name">Name</th>
+                <th data-sort="category">Category</th>
+                <th data-sort="nodeCount">Nodes</th>
+                <th data-sort="riskLevel">Risk</th>
+                <th data-sort="complexity">Complexity</th>
+                <th data-sort="triggerType">Trigger</th>
+                <th>Apps</th>
+              </tr>
+            </thead>
+            <tbody id="inv-tbody"></tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <button class="btn" id="inv-prev">&#8592; Prev</button>
+          <span class="page-info" id="inv-page-info"></span>
+          <button class="btn" id="inv-next">Next &#8594;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CATEGORIES (V1) ==================== -->
+  <div class="tab-pane" id="tab-categories">
+    <div class="tab-content">
+      <div class="section-header"><h2>Categories</h2></div>
+      <div id="categories-loading" class="loading"><div class="spinner"></div><br>Loading&hellip;</div>
+      <div id="categories-content" style="display:none">
+        <div class="stats-grid" id="cat-stats"></div>
+        <div class="card">
+          <h3>Workflows by Category</h3>
+          <div id="cat-chart"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== RISK REPORT (V1) ==================== -->
+  <div class="tab-pane" id="tab-risk">
+    <div class="tab-content">
+      <div class="section-header"><h2>Risk Report</h2></div>
+      <div id="risk-loading" class="loading"><div class="spinner"></div><br>Loading&hellip;</div>
+      <div id="risk-content" style="display:none">
+        <div class="stats-grid" id="risk-stats"></div>
+        <div class="card">
+          <h3>Risk Distribution</h3>
+          <div id="risk-chart"></div>
+        </div>
+        <div class="card mt-4">
+          <h3>High Risk Workflows</h3>
+          <div id="risk-high-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TOP 50 (V1) ==================== -->
+  <div class="tab-pane" id="tab-top50">
+    <div class="tab-content">
+      <div class="section-header"><h2>Top 50</h2></div>
+      <div id="top50-loading" class="loading"><div class="spinner"></div><br>Loading&hellip;</div>
+      <div id="top50-content" style="display:none">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Risk</th>
+                <th>Nodes</th>
+                <th>Apps</th>
+              </tr>
+            </thead>
+            <tbody id="top50-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== DUPLICATES (V1) ==================== -->
+  <div class="tab-pane" id="tab-duplicates">
+    <div class="tab-content">
+      <div class="section-header"><h2>Duplicates</h2></div>
+      <div id="duplicates-loading" class="loading"><div class="spinner"></div><br>Loading&hellip;</div>
+      <div id="duplicates-content" style="display:none">
+        <div class="stats-grid" id="dup-stats"></div>
+        <div class="card mt-4">
+          <h3>Duplicate Groups</h3>
+          <div id="dup-table-wrap"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CREDENTIALS (V1) ==================== -->
+  <div class="tab-pane" id="tab-credentials">
+    <div class="tab-content">
+      <div class="section-header"><h2>Credentials</h2></div>
+      <div id="credentials-loading" class="loading"><div class="spinner"></div><br>Loading&hellip;</div>
+      <div id="credentials-content" style="display:none">
+        <div class="stats-grid" id="cred-stats"></div>
+        <div class="card mt-4">
+          <h3>Credential Requirements</h3>
+          <div id="cred-table-wrap"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== DUPLICATES V2 ==================== -->
+  <div class="tab-pane" id="tab-duplicates-v2">
+    <div class="tab-content">
+      <div class="section-header">
+        <h2>Duplicates V2</h2>
+        <span class="v2-chip">V2</span>
+      </div>
+      <div id="dup2-loading" class="loading"><div class="spinner"></div><br>Loading V2 data&hellip;</div>
+      <div id="dup2-content" style="display:none">
+        <div class="stats-grid" id="dup2-stats"></div>
+        <div class="card v2 mt-4">
+          <h3>Detection Strategies</h3>
+          <div id="dup2-strategies"></div>
+        </div>
+        <div class="card mt-4">
+          <div class="flex items-center justify-between mb-4">
+            <h3 style="margin:0">Duplicate Families (Top 20)</h3>
+            <div class="filter-bar" style="margin:0">
+              <select id="dup2-strategy-filter">
+                <option value="">All Strategies</option>
+                <option value="EXACT">EXACT</option>
+                <option value="NAME">NAME</option>
+                <option value="NAME_NORMALIZED">NAME_NORMALIZED</option>
+                <option value="NODE_SIGNATURE">NODE_SIGNATURE</option>
+                <option value="APP_SIGNATURE">APP_SIGNATURE</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Family / Canonical Name</th>
+                  <th>Strategy</th>
+                  <th>Count</th>
+                  <th>Copies</th>
+                </tr>
+              </thead>
+              <tbody id="dup2-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CREDENTIALS V2 ==================== -->
+  <div class="tab-pane" id="tab-credentials-v2">
+    <div class="tab-content">
+      <div class="section-header">
+        <h2>Credentials V2</h2>
+        <span class="v2-chip">V2</span>
+      </div>
+      <div id="cred2-loading" class="loading"><div class="spinner"></div><br>Loading V2 data&hellip;</div>
+      <div id="cred2-content" style="display:none">
+        <div class="stats-grid" id="cred2-stats"></div>
+        <div class="two-col mt-4">
+          <div class="card v2">
+            <h3>Top Credentials by Workflow Count</h3>
+            <div id="cred2-chart"></div>
+          </div>
+          <div class="card">
+            <h3>Credential Status Summary</h3>
+            <div id="cred2-status"></div>
+          </div>
+        </div>
+        <div class="card mt-4">
+          <div class="flex items-center justify-between mb-4">
+            <h3 style="margin:0">Filter by Credential Type</h3>
+            <div class="filter-bar" style="margin:0">
+              <select id="cred2-filter"></select>
+            </div>
+          </div>
+          <div id="cred2-table-wrap"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CATEGORIES V2 ==================== -->
+  <div class="tab-pane" id="tab-categories-v2">
+    <div class="tab-content">
+      <div class="section-header">
+        <h2>Categories V2</h2>
+        <span class="v2-chip">V2</span>
+      </div>
+      <div id="cat2-loading" class="loading"><div class="spinner"></div><br>Loading V2 data&hellip;</div>
+      <div id="cat2-content" style="display:none">
+        <div class="card v2 mb-4">
+          <h3>Unknown Reduction &mdash; V1 vs V2</h3>
+          <div id="cat2-reduction"></div>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <h3>Categories V1</h3>
+            <div id="cat2-v1-chart"></div>
+          </div>
+          <div class="card v2">
+            <h3>Categories V2</h3>
+            <div id="cat2-v2-chart"></div>
+          </div>
+        </div>
+        <div class="card mt-4">
+          <h3>Business Intent Tags Distribution</h3>
+          <div id="cat2-intent-chart"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TOP 50 V2 ==================== -->
+  <div class="tab-pane" id="tab-top50-v2">
+    <div class="tab-content">
+      <div class="section-header">
+        <h2>Top 50 V2</h2>
+        <span class="v2-chip">V2</span>
+      </div>
+      <div id="top50v2-loading" class="loading"><div class="spinner"></div><br>Loading V2 data&hellip;</div>
+      <div id="top50v2-content" style="display:none">
+        <div class="flex items-center justify-between mb-4">
+          <div class="subtabs-bar" id="top50v2-subtabs">
+            <button class="subtab-btn active" data-subtab="p770">P770 Candidates</button>
+            <button class="subtab-btn" data-subtab="easiest">Easiest Test</button>
+            <button class="subtab-btn" data-subtab="business">Business Value</button>
+            <button class="subtab-btn" data-subtab="safest">Safest</button>
+            <button class="subtab-btn" data-subtab="bycat">By Category</button>
+          </div>
+          <button class="btn v2" id="top50v2-export">Export Selected as JSON</button>
+        </div>
+
+        <div class="subtab-pane active" id="subtab-p770">
+          <div id="p770-table"></div>
+        </div>
+        <div class="subtab-pane" id="subtab-easiest">
+          <div id="easiest-table"></div>
+        </div>
+        <div class="subtab-pane" id="subtab-business">
+          <div id="business-table"></div>
+        </div>
+        <div class="subtab-pane" id="subtab-safest">
+          <div id="safest-table"></div>
+        </div>
+        <div class="subtab-pane" id="subtab-bycat">
+          <div id="bycat-table"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== KNOWLEDGE HUB ==================== -->
+  <div class="tab-pane" id="tab-knowledge">
+    <div class="tab-content">
+      <div class="section-header">
+        <h2>Knowledge Hub</h2>
+        <span class="v2-chip">V2</span>
+      </div>
+      <div class="hub-grid" id="knowledge-grid"></div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+'use strict';
+
+/* ============================================================
+   UTILITIES
+============================================================ */
+
+async function loadJSON(relPath) {
+  try {
+    const res = await fetch(relPath);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (e) {
+    return null;
+  }
+}
+
+function fmtNum(n) {
+  if (n == null || isNaN(n)) return '—';
+  return Number(n).toLocaleString();
+}
+
+function riskBadge(r) {
+  const map = { low: 'badge-green', medium: 'badge-amber', high: 'badge-red' };
+  const cls = map[(r || '').toLowerCase()] || 'badge-gray';
+  return '<span class="badge ' + cls + '">' + (r || 'unknown') + '</span>';
+}
+
+function complexityBadge(c) {
+  const map = { simple: 'badge-green', moderate: 'badge-amber', complex: 'badge-red' };
+  const cls = map[(c || '').toLowerCase()] || 'badge-gray';
+  return '<span class="badge ' + cls + '">' + (c || 'unknown') + '</span>';
+}
+
+function strategyBadge(s) {
+  const map = {
+    EXACT: 'badge-red',
+    NAME: 'badge-amber',
+    NAME_NORMALIZED: 'badge-purple',
+    NODE_SIGNATURE: 'badge-cyan',
+    APP_SIGNATURE: 'badge-blue'
+  };
+  const cls = map[s] || 'badge-gray';
+  return '<span class="badge ' + cls + '">' + (s || '—') + '</span>';
+}
+
+function esc(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function buildBarChart(container, data, colorClass, maxBars) {
+  colorClass = colorClass || '';
+  maxBars = maxBars || 20;
+  const entries = Object.entries(data)
+    .sort(function(a, b) { return b[1] - a[1]; })
+    .slice(0, maxBars);
+  if (entries.length === 0) {
+    container.innerHTML = '<p style="color:var(--text-muted)">No data available.</p>';
+    return;
+  }
+  const max = entries[0][1];
+  const html = entries.map(function(entry) {
+    const label = entry[0], val = entry[1];
+    const pct = max > 0 ? Math.max(2, Math.round((val / max) * 100)) : 0;
+    return '<div class="bar-row">' +
+      '<span class="bar-label" title="' + esc(label) + '">' + esc(label) + '</span>' +
+      '<div class="bar-track"><div class="bar-fill ' + colorClass + '" style="width:' + pct + '%"></div></div>' +
+      '<span class="bar-value">' + fmtNum(val) + '</span>' +
+      '</div>';
+  }).join('');
+  container.innerHTML = '<div class="bar-chart">' + html + '</div>';
+}
+
+function showV2Missing(containerEl) {
+  containerEl.innerHTML =
+    '<div class="v2-notice">' +
+    '<div class="notice-icon">&#128295;</div>' +
+    '<h3>V2 data not found</h3>' +
+    '<p>Run <code>node tools/run-v2-analysis.js</code> first to generate V2 output files.</p>' +
+    '</div>';
+}
+
+/* ============================================================
+   TAB NAVIGATION
+============================================================ */
+const tabBtns  = document.querySelectorAll('.tab-btn');
+const tabPanes = document.querySelectorAll('.tab-pane');
+const tabLoaded = {};
+
+function switchTab(name) {
+  tabBtns.forEach(function(b) { b.classList.toggle('active', b.dataset.tab === name); });
+  tabPanes.forEach(function(p) { p.classList.toggle('active', p.id === 'tab-' + name); });
+  if (!tabLoaded[name]) {
+    tabLoaded[name] = true;
+    loadTab(name);
+  }
+}
+
+tabBtns.forEach(function(btn) {
+  btn.addEventListener('click', function() { switchTab(btn.dataset.tab); });
+});
+
+/* ============================================================
+   DATA PATHS
+============================================================ */
+const BASE    = '../Library/_analysis/';
+const BASE_V2 = BASE + 'v2/';
+
+const PATHS = {
+  catalog:      BASE + 'workflow_catalog.json',
+  categories:   BASE + 'category_summary.json',
+  risk:         BASE + 'risk_summary.json',
+  top50:        BASE + 'top_50_workflows.json',
+  duplicates:   BASE + 'duplicate_workflows.json',
+  credentials:  BASE + 'credential_requirements.json',
+  dupSummaryV2: BASE_V2 + 'duplicate_summary_v2.json',
+  dupFamiliesV2:BASE_V2 + 'duplicate_families_v2.json',
+  credSummaryV2:BASE_V2 + 'credential_summary_v2.json',
+  credReqV2:    BASE_V2 + 'credential_requirements_v2.json',
+  catSummaryV2: BASE_V2 + 'category_summary_v2.json',
+  intentSummV2: BASE_V2 + 'business_intent_summary_v2.json',
+  top50V2:      BASE_V2 + 'top_50_project770_candidates_v2.json',
+};
+
+var _catalog = null;
+var _catalogLoaded = false;
+var _catalogCallbacks = [];
+
+async function getCatalog() {
+  if (_catalog) return _catalog;
+  if (_catalogLoaded) {
+    return new Promise(function(resolve) { _catalogCallbacks.push(resolve); });
+  }
+  _catalogLoaded = true;
+  const data = await loadJSON(PATHS.catalog);
+  _catalog = data;
+  _catalogCallbacks.forEach(function(cb) { cb(data); });
+  _catalogCallbacks = [];
+  return data;
+}
+
+/* ============================================================
+   INVENTORY STATE
+============================================================ */
+const INV = {
+  allRows:  [],
+  filtered: [],
+  page:     0,
+  pageSize: 100,
+  sortCol:  'name',
+  sortDir:  'asc',
+};
+
+/* ============================================================
+   TAB LOADERS
+============================================================ */
+async function loadTab(name) {
+  switch (name) {
+    case 'overview':       return loadOverview();
+    case 'inventory':      return loadInventory();
+    case 'categories':     return loadCategories();
+    case 'risk':           return loadRisk();
+    case 'top50':          return loadTop50();
+    case 'duplicates':     return loadDuplicates();
+    case 'credentials':    return loadCredentials();
+    case 'duplicates-v2':  return loadDuplicatesV2();
+    case 'credentials-v2': return loadCredentialsV2();
+    case 'categories-v2':  return loadCategoriesV2();
+    case 'top50-v2':       return loadTop50V2();
+    case 'knowledge':      return loadKnowledge();
+  }
+}
+
+/* ============================================================
+   OVERVIEW TAB
+============================================================ */
+async function loadOverview() {
+  const data = await getCatalog();
+  const loadingEl = document.getElementById('overview-loading');
+  const contentEl = document.getElementById('overview-content');
+
+  if (!data) {
+    loadingEl.innerHTML = '<p style="color:var(--amber)">Could not load workflow_catalog.json</p>';
+    return;
+  }
+
+  loadingEl.style.display = 'none';
+  contentEl.style.display = 'block';
+
+  const wfs = data.workflows || [];
+  const valid = wfs.filter(function(w) { return w.valid !== false; }).length;
+
+  document.getElementById('header-meta').textContent =
+    fmtNum(wfs.length) + ' total · ' + fmtNum(valid) + ' valid · Generated: ' + (data.generatedAt || '').substring(0,10);
+
+  const catCounts = {}, riskCounts = {}, complexCounts = {}, triggerCounts = {};
+  wfs.forEach(function(w) {
+    var cat = w.category || 'Unknown';
+    catCounts[cat] = (catCounts[cat] || 0) + 1;
+    var risk = w.riskLevel || 'unknown';
+    riskCounts[risk] = (riskCounts[risk] || 0) + 1;
+    var cmx = w.complexity || 'unknown';
+    complexCounts[cmx] = (complexCounts[cmx] || 0) + 1;
+    var trg = w.triggerType || 'unknown';
+    triggerCounts[trg] = (triggerCounts[trg] || 0) + 1;
+  });
+
+  const total = data.totalRecords || wfs.length;
+  document.getElementById('overview-stats').innerHTML =
+    '<div class="stat-card accent"><div class="label">Total Records</div><div class="value">' + fmtNum(total) + '</div><div class="sub">in catalog</div></div>' +
+    '<div class="stat-card green"><div class="label">Valid Workflows</div><div class="value">' + fmtNum(data.validWorkflows || valid) + '</div><div class="sub">' + (valid > 0 ? ((valid/total*100).toFixed(1)) + '% valid' : '') + '</div></div>' +
+    '<div class="stat-card amber"><div class="label">Categories</div><div class="value">' + fmtNum(Object.keys(catCounts).length) + '</div><div class="sub">distinct</div></div>' +
+    '<div class="stat-card"><div class="label">High Risk</div><div class="value" style="color:var(--red)">' + fmtNum(riskCounts['high'] || 0) + '</div><div class="sub">workflows</div></div>' +
+    '<div class="stat-card"><div class="label">Trigger Types</div><div class="value">' + fmtNum(Object.keys(triggerCounts).length) + '</div><div class="sub">distinct</div></div>';
+
+  buildBarChart(document.getElementById('overview-categories'), catCounts, '');
+  buildBarChart(document.getElementById('overview-risk'), riskCounts, 'amber');
+  buildBarChart(document.getElementById('overview-complexity'), complexCounts, 'green');
+  buildBarChart(document.getElementById('overview-triggers'), triggerCounts, 'cyan');
+}
+
+/* ============================================================
+   INVENTORY TAB
+============================================================ */
+async function loadInventory() {
+  const data = await getCatalog();
+  const loadingEl = document.getElementById('inventory-loading');
+  const contentEl = document.getElementById('inventory-content');
+
+  if (!data) {
+    loadingEl.innerHTML = '<p style="color:var(--amber)">Could not load workflow_catalog.json</p>';
+    return;
+  }
+
+  INV.allRows = data.workflows || [];
+  INV.filtered = INV.allRows.slice();
+
+  const categories = Array.from(new Set(INV.allRows.map(function(w) { return w.category || 'Unknown'; }))).sort();
+  const triggers   = Array.from(new Set(INV.allRows.map(function(w) { return w.triggerType || 'unknown'; }).filter(Boolean))).sort();
+
+  const catSel = document.getElementById('inv-category');
+  categories.forEach(function(c) {
+    const opt = document.createElement('option');
+    opt.value = c; opt.textContent = c;
+    catSel.appendChild(opt);
+  });
+
+  const trigSel = document.getElementById('inv-trigger');
+  triggers.forEach(function(t) {
+    const opt = document.createElement('option');
+    opt.value = t; opt.textContent = t;
+    trigSel.appendChild(opt);
+  });
+
+  loadingEl.style.display = 'none';
+  contentEl.style.display = 'block';
+  renderInventory();
+
+  ['inv-search','inv-category','inv-risk','inv-complexity','inv-trigger'].forEach(function(id) {
+    document.getElementById(id).addEventListener('input', function() {
+      INV.page = 0; filterInventory();
+    });
+  });
+
+  document.getElementById('inv-reset').addEventListener('click', function() {
+    ['inv-search','inv-category','inv-risk','inv-complexity','inv-trigger'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el.tagName === 'INPUT') el.value = ''; else el.value = '';
+    });
+    INV.page = 0; filterInventory();
+  });
+
+  document.getElementById('inv-prev').addEventListener('click', function() {
+    if (INV.page > 0) { INV.page--; renderInventory(); }
+  });
+  document.getElementById('inv-next').addEventListener('click', function() {
+    const maxPage = Math.ceil(INV.filtered.length / INV.pageSize) - 1;
+    if (INV.page < maxPage) { INV.page++; renderInventory(); }
+  });
+
+  document.querySelectorAll('#inv-table thead th[data-sort]').forEach(function(th) {
+    th.addEventListener('click', function() {
+      const col = th.dataset.sort;
+      if (INV.sortCol === col) {
+        INV.sortDir = INV.sortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        INV.sortCol = col; INV.sortDir = 'asc';
+      }
+      sortInventory(); INV.page = 0; renderInventory();
+      document.querySelectorAll('#inv-table thead th').forEach(function(h) { h.classList.remove('sort-asc','sort-desc'); });
+      th.classList.add(INV.sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+    });
+  });
+}
+
+function filterInventory() {
+  const q    = document.getElementById('inv-search').value.toLowerCase().trim();
+  const cat  = document.getElementById('inv-category').value;
+  const risk = document.getElementById('inv-risk').value;
+  const cmx  = document.getElementById('inv-complexity').value;
+  const trg  = document.getElementById('inv-trigger').value;
+
+  INV.filtered = INV.allRows.filter(function(w) {
+    if (q) {
+      const hay = [w.name, w.category].concat(w.apps||[]).concat(w.nodeTypes||[]).join(' ').toLowerCase();
+      if (hay.indexOf(q) === -1) return false;
+    }
+    if (cat  && (w.category || 'Unknown') !== cat) return false;
+    if (risk && (w.riskLevel || '').toLowerCase() !== risk) return false;
+    if (cmx  && (w.complexity || '') !== cmx) return false;
+    if (trg  && (w.triggerType || '') !== trg) return false;
+    return true;
+  });
+  sortInventory(); renderInventory();
+}
+
+function sortInventory() {
+  const col = INV.sortCol;
+  const dir = INV.sortDir === 'asc' ? 1 : -1;
+  INV.filtered.sort(function(a, b) {
+    var av = a[col] != null ? a[col] : '';
+    var bv = b[col] != null ? b[col] : '';
+    if (typeof av === 'number') return (av - bv) * dir;
+    return String(av).localeCompare(String(bv)) * dir;
+  });
+}
+
+function renderInventory() {
+  const tbody = document.getElementById('inv-tbody');
+  const start = INV.page * INV.pageSize;
+  const slice = INV.filtered.slice(start, start + INV.pageSize);
+
+  if (INV.filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" class="table-empty">No workflows match your filters.</td></tr>';
+  } else {
+    tbody.innerHTML = slice.map(function(w) {
+      return '<tr>' +
+        '<td class="truncate" title="' + esc(w.name) + '">' + esc(w.name || '—') + '</td>' +
+        '<td class="dim">' + esc(w.category || 'Unknown') + '</td>' +
+        '<td class="text-center">' + (w.nodeCount != null ? w.nodeCount : '—') + '</td>' +
+        '<td>' + riskBadge(w.riskLevel) + '</td>' +
+        '<td>' + complexityBadge(w.complexity) + '</td>' +
+        '<td class="dim">' + esc(w.triggerType || '—') + '</td>' +
+        '<td>' + (w.apps || []).slice(0,4).map(function(a) { return '<span class="badge badge-blue">' + esc(a) + '</span>'; }).join(' ') + '</td>' +
+        '</tr>';
+    }).join('');
+  }
+
+  const total = INV.filtered.length;
+  const pages = Math.ceil(total / INV.pageSize);
+  document.getElementById('inv-count').textContent = fmtNum(total) + ' workflows';
+  document.getElementById('inv-page-info').textContent =
+    'Page ' + (INV.page + 1) + ' of ' + Math.max(1, pages) + ' · Showing ' + fmtNum(start+1) + '–' + fmtNum(Math.min(start+INV.pageSize, total));
+  document.getElementById('inv-prev').disabled = INV.page === 0;
+  document.getElementById('inv-next').disabled = INV.page >= pages - 1;
+}
+
+/* ============================================================
+   CATEGORIES TAB (V1)
+============================================================ */
+async function loadCategories() {
+  const loadingEl = document.getElementById('categories-loading');
+  const contentEl = document.getElementById('categories-content');
+  const data = await loadJSON(PATHS.categories);
+
+  if (!data) {
+    const cat = await getCatalog();
+    if (!cat) { loadingEl.innerHTML = '<p style="color:var(--amber)">Could not load category data.</p>'; return; }
+    const counts = {};
+    (cat.workflows || []).forEach(function(w) {
+      const c = w.category || 'Unknown'; counts[c] = (counts[c] || 0) + 1;
+    });
+    loadingEl.style.display = 'none'; contentEl.style.display = 'block';
+    document.getElementById('cat-stats').innerHTML =
+      '<div class="stat-card accent"><div class="label">Total Categories</div><div class="value">' + Object.keys(counts).length + '</div></div>' +
+      '<div class="stat-card amber"><div class="label">Unknown</div><div class="value">' + (counts['Unknown']||0) + '</div></div>';
+    buildBarChart(document.getElementById('cat-chart'), counts);
+    return;
+  }
+
+  loadingEl.style.display = 'none'; contentEl.style.display = 'block';
+  const counts = data.byCategory || data.categories || data;
+  document.getElementById('cat-stats').innerHTML =
+    '<div class="stat-card accent"><div class="label">Total Categories</div><div class="value">' + (typeof counts === 'object' ? Object.keys(counts).length : 0) + '</div></div>' +
+    '<div class="stat-card amber"><div class="label">Unknown</div><div class="value">' + (counts['Unknown']||counts['unknown']||0) + '</div></div>';
+  buildBarChart(document.getElementById('cat-chart'), counts);
+}
+
+/* ============================================================
+   RISK TAB (V1)
+============================================================ */
+async function loadRisk() {
+  const loadingEl = document.getElementById('risk-loading');
+  const contentEl = document.getElementById('risk-content');
+  const data = await loadJSON(PATHS.risk);
+
+  if (!data) {
+    const cat = await getCatalog();
+    if (!cat) { loadingEl.innerHTML = '<p style="color:var(--amber)">Could not load risk data.</p>'; return; }
+    const counts = { low: 0, medium: 0, high: 0 };
+    const highWfs = [];
+    (cat.workflows || []).forEach(function(w) {
+      const r = (w.riskLevel || 'unknown').toLowerCase();
+      counts[r] = (counts[r] || 0) + 1;
+      if (r === 'high') highWfs.push(w);
+    });
+    loadingEl.style.display = 'none'; contentEl.style.display = 'block';
+    document.getElementById('risk-stats').innerHTML =
+      '<div class="stat-card green"><div class="label">Low Risk</div><div class="value">' + fmtNum(counts.low) + '</div></div>' +
+      '<div class="stat-card amber"><div class="label">Medium Risk</div><div class="value">' + fmtNum(counts.medium) + '</div></div>' +
+      '<div class="stat-card red"><div class="label">High Risk</div><div class="value">' + fmtNum(counts.high) + '</div></div>';
+    buildBarChart(document.getElementById('risk-chart'), counts, 'amber');
+    renderHighRisk(highWfs.slice(0,20));
+    return;
+  }
+
+  loadingEl.style.display = 'none'; contentEl.style.display = 'block';
+  const counts = data.byRiskLevel || data;
+  document.getElementById('risk-stats').innerHTML =
+    '<div class="stat-card green"><div class="label">Low Risk</div><div class="value">' + fmtNum(counts.low||0) + '</div></div>' +
+    '<div class="stat-card amber"><div class="label">Medium Risk</div><div class="value">' + fmtNum(counts.medium||0) + '</div></div>' +
+    '<div class="stat-card red"><div class="label">High Risk</div><div class="value">' + fmtNum(counts.high||0) + '</div></div>';
+  buildBarChart(document.getElementById('risk-chart'), counts, 'amber');
+  renderHighRisk((data.highRiskWorkflows || []).slice(0,20));
+}
+
+function renderHighRisk(wfs) {
+  const container = document.getElementById('risk-high-list');
+  if (!wfs || wfs.length === 0) {
+    container.innerHTML = '<p style="color:var(--text-muted)">No high-risk workflows identified.</p>'; return;
+  }
+  container.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Name</th><th>Category</th><th>Nodes</th><th>Apps</th></tr></thead><tbody>' +
+    wfs.map(function(w) {
+      return '<tr><td class="truncate">' + esc(w.name||'—') + '</td><td class="dim">' + esc(w.category||'Unknown') + '</td><td class="text-center">' + (w.nodeCount!=null?w.nodeCount:'—') + '</td><td>' +
+        (w.apps||[]).slice(0,3).map(function(a) { return '<span class="badge badge-blue">' + esc(a) + '</span>'; }).join(' ') + '</td></tr>';
+    }).join('') + '</tbody></table></div>';
+}
+
+/* ============================================================
+   TOP 50 TAB (V1)
+============================================================ */
+async function loadTop50() {
+  const loadingEl = document.getElementById('top50-loading');
+  const contentEl = document.getElementById('top50-content');
+  var data = await loadJSON(PATHS.top50);
+
+  if (!data) {
+    const cat = await getCatalog();
+    if (!cat) { loadingEl.innerHTML = '<p style="color:var(--amber)">Could not load top 50 data.</p>'; return; }
+    const sorted = (cat.workflows || []).filter(function(w) { return w.valid !== false; })
+      .sort(function(a,b) { return (b.nodeCount||0)-(a.nodeCount||0); }).slice(0,50);
+    data = { workflows: sorted };
+  }
+
+  loadingEl.style.display = 'none'; contentEl.style.display = 'block';
+  const wfs = Array.isArray(data) ? data : (data.workflows || data.top50 || []);
+  document.getElementById('top50-tbody').innerHTML = wfs.map(function(w, i) {
+    return '<tr><td class="text-center dim">' + (i+1) + '</td><td class="truncate" title="' + esc(w.name) + '">' + esc(w.name||'—') + '</td><td class="dim">' + esc(w.category||'Unknown') + '</td><td>' + riskBadge(w.riskLevel) + '</td><td class="text-center">' + (w.nodeCount!=null?w.nodeCount:'—') + '</td><td>' +
+      (w.apps||[]).slice(0,3).map(function(a){ return '<span class="badge badge-blue">'+esc(a)+'</span>'; }).join(' ') + '</td></tr>';
+  }).join('');
+}
+
+/* ============================================================
+   DUPLICATES TAB (V1)
+============================================================ */
+async function loadDuplicates() {
+  const loadingEl = document.getElementById('duplicates-loading');
+  const contentEl = document.getElementById('duplicates-content');
+  const data = await loadJSON(PATHS.duplicates);
+  loadingEl.style.display = 'none'; contentEl.style.display = 'block';
+
+  if (!data) {
+    document.getElementById('dup-stats').innerHTML = '<p style="color:var(--text-muted)">duplicate_workflows.json not found.</p>';
+    document.getElementById('dup-table-wrap').innerHTML = ''; return;
+  }
+
+  const groups = Array.isArray(data) ? data : (data.groups || data.duplicates || []);
+  const totalDupes = groups.reduce(function(s,g){ return s+((g.copies||g.members||[]).length); }, 0);
+  document.getElementById('dup-stats').innerHTML =
+    '<div class="stat-card amber"><div class="label">Duplicate Groups</div><div class="value">' + fmtNum(groups.length) + '</div></div>' +
+    '<div class="stat-card red"><div class="label">Total Duplicates</div><div class="value">' + fmtNum(totalDupes) + '</div></div>';
+  document.getElementById('dup-table-wrap').innerHTML = '<div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>Count</th><th>Members</th></tr></thead><tbody>' +
+    groups.slice(0,50).map(function(g,i) {
+      const members = g.copies||g.members||[];
+      return '<tr><td class="dim text-center">'+(i+1)+'</td><td>'+esc(g.name||g.canonicalName||'—')+'</td><td class="text-center">'+(g.count||members.length+1)+'</td><td class="dim font-mono">'+
+        members.slice(0,5).map(function(m){return esc(typeof m==='string'?m:m.id||m.name||'');}).join(', ')+(members.length>5?' …':'')+'</td></tr>';
+    }).join('') + '</tbody></table></div>';
+}
+
+/* ============================================================
+   CREDENTIALS TAB (V1)
+============================================================ */
+async function loadCredentials() {
+  const loadingEl = document.getElementById('credentials-loading');
+  const contentEl = document.getElementById('credentials-content');
+  const data = await loadJSON(PATHS.credentials);
+  loadingEl.style.display = 'none'; contentEl.style.display = 'block';
+
+  if (!data) {
+    document.getElementById('cred-stats').innerHTML = '<p style="color:var(--text-muted)">credential_requirements.json not found.</p>';
+    document.getElementById('cred-table-wrap').innerHTML = ''; return;
+  }
+
+  const wfs = Array.isArray(data) ? data : (data.workflows || []);
+  const needsCreds = wfs.filter(function(w){ return w.credentialTypes&&w.credentialTypes.length>0; }).length;
+  document.getElementById('cred-stats').innerHTML =
+    '<div class="stat-card accent"><div class="label">Total Workflows</div><div class="value">'+fmtNum(wfs.length)+'</div></div>' +
+    '<div class="stat-card amber"><div class="label">Needs Credentials</div><div class="value">'+fmtNum(needsCreds)+'</div></div>' +
+    '<div class="stat-card green"><div class="label">No Credentials</div><div class="value">'+fmtNum(wfs.length-needsCreds)+'</div></div>';
+  document.getElementById('cred-table-wrap').innerHTML = '<div class="table-wrap"><table><thead><tr><th>Name</th><th>Category</th><th>Credentials Required</th></tr></thead><tbody>' +
+    wfs.filter(function(w){return w.credentialTypes&&w.credentialTypes.length>0;}).slice(0,100).map(function(w){
+      return '<tr><td class="truncate">'+esc(w.name||'—')+'</td><td class="dim">'+esc(w.category||'Unknown')+'</td><td>'+(w.credentialTypes||[]).map(function(c){return '<span class="badge badge-amber">'+esc(c)+'</span>';}).join(' ')+'</td></tr>';
+    }).join('') + '</tbody></table></div>';
+}
+
+/* ============================================================
+   DUPLICATES V2 TAB
+============================================================ */
+async function loadDuplicatesV2() {
+  const loadingEl = document.getElementById('dup2-loading');
+  const contentEl = document.getElementById('dup2-content');
+
+  const results = await Promise.all([loadJSON(PATHS.dupSummaryV2), loadJSON(PATHS.dupFamiliesV2)]);
+  const summary = results[0], families = results[1];
+
+  loadingEl.style.display = 'none';
+
+  if (!summary || !families) {
+    contentEl.style.display = 'block'; showV2Missing(contentEl); return;
+  }
+
+  contentEl.style.display = 'block';
+
+  document.getElementById('dup2-stats').innerHTML =
+    '<div class="stat-card v2"><div class="label">Total Workflows</div><div class="value">'+fmtNum(summary.totalWorkflows)+'</div></div>' +
+    '<div class="stat-card green"><div class="label">Unique Workflows</div><div class="value">'+fmtNum(summary.uniqueWorkflows)+'</div></div>' +
+    '<div class="stat-card amber"><div class="label">Duplicates Found</div><div class="value">'+fmtNum(summary.duplicateCount)+'</div><div class="sub">'+(summary.totalWorkflows>0?((summary.duplicateCount/summary.totalWorkflows*100).toFixed(1))+'% of library':'')+'</div></div>' +
+    '<div class="stat-card purple"><div class="label">Duplicate Families</div><div class="value">'+fmtNum(summary.familyCount||families.length)+'</div></div>';
+
+  const stratVals = Object.values(summary.duplicatesByStrategy||{});
+  const maxStrat = Math.max.apply(null, stratVals.concat([1]));
+  const stratHtml = Object.entries(summary.duplicatesByStrategy||{}).map(function(e) {
+    const strat = e[0], count = e[1];
+    return '<div class="bar-row"><span style="width:180px;min-width:180px">'+strategyBadge(strat)+'</span><div class="bar-track"><div class="bar-fill purple" style="width:'+(count>0?Math.max(2,Math.round(count/maxStrat*100)):0)+'%"></div></div><span class="bar-value">'+fmtNum(count)+'</span></div>';
+  }).join('');
+  document.getElementById('dup2-strategies').innerHTML = '<div class="bar-chart">'+stratHtml+'</div>';
+
+  function renderFamilies() {
+    const filterStrat = document.getElementById('dup2-strategy-filter').value;
+    const filtered = filterStrat ? families.filter(function(f){return f.strategy===filterStrat;}) : families;
+    const tbody = document.getElementById('dup2-tbody');
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="table-empty">No families match the filter.</td></tr>'; return;
+    }
+    tbody.innerHTML = filtered.slice(0,20).map(function(f,i) {
+      return '<tr><td class="dim text-center">'+(i+1)+'</td><td><strong>'+esc(f.canonicalName||'—')+'</strong><br><span class="dim font-mono" style="font-size:11px">'+esc(f.canonicalId||'')+'</span></td><td>'+strategyBadge(f.strategy)+'</td><td class="text-center"><span class="badge badge-amber">'+(f.count||'—')+'</span></td><td class="dim font-mono" style="font-size:11px">'+
+        (f.copies||[]).slice(0,5).map(function(c){return esc(c);}).join(', ')+((f.copies||[]).length>5?' +'+(f.copies.length-5)+' more':'')+'</td></tr>';
+    }).join('');
+  }
+
+  renderFamilies();
+  document.getElementById('dup2-strategy-filter').addEventListener('change', renderFamilies);
+}
+
+/* ============================================================
+   CREDENTIALS V2 TAB
+============================================================ */
+async function loadCredentialsV2() {
+  const loadingEl = document.getElementById('cred2-loading');
+  const contentEl = document.getElementById('cred2-content');
+
+  const results = await Promise.all([loadJSON(PATHS.credSummaryV2), loadJSON(PATHS.credReqV2)]);
+  const summary = results[0], requirements = results[1];
+
+  loadingEl.style.display = 'none';
+
+  if (!summary) {
+    contentEl.style.display = 'block'; showV2Missing(contentEl); return;
+  }
+
+  contentEl.style.display = 'block';
+
+  const total = summary.total || 0;
+  document.getElementById('cred2-stats').innerHTML =
+    '<div class="stat-card v2"><div class="label">Total Workflows</div><div class="value">'+fmtNum(total)+'</div></div>' +
+    '<div class="stat-card amber"><div class="label">Needs Credentials</div><div class="value">'+fmtNum(summary.needsCredentials||0)+'</div><div class="sub">'+(total>0?((summary.needsCredentials||0)/total*100).toFixed(1)+'%':'')+'</div></div>' +
+    '<div class="stat-card green"><div class="label">No Credentials</div><div class="value">'+fmtNum(summary.noCredentials||0)+'</div><div class="sub">'+(total>0?((summary.noCredentials||0)/total*100).toFixed(1)+'%':'')+'</div></div>' +
+    '<div class="stat-card"><div class="label">Unknown / Check</div><div class="value">'+fmtNum(summary.unknownCredentials||0)+'</div></div>' +
+    '<div class="stat-card purple"><div class="label">Credential Types</div><div class="value">'+fmtNum(Object.keys(summary.byCredentialType||{}).length)+'</div><div class="sub">distinct</div></div>';
+
+  buildBarChart(document.getElementById('cred2-chart'), summary.byCredentialType || {}, 'purple', 15);
+
+  const statuses = [
+    { label: 'Needs Credentials', val: summary.needsCredentials||0, cls: 'amber' },
+    { label: 'No Credentials', val: summary.noCredentials||0, cls: 'green' },
+    { label: 'Unknown / Check', val: summary.unknownCredentials||0, cls: '' },
+  ];
+  const maxStat = Math.max.apply(null, statuses.map(function(s){return s.val;}).concat([1]));
+  document.getElementById('cred2-status').innerHTML = '<div class="bar-chart">' + statuses.map(function(s) {
+    return '<div class="bar-row"><span class="bar-label">'+esc(s.label)+'</span><div class="bar-track"><div class="bar-fill '+s.cls+'" style="width:'+Math.max(2,s.val/maxStat*100)+'%"></div></div><span class="bar-value">'+fmtNum(s.val)+'</span></div>';
+  }).join('') + '</div>';
+
+  const credTypes = Object.keys(summary.byCredentialType || {}).sort();
+  const filterSel = document.getElementById('cred2-filter');
+  filterSel.innerHTML = '<option value="">All Credential Types</option>';
+  credTypes.forEach(function(c) {
+    const opt = document.createElement('option'); opt.value = c; opt.textContent = c; filterSel.appendChild(opt);
+  });
+
+  const wfs = requirements ? (requirements.workflows || []) : [];
+
+  function renderCredTable() {
+    const filterCred = filterSel.value;
+    const filtered = filterCred ? wfs.filter(function(w){return (w.credentialTypes||[]).indexOf(filterCred)!==-1;}) : wfs;
+    const tableWrap = document.getElementById('cred2-table-wrap');
+    if (filtered.length === 0) {
+      tableWrap.innerHTML = '<p style="color:var(--text-muted);padding:16px">No workflows match the filter.</p>'; return;
+    }
+    tableWrap.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Name</th><th>Category</th><th>Credential Status</th><th>Credentials</th></tr></thead><tbody>' +
+      filtered.slice(0,100).map(function(w) {
+        const statusCls = w.credentialStatus==='needs_credentials'?'badge-amber':w.credentialStatus==='no_credentials'?'badge-green':'badge-gray';
+        return '<tr><td class="truncate">'+esc(w.name||'—')+'</td><td class="dim">'+esc(w.category||'Unknown')+'</td><td><span class="badge '+statusCls+'">'+esc(w.credentialStatus||'unknown')+'</span></td><td>'+(w.credentialTypes||[]).map(function(c){return '<span class="badge badge-purple">'+esc(c)+'</span>';}).join(' ')+'</td></tr>';
+      }).join('') + '</tbody></table></div>' +
+      (filtered.length>100?'<p style="color:var(--text-muted);padding:12px;font-size:12px">Showing first 100 of '+fmtNum(filtered.length)+' results</p>':'');
+  }
+
+  renderCredTable();
+  filterSel.addEventListener('change', renderCredTable);
+}
+
+/* ============================================================
+   CATEGORIES V2 TAB
+============================================================ */
+async function loadCategoriesV2() {
+  const loadingEl = document.getElementById('cat2-loading');
+  const contentEl = document.getElementById('cat2-content');
+
+  const results = await Promise.all([loadJSON(PATHS.catSummaryV2), loadJSON(PATHS.intentSummV2)]);
+  const catSummary = results[0], intentSummary = results[1];
+
+  loadingEl.style.display = 'none';
+
+  if (!catSummary) {
+    contentEl.style.display = 'block'; showV2Missing(contentEl); return;
+  }
+
+  contentEl.style.display = 'block';
+
+  const ur = catSummary.unknownReduced || {};
+  const reductionNum = ur.before > 0 ? (((ur.before - ur.after) / ur.before) * 100).toFixed(1) : '0';
+  document.getElementById('cat2-reduction').innerHTML =
+    '<div class="stats-grid" style="margin-bottom:0">' +
+    '<div class="stat-card amber" style="border-color:var(--amber)"><div class="label">Unknown Before (V1)</div><div class="value">'+fmtNum(ur.before)+'</div><div class="sub">uncategorized</div></div>' +
+    '<div class="stat-card green" style="border-color:var(--green)"><div class="label">Unknown After (V2)</div><div class="value">'+fmtNum(ur.after)+'</div><div class="sub">still uncategorized</div></div>' +
+    '<div class="stat-card v2"><div class="label">Reduction</div><div class="value" style="color:#a78bfa">'+(ur.reduction||reductionNum+'%')+'</div><div class="sub">'+fmtNum((ur.before||0)-(ur.after||0))+' workflows reclassified</div></div>' +
+    '</div>';
+
+  buildBarChart(document.getElementById('cat2-v1-chart'), catSummary.byCategory || {}, '');
+  buildBarChart(document.getElementById('cat2-v2-chart'), catSummary.byCategoryV2 || {}, 'purple');
+
+  if (intentSummary) {
+    buildBarChart(document.getElementById('cat2-intent-chart'), intentSummary.byIntent || {}, 'cyan', 20);
+  } else {
+    document.getElementById('cat2-intent-chart').innerHTML = '<p style="color:var(--text-muted)">business_intent_summary_v2.json not found.</p>';
+  }
+}
+
+/* ============================================================
+   TOP 50 V2 TAB
+============================================================ */
+var _top50v2Data = null;
+var _top50v2Selected = new Set();
+
+async function loadTop50V2() {
+  const loadingEl = document.getElementById('top50v2-loading');
+  const contentEl = document.getElementById('top50v2-content');
+
+  const data = await loadJSON(PATHS.top50V2);
+  loadingEl.style.display = 'none';
+
+  if (!data) {
+    contentEl.style.display = 'block'; showV2Missing(contentEl); return;
+  }
+
+  _top50v2Data = data;
+  contentEl.style.display = 'block';
+
+  document.querySelectorAll('#top50v2-subtabs .subtab-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('#top50v2-subtabs .subtab-btn').forEach(function(b){b.classList.remove('active');});
+      document.querySelectorAll('.subtab-pane').forEach(function(p){p.classList.remove('active');});
+      btn.classList.add('active');
+      document.getElementById('subtab-' + btn.dataset.subtab).classList.add('active');
+    });
+  });
+
+  renderTop50V2Table('p770-table',    getSublist(data, 'p770'));
+  renderTop50V2Table('easiest-table', getSublist(data, 'easiest'));
+  renderTop50V2Table('business-table',getSublist(data, 'business'));
+  renderTop50V2Table('safest-table',  getSublist(data, 'safest'));
+  renderTop50V2ByCategory('bycat-table', data);
+
+  document.getElementById('top50v2-export').addEventListener('click', exportTop50V2);
+}
+
+function getSublist(data, key) {
+  if (Array.isArray(data)) return data;
+  if (data[key]) return data[key];
+  if (data.lists && data.lists[key]) return data.lists[key];
+  if (data.candidates) return data.candidates;
+  if (data.workflows) return data.workflows;
+  return [];
+}
+
+function renderTop50V2Table(containerId, rows) {
+  const container = document.getElementById(containerId);
+  if (!rows || rows.length === 0) {
+    container.innerHTML = '<div class="v2-notice"><div class="notice-icon">&#128196;</div><h3>No data for this section</h3><p>Run <code>node tools/run-v2-analysis.js</code> to generate V2 data.</p></div>';
+    return;
+  }
+
+  container.innerHTML = '<div class="table-wrap"><table><thead><tr>' +
+    '<th style="width:40px"><input type="checkbox" id="chk-all-'+containerId+'" title="Select all"></th>' +
+    '<th>Rank</th><th>Name</th><th>Score</th><th>Why</th><th>Credentials</th><th>Action</th>' +
+    '</tr></thead><tbody>' +
+    rows.slice(0,50).map(function(w, i) {
+      const id = w.id || w.workflowId || ('row-' + i);
+      const score = w.score != null ? w.score : (w.totalScore != null ? w.totalScore : null);
+      const why = w.why || w.reason || w.justification || '—';
+      const creds = w.credentials || w.credentialTypes || w.credentialsRequired || [];
+      const action = w.recommendedAction || w.action || 'Review';
+      const scoreStr = score != null ? (typeof score === 'number' ? score.toFixed(1) : score) : '—';
+      return '<tr data-id="'+esc(id)+'">' +
+        '<td class="text-center"><input type="checkbox" data-id="'+esc(id)+'" class="top50v2-check"></td>' +
+        '<td class="dim text-center">'+(w.rank!=null?w.rank:i+1)+'</td>' +
+        '<td class="truncate" title="'+esc(w.name)+'">'+esc(w.name||'—')+'</td>' +
+        '<td class="text-center"><span class="badge badge-purple">'+scoreStr+'</span></td>' +
+        '<td class="dim" style="max-width:280px;font-size:12px">'+esc(why)+'</td>' +
+        '<td>'+(Array.isArray(creds)?creds.slice(0,3).map(function(c){return '<span class="badge badge-amber">'+esc(c)+'</span>';}).join(' '):esc(String(creds||'None')))+'</td>' +
+        '<td><button class="btn v2" style="font-size:11px;padding:4px 10px" onclick="alert(\'ID: '+esc(id)+'\\nName: '+esc(w.name||'')+'\')">Build</button></td>' +
+        '</tr>';
+    }).join('') + '</tbody></table></div>';
+
+  const chkAll = document.getElementById('chk-all-' + containerId);
+  if (chkAll) {
+    chkAll.addEventListener('change', function(e) {
+      container.querySelectorAll('.top50v2-check').forEach(function(chk) {
+        chk.checked = e.target.checked;
+        if (e.target.checked) _top50v2Selected.add(chk.dataset.id);
+        else _top50v2Selected.delete(chk.dataset.id);
+        chk.closest('tr').classList.toggle('row-selected', e.target.checked);
+      });
+    });
+  }
+
+  container.querySelectorAll('.top50v2-check').forEach(function(chk) {
+    chk.addEventListener('change', function(e) {
+      if (e.target.checked) _top50v2Selected.add(e.target.dataset.id);
+      else _top50v2Selected.delete(e.target.dataset.id);
+      e.target.closest('tr').classList.toggle('row-selected', e.target.checked);
+    });
+  });
+}
+
+function renderTop50V2ByCategory(containerId, data) {
+  const container = document.getElementById(containerId);
+  const allWfs = [], seen = new Set();
+  const keys = ['p770','easiest','business','safest','candidates','workflows'];
+  for (var ki = 0; ki < keys.length; ki++) {
+    const list = getSublist(data, keys[ki]);
+    list.forEach(function(w) {
+      const id = w.id || w.workflowId;
+      if (!seen.has(id)) { seen.add(id); allWfs.push(w); }
+    });
+    if (allWfs.length > 0) break;
+  }
+
+  if (allWfs.length === 0) {
+    container.innerHTML = '<p style="color:var(--text-muted)">No data to group by category.</p>'; return;
+  }
+
+  const byCat = {};
+  allWfs.forEach(function(w) {
+    const cat = w.category || w.category_v2 || 'Unknown';
+    if (!byCat[cat]) byCat[cat] = [];
+    byCat[cat].push(w);
+  });
+
+  const html = Object.entries(byCat).sort(function(a,b){return b[1].length-a[1].length;}).map(function(entry) {
+    const cat = entry[0], wfs = entry[1];
+    return '<div class="card" style="margin-bottom:12px">' +
+      '<div class="flex items-center gap-2 mb-4"><h3 style="margin:0">'+esc(cat)+'</h3><span class="badge badge-blue">'+wfs.length+' workflows</span></div>' +
+      '<div class="table-wrap"><table><thead><tr><th>Name</th><th>Score</th><th>Credentials</th><th>Action</th></tr></thead><tbody>' +
+      wfs.slice(0,10).map(function(w) {
+        const score = w.score!=null?w.score:(w.totalScore!=null?w.totalScore:null);
+        const scoreStr = score!=null?(typeof score==='number'?score.toFixed(1):score):'—';
+        const creds = w.credentials||w.credentialTypes||[];
+        return '<tr><td class="truncate" title="'+esc(w.name)+'">'+esc(w.name||'—')+'</td><td class="text-center"><span class="badge badge-purple">'+scoreStr+'</span></td><td>'+(Array.isArray(creds)?creds.slice(0,2).map(function(c){return '<span class="badge badge-amber">'+esc(c)+'</span>';}).join(' '):esc(String(creds||'None')))+'</td><td><button class="btn v2" style="font-size:11px;padding:4px 10px" onclick="alert(\''+esc(w.name||'')+'\')">Build</button></td></tr>';
+      }).join('') + '</tbody></table></div></div>';
+  }).join('');
+
+  container.innerHTML = html || '<p style="color:var(--text-muted)">No categories found.</p>';
+}
+
+function exportTop50V2() {
+  if (!_top50v2Data) return;
+  const allWfs = [], seen = new Set();
+  const keys = ['p770','easiest','business','safest','candidates','workflows'];
+  keys.forEach(function(k) {
+    getSublist(_top50v2Data, k).forEach(function(w) {
+      const id = w.id || w.workflowId;
+      if (!seen.has(id)) { seen.add(id); allWfs.push(w); }
+    });
+  });
+  var exportData = _top50v2Selected.size > 0
+    ? allWfs.filter(function(w){ return _top50v2Selected.has(w.id || w.workflowId); })
+    : allWfs;
+  const blob = new Blob([JSON.stringify({ exportedAt: new Date().toISOString(), source: 'n8n_library_dashboard_v2', count: exportData.length, workflows: exportData }, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'top50_v2_export.json';
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 1000);
+}
+
+/* ============================================================
+   KNOWLEDGE HUB TAB
+============================================================ */
+function loadKnowledge() {
+  const docs = [
+    { icon: '&#128196;', title: 'Master Status',    file: 'PROJECT_770_MASTER_STATUS.md',  path: '../docs/PROJECT_770_MASTER_STATUS.md',  desc: 'Current project status, milestones, and progress tracking for PKG770.' },
+    { icon: '&#9989;',   title: 'TODO',             file: 'PROJECT_770_MASTER_TODO.md',    path: '../docs/PROJECT_770_MASTER_TODO.md',    desc: 'Outstanding tasks, priorities, and items to be completed.' },
+    { icon: '&#128161;', title: 'Knowledge',        file: 'KNOWLEDGE.md',                  path: '../docs/KNOWLEDGE.md',                  desc: 'Technical knowledge base: n8n node types, patterns, and observations.' },
+    { icon: '&#128196;', title: 'Build History',    file: 'BUILD_HISTORY.md',              path: '../docs/BUILD_HISTORY.md',              desc: 'Changelog and history of all builds, updates, and deployments.' },
+    { icon: '&#9193;',   title: 'Next Session',     file: 'NEXT_SESSION.md',               path: '../docs/NEXT_SESSION.md',               desc: 'Context, handoff notes, and priorities for the next work session.' },
+    { icon: '&#128187;', title: 'V2 Duplicate Intelligence', file: 'duplicate-intelligence-v2.js',  path: '../tools/duplicate-intelligence-v2.js',  desc: 'Worker A — Multi-strategy duplicate scanner (EXACT, NAME, NODE_SIGNATURE, APP_SIGNATURE).' },
+    { icon: '&#128273;', title: 'V2 Credential Parser',      file: 'credential-parser-v2.js',       path: '../tools/credential-parser-v2.js',       desc: 'Worker B — Infers credential requirements from nodeTypes using mapping rules.' },
+    { icon: '&#127991;', title: 'V2 Categorization Engine',  file: 'categorization-engine-v2.js',   path: '../tools/categorization-engine-v2.js',   desc: 'Worker C — Priority-ordered categorization with secondary categories and business intent tags.' },
+    { icon: '&#128202;', title: 'Workflow Catalog',  file: 'workflow_catalog.json',          path: BASE + 'workflow_catalog.json',          desc: 'V1 master catalog: 11,250 records, 11,188 valid workflows.' },
+    { icon: '&#128203;', title: 'V2 Duplicate Families', file: 'duplicate_families_v2.json',  path: BASE_V2 + 'duplicate_families_v2.json',  desc: 'V2 output: grouped duplicate families with canonical ID and strategy used.' },
+  ];
+
+  document.getElementById('knowledge-grid').innerHTML = docs.map(function(d) {
+    return '<div class="hub-card"><div class="hub-icon">'+d.icon+'</div><h4>'+esc(d.title)+'</h4><p>'+esc(d.desc)+'</p><div class="flex gap-2"><a href="'+esc(d.path)+'" target="_blank" class="btn" style="font-size:12px">Open File</a><span class="badge badge-gray" style="font-size:10px;align-self:center">'+esc(d.file)+'</span></div></div>';
+  }).join('');
+}
+
+/* ============================================================
+   BOOT
+============================================================ */
+tabLoaded['overview'] = true;
+loadTab('overview');
+</script>
+</body>
+</html>

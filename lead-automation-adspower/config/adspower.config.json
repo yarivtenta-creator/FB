@@ -1,0 +1,14 @@
+{
+  "enabled": false,
+  "base_url": "http://local.adspower.net:50325",
+  "api_version": "v2",
+  "automation_allowed": false,
+  "safety_rules": {
+    "no_auto_messaging": true,
+    "no_auto_posting": true,
+    "no_auto_scraping": true,
+    "no_profile_creation": true,
+    "no_profile_deletion": true,
+    "log_all_actions": true
+  }
+}

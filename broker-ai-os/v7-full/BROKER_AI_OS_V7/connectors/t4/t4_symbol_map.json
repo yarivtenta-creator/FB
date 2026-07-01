@@ -1,0 +1,13 @@
+{
+  "_comment": "Maps internal futures symbols to display metadata. Mock/reference only.",
+  "symbols": {
+    "ES":  { "exchange": "CME",   "name": "E-mini S&P 500",      "tick_size": 0.25, "multiplier": 50 },
+    "NQ":  { "exchange": "CME",   "name": "E-mini Nasdaq-100",   "tick_size": 0.25, "multiplier": 20 },
+    "YM":  { "exchange": "CBOT",  "name": "E-mini Dow",          "tick_size": 1.0,  "multiplier": 5 },
+    "RTY": { "exchange": "CME",   "name": "E-mini Russell 2000", "tick_size": 0.1,  "multiplier": 50 },
+    "CL":  { "exchange": "NYMEX", "name": "Crude Oil WTI",       "tick_size": 0.01, "multiplier": 1000 },
+    "GC":  { "exchange": "COMEX", "name": "Gold",                "tick_size": 0.1,  "multiplier": 100 },
+    "SI":  { "exchange": "COMEX", "name": "Silver",              "tick_size": 0.005,"multiplier": 5000 },
+    "ZN":  { "exchange": "CBOT",  "name": "10-Year T-Note",      "tick_size": 0.015625, "multiplier": 1000 }
+  }
+}

@@ -1,0 +1,19 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><title>Data Hub</title>
+<style>body{background:#0a0e14;color:#e6edf3;font-family:ui-monospace,Menlo,monospace;font-size:13px;padding:20px}
+h2{font-size:13px;color:#8b98a9;text-transform:uppercase;letter-spacing:1px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+.kpi{background:#111722;border:1px solid #1f2937;border-radius:8px;padding:14px}
+.kpi .v{font-size:22px;color:#4ea1ff}.kpi .l{font-size:11px;color:#8b98a9;text-transform:uppercase}
+.muted{color:#8b98a9}code{color:#f5c542}</style></head>
+<body><h2>Data Hub · Aggregation Health</h2>
+<div class="grid" id="kpis"></div>
+<div id="sym" class="muted"></div>
+<p class="muted">Single source of truth. Agents consume the hub, never providers directly. <code>mock</code> data only.</p>
+<script>
+const TKN=sessionStorage.getItem('auth_token');
+fetch('/api/data/hub/health',{headers:{'x-auth-token':TKN}}).then(r=>r.json()).then(d=>{
+ const k=[['Registered',d.registered_providers],['Active',d.active_providers],['Symbol Coverage',d.symbol_coverage],['Freshness',d.data_freshness],['Health',d.health],['Schema',d.schema_version]];
+ document.getElementById('kpis').innerHTML=k.map(x=>`<div class="kpi"><div class="v">${x[1]}</div><div class="l">${x[0]}</div></div>`).join('');
+ document.getElementById('sym').textContent='Symbols: '+(d.symbols||[]).join(', ');
+}).catch(()=>{document.getElementById('kpis').innerHTML='<div class="kpi off">sign in required</div>';});
+</script></body></html>

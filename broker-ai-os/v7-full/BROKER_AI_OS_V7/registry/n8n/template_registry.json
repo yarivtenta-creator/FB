@@ -1,0 +1,10 @@
+{
+  "_comment": "Static n8n template registry. Metadata + risk classification ONLY. No workflow execution, no webhooks, no credentials, no real services.",
+  "version": 1,
+  "templates": [
+    { "id": "intake-classify-route", "name": "Intake -> Classify -> Route -> Review", "purpose": "Lead/signal intake pipeline pattern", "risk": "low", "executes_orders": false, "requires_credentials": false },
+    { "id": "signal-digest", "name": "Daily Signal Digest", "purpose": "Summarize paper signals into a daily note", "risk": "low", "executes_orders": false, "requires_credentials": false },
+    { "id": "approval-notifier", "name": "Approval Queue Notifier", "purpose": "Notify a human when items await approval", "risk": "medium", "executes_orders": false, "requires_credentials": true },
+    { "id": "broker-order-router", "name": "Broker Order Router", "purpose": "EXAMPLE ONLY — routes orders to a broker", "risk": "high", "executes_orders": true, "requires_credentials": true, "enabled": false, "blocked_reason": "High-risk template is registered for reference but disabled. v2 does not execute workflows." }
+  ]
+}

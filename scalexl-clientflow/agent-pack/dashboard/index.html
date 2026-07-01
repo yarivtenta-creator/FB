@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScaleXL ClientFlow OS</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; height: 100vh; display: flex; flex-direction: column; }
+
+header { background: #161b22; border-bottom: 1px solid #30363d; padding: 14px 24px; display: flex; align-items: center; gap: 16px; }
+header h1 { font-size: 18px; font-weight: 600; color: #58a6ff; }
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: #3fb950; box-shadow: 0 0 6px #3fb950; animation: pulse 2s infinite; }
+.live-label { font-size: 12px; color: #3fb950; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+.layout { display: flex; flex: 1; overflow: hidden; }
+
+/* Sidebar */
+.sidebar { width: 200px; background: #161b22; border-right: 1px solid #30363d; padding: 16px 0; overflow-y: auto; flex-shrink: 0; }
+.sidebar-title { font-size: 11px; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; padding: 0 16px 8px; }
+.agent-btn { display: block; width: 100%; text-align: left; padding: 8px 16px; background: none; border: none; color: #c9d1d9; font-size: 13px; cursor: pointer; transition: background .15s; }
+.agent-btn:hover { background: #21262d; color: #58a6ff; }
+.agent-btn.active { background: #1f6feb22; color: #58a6ff; border-left: 2px solid #58a6ff; }
+
+/* Main */
+.main { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 24px; }
+
+.panel { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; }
+.panel h2 { font-size: 15px; font-weight: 600; color: #c9d1d9; margin-bottom: 16px; }
+
+.form-group { margin-bottom: 14px; }
+label { display: block; font-size: 12px; color: #8b949e; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px; }
+select, textarea, input[type=text] { width: 100%; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; color: #e6edf3; padding: 8px 12px; font-size: 13px; font-family: inherit; outline: none; }
+select:focus, textarea:focus, input:focus { border-color: #58a6ff; }
+textarea { resize: vertical; min-height: 100px; font-family: 'Consolas', monospace; }
+
+.btn { padding: 8px 20px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: opacity .15s; }
+.btn:hover { opacity: .85; }
+.btn-blue { background: #1f6feb; color: #fff; }
+.btn-green { background: #238636; color: #fff; }
+
+.output { background: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 14px; font-family: 'Consolas', monospace; font-size: 12px; white-space: pre-wrap; min-height: 80px; color: #3fb950; max-height: 300px; overflow-y: auto; }
+
+/* Pipeline steps */
+.steps { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.step { background: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 12px; }
+.step-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.step-num { background: #1f6feb; color: #fff; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; flex-shrink: 0; }
+.step-name { font-size: 13px; font-weight: 600; color: #58a6ff; }
+.badge { font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: 600; }
+.badge-green { background: #1a4731; color: #3fb950; }
+.badge-red { background: #4d1a1a; color: #f85149; }
+.badge-yellow { background: #3d2e00; color: #e3b341; }
+.badge-blue { background: #1f3a5f; color: #58a6ff; }
+.step-data { font-family: 'Consolas', monospace; font-size: 11px; color: #8b949e; }
+
+.row { display: flex; gap: 12px; }
+.row > * { flex: 1; }
+
+/* Status bar */
+.statusbar { background: #161b22; border-top: 1px solid #30363d; padding: 6px 24px; font-size: 12px; color: #8b949e; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="live-dot"></div>
+  <h1>ScaleXL ClientFlow OS</h1>
+  <span class="live-label">LIVE</span>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-title">Agents</div>
+    <div id="agentList"></div>
+  </aside>
+
+  <main class="main">
+
+    <!-- Single Agent Tester -->
+    <div class="panel">
+      <h2>🤖 Single Agent Tester</h2>
+      <div class="row">
+        <div class="form-group">
+          <label>Select Agent</label>
+          <select id="agentSelect" onchange="onAgentChange()"></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Input (JSON)</label>
+        <textarea id="agentInput" rows="6"></textarea>
+      </div>
+      <button class="btn btn-blue" onclick="runAgent()">▶ Run Agent</button>
+      <div class="form-group" style="margin-top:14px">
+        <label>Output</label>
+        <div class="output" id="agentOutput">// output will appear here</div>
+      </div>
+    </div>
+
+    <!-- Pipeline Tester -->
+    <div class="panel">
+      <h2>⚡ ClientFlow OS Pipeline</h2>
+      <div class="row">
+        <div class="form-group">
+          <label>Message</label>
+          <input type="text" id="pipelineMsg" value="I want to buy now, what is the price?" />
+        </div>
+        <div class="form-group">
+          <label>Channel</label>
+          <select id="pipelineChannel">
+            <option>whatsapp</option>
+            <option>instagram</option>
+            <option>email</option>
+            <option>messenger</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-green" onclick="runPipeline()">⚡ Run Pipeline</button>
+      <div class="steps" id="pipelineSteps"></div>
+    </div>
+
+  </main>
+</div>
+
+<div class="statusbar" id="statusbar">Ready — ScaleXL ClientFlow OS v1.0.0</div>
+
+<script>
+const BASE = 'http://localhost:2222';
+
+const DEFAULTS = {
+  sales_agent: { message: "I want to buy now, what's the price?", lead_profile: { name: "John" }, channel: "whatsapp" },
+  support_agent: { message: "I was charged twice, need refund", conversation_history: [], customer_id: "cust_001" },
+  booking_agent: { message: "I want to book a consultation", existing_booking_data: { name: "Jane", date: "2026-07-01", time: "10:00", service_type: "consultation" } },
+  lead_scoring_agent: { message: "I'm very interested, ready to move forward", lead_profile: {} },
+  follow_up_agent: { lead_profile: { name: "Alice" }, last_message_timestamp: new Date().toISOString(), funnel_stage: "consideration", last_score: "warm" },
+  human_handoff_agent: { message: "I want to speak to your manager NOW", conversation_history: [], escalation_flags: [] },
+  ecommerce_order_agent: { message: "I want to order the blue shirt", catalog_context: {}, customer_id: "cust_002" },
+  campaign_router_agent: { lead_profile: { business_type: "ecommerce" }, source: "facebook_ad", channel: "messenger", tags: [], message: "Hello" },
+  inbox_triage_agent: { conversation: { last_message: "I am furious about this payment issue!" }, channel: "whatsapp", timestamp: new Date().toISOString() },
+  safety_compliance_agent: { message: "Check out this amazing offer!", broadcast_request: null, sender_history: {} }
+};
+
+const BADGE_MAP = {
+  hot: 'badge-red', warm: 'badge-yellow', cold: 'badge-blue', spam: 'badge-red',
+  critical: 'badge-red', high: 'badge-yellow', medium: 'badge-blue', low: 'badge-green',
+  allowed: 'badge-green', blocked: 'badge-red',
+  pitch: 'badge-yellow', close: 'badge-green', qualify: 'badge-blue', disqualify: 'badge-red'
+};
+
+async function loadAgents() {
+  try {
+    const r = await fetch(BASE + '/api/agents');
+    const { agents } = await r.json();
+    const list = document.getElementById('agentList');
+    const sel = document.getElementById('agentSelect');
+    agents.forEach((a, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'agent-btn' + (i === 0 ? ' active' : '');
+      btn.textContent = a.replace(/_/g, ' ');
+      btn.onclick = () => { document.querySelectorAll('.agent-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); sel.value = a; onAgentChange(); };
+      list.appendChild(btn);
+      const opt = document.createElement('option');
+      opt.value = a; opt.textContent = a;
+      sel.appendChild(opt);
+    });
+    onAgentChange();
+    status('Connected — ' + agents.length + ' agents loaded');
+  } catch(e) { status('⚠ Cannot connect to server at ' + BASE); }
+}
+
+function onAgentChange() {
+  const agent = document.getElementById('agentSelect').value;
+  document.getElementById('agentInput').value = JSON.stringify(DEFAULTS[agent] || {}, null, 2);
+  document.querySelectorAll('.agent-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.replace(/ /g,'_') === agent);
+  });
+}
+
+async function runAgent() {
+  const agent = document.getElementById('agentSelect').value;
+  let input;
+  try { input = JSON.parse(document.getElementById('agentInput').value); } catch(e) { alert('Invalid JSON'); return; }
+  const out = document.getElementById('agentOutput');
+  out.textContent = 'Running...';
+  status('Running ' + agent + '...');
+  try {
+    const r = await fetch(BASE + '/api/run', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ agent, input }) });
+    const data = await r.json();
+    out.textContent = JSON.stringify(data.result, null, 2);
+    status('✅ ' + agent + ' completed');
+  } catch(e) { out.textContent = 'Error: ' + e.message; status('❌ Error: ' + e.message); }
+}
+
+async function runPipeline() {
+  const message = document.getElementById('pipelineMsg').value;
+  const channel = document.getElementById('pipelineChannel').value;
+  const container = document.getElementById('pipelineSteps');
+  container.innerHTML = '<div style="color:#8b949e;padding:12px">Running pipeline...</div>';
+  status('Running pipeline...');
+  try {
+    const r = await fetch(BASE + '/api/pipeline', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message, channel, lead_profile: {} }) });
+    const data = await r.json();
+    container.innerHTML = '';
+    (data.pipeline_steps || []).forEach(s => {
+      const div = document.createElement('div');
+      div.className = 'step';
+      const result = s.result || {};
+      const keyVals = Object.entries(result).slice(0, 3).map(([k,v]) => {
+        const val = typeof v === 'object' ? JSON.stringify(v).slice(0,60) : String(v);
+        const badgeClass = BADGE_MAP[val] || '';
+        return `<span style="color:#8b949e">${k}:</span> <span class="badge ${badgeClass}">${val}</span>`;
+      }).join('  ');
+      div.innerHTML = `<div class="step-header"><div class="step-num">${s.step}</div><div class="step-name">${s.agent}</div></div><div class="step-data">${keyVals}</div>`;
+      container.appendChild(div);
+    });
+    if (data.agent_used) {
+      const final = document.createElement('div');
+      final.className = 'step';
+      final.style.borderColor = '#3fb950';
+      final.innerHTML = `<div class="step-header"><div class="step-num" style="background:#238636">✓</div><div class="step-name" style="color:#3fb950">Final: ${data.agent_used}</div></div>`;
+      container.appendChild(final);
+    }
+    status('✅ Pipeline complete — agent used: ' + data.agent_used);
+  } catch(e) { container.innerHTML = '<div style="color:#f85149">Error: ' + e.message + '</div>'; status('❌ Pipeline error'); }
+}
+
+function status(msg) { document.getElementById('statusbar').textContent = msg; }
+
+loadAgents();
+</script>
+</body>
+</html>

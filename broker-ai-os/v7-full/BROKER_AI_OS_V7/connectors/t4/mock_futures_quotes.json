@@ -1,0 +1,14 @@
+{
+  "_comment": "MOCK futures quotes for the T4/Plus500 connector. STATIC DATA ONLY. No live feed, no order routing, no account, no credentials.",
+  "generated_at": "2026-06-03T14:00:00Z",
+  "quotes": [
+    { "symbol": "ES", "name": "E-mini S&P 500",      "last": 5312.25, "bid": 5312.00, "ask": 5312.50, "change": 0.42 },
+    { "symbol": "NQ", "name": "E-mini Nasdaq-100",   "last": 18920.50, "bid": 18920.00, "ask": 18921.00, "change": 0.65 },
+    { "symbol": "YM", "name": "E-mini Dow",          "last": 39105.0, "bid": 39104.0, "ask": 39106.0, "change": 0.18 },
+    { "symbol": "RTY","name": "E-mini Russell 2000", "last": 2048.7, "bid": 2048.5, "ask": 2048.9, "change": -0.22 },
+    { "symbol": "CL", "name": "Crude Oil WTI",       "last": 78.94, "bid": 78.93, "ask": 78.95, "change": 1.15 },
+    { "symbol": "GC", "name": "Gold",                "last": 2351.4, "bid": 2351.2, "ask": 2351.6, "change": -0.34 },
+    { "symbol": "SI", "name": "Silver",              "last": 30.18, "bid": 30.17, "ask": 30.19, "change": 0.51 },
+    { "symbol": "ZN", "name": "10-Year T-Note",      "last": 110.36, "bid": 110.35, "ask": 110.37, "change": -0.08 }
+  ]
+}

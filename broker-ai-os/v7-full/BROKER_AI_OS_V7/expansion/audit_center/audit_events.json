@@ -1,0 +1,11 @@
+{
+  "_comment": "Unified audit feed (mock + seed). Read-only. Fields: time, user, event_type, component, description.",
+  "events": [
+    { "time":"2026-06-03T14:02:00Z","user":"human","event_type":"approval","component":"governance","description":"Order #202 approved; execution gate opened (no order placed)" },
+    { "time":"2026-06-03T14:03:00Z","user":"human","event_type":"rejection","component":"governance","description":"Order #201 rejected; gate remains closed" },
+    { "time":"2026-06-03T14:04:00Z","user":"system","event_type":"backup_created","component":"backup_center","description":"Manifest backup created (metadata only)" },
+    { "time":"2026-06-03T14:05:00Z","user":"system","event_type":"config_change","component":"config_center","description":"Health check interval viewed (no change persisted)" },
+    { "time":"2026-06-03T14:06:00Z","user":"system","event_type":"health_failure","component":"health_panel","description":"T4 connector reported mock (expected, not a real failure)" },
+    { "time":"2026-06-03T14:07:00Z","user":"human","event_type":"agent_status_change","component":"agent_control_center","description":"Scanner agent toggled to stopped (status flag only)" }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "app_name": "EDIT VALUE LOCAL SDR MINI",
+  "version": "1.0.0",
+  "default_ai_mode": "mock",
+  "pipeline_statuses": [
+    "New", "Reviewed", "Approved", "Contacted", "Replied",
+    "Interested", "Call Booked", "Not Relevant", "Do Not Contact"
+  ],
+  "niche_options": ["wedding_video", "photography", "studio", "content_creator", "other"],
+  "channels": ["email", "dm", "comment"],
+  "tones": ["soft", "direct", "professional"]
+}

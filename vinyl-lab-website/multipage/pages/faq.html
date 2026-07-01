@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>שאלות נפוצות | The Vinyl Lab Israel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    .faq-item {
+      border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+    }
+    .faq-item:last-child {
+      border-bottom: none;
+    }
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: right;
+      padding: 1.25rem 0;
+      font-family: 'Heebo', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #e8d5a3;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      transition: color 0.2s;
+    }
+    .faq-question:hover {
+      color: #c9a84c;
+    }
+    .faq-question .faq-icon {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      border: 2px solid #c9a84c;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      color: #c9a84c;
+      transition: transform 0.3s;
+    }
+    .faq-question[aria-expanded="true"] .faq-icon {
+      transform: rotate(45deg);
+    }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.35s ease;
+      padding: 0;
+    }
+    .faq-answer.open {
+      max-height: 500px;
+      padding-bottom: 1.25rem;
+    }
+    .faq-answer p {
+      margin: 0;
+      line-height: 1.75;
+      color: #b0b0b0;
+    }
+    .legal-box {
+      border: 2px solid #c9a84c;
+      border-radius: 10px;
+      padding: 2rem;
+      background: rgba(201, 168, 76, 0.06);
+      margin-top: 3rem;
+    }
+    .legal-box h3 {
+      color: #c9a84c;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-size: 1.15rem;
+    }
+    .legal-box p {
+      color: #b0b0b0;
+      line-height: 1.75;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+<header class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="../index.html" class="nav-logo">
+      <img src="../assets/images/optimized/logo.webp" alt="The Vinyl Lab Israel" onerror="this.style.display='none'">
+      <span class="nav-logo-text">The Vinyl Lab Israel</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="../index.html#about">מי אנחנו</a>
+      <a href="../index.html#services">שירותים</a>
+      <a href="../index.html#gallery">גלריה</a>
+      <a href="pricing.html">מחירים</a>
+      <a href="faq.html">שאלות נפוצות</a>
+      <a href="contact.html">צור קשר</a>
+    </nav>
+    <button class="hamburger" id="hamburger" aria-label="תפריט">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<section class="page-hero page-hero-plain" style="background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%); min-height: 40vh;">
+  <div class="page-hero-overlay" style="background: rgba(0,0,0,0.3);"></div>
+  <div class="container page-hero-content">
+    <h1>שאלות נפוצות</h1>
+    <p class="page-hero-subtitle">כל מה שרצית לדעת על הפקה פיזית של מוזיקה</p>
+  </div>
+</section>
+
+<section class="faq-section section section-dark">
+  <div class="container" style="max-width: 820px;">
+
+    <h2 class="section-title" style="margin-bottom: 0.5rem;">זכויות יוצרים ואישורים</h2>
+    <div class="faq-group" style="margin-bottom: 2.5rem;">
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" data-faq>
+          האם אני צריך אישור ACUM לפני הייצור?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer" role="region">
+          <p>אם המוזיקה שלך מקורית לחלוטין ואתה הכותב והבעלים, אין צורך באישור ACUM לייצור עצמו. אם היצירה מכילה שירים של אחרים (cover versions), ייתכן שתידרש הרשאה. מומלץ להתייעץ עם ACUM ישירות לגבי מקרה ספציפי.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" data-faq>
+          האם אני צריך אישור מאיגוד המוצרנים (Federation)?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer" role="region">
+          <p>לרוב, אישור Federation נדרש לצורכי הפצה מסחרית. עבור מהדורות קטנות לשימוש אישי או אספנות, פנה אלינו ונסייע להבין מה נדרש בפרויקט הספציפי שלך.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" data-faq>
+          אני בעל הזכויות — האם אני יכול לאשר הייצור?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer" role="region">
+          <p>כן. אם אתה הכותב, המבצע ובעל הזכויות ביצירה — אתה מוסמך לאשר את הייצור. האחריות המשפטית על הזכויות נשארת עליך.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" data-faq>
+          מי נותן אישור לייצור?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer" role="region">
+          <p>הלקוח מצהיר ומאשר שיש לו את כל הזכויות הנדרשות. The Vinyl Lab ישראל אינה אחראית על בדיקת זכויות ומסתמכת על הצהרת הלקוח.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" data-faq>
+          מה לגבי כיסויים של שירים אחרים (cover versions)?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer" role="region">
+          <p>ייצור כיסוי לשיר שאינו שלך דורש רישיון מכני מבעל הזכויות. The Vinyl Lab לא תייצר כיסוי ללא הצגת אישור מתאים.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" data-faq>
+          מה קורה אם יתברר שאין לי את הזכויות?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer" role="region">
+          <p>The Vinyl Lab Israel שומרת לעצמה הזכות לסרב לביצוע הזמנה אם קיים חשש להפרת זכויות יוצרים או זכויות מבצעים, גם אם ההזמנה כבר החלה.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <h2 class="section-title" style="margin-bottom: 0.5rem;">ייצור ופורמטים</h2>
+    <div class="faq-group" style="margin-bottom: 2.5rem;">
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" data-faq>
+          האם ניתן לייצר כמויות קטנות?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer" role="region">
+          <p>כן. אנחנו מתמחים במהדורות מוגבלות קטנות. לוויניל, המינימום הרגיל הוא 100 עותקים דרך מפעלי הלחיצה שלנו, אך בחלק מהמקרים ניתן לייצר גם פחות. לCD ולקסטות — גמישות גדולה יותר.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" data-faq>
+          האם אתם עושים מאסטרינג?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer" role="region">
+          <p>כן. מאסטרינג מקצועי לוויניל, CD ופורמטים דיגיטליים מתבצע ב-Live Sound Studio בציוד High-End כולל פרי-אמפים Neve.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" data-faq>
+          אילו פורמטים של ויניל אתם מייצרים?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer" role="region">
+          <p>7" (45 RPM), 10", 12" (33 ו-45 RPM). EP ו-LP. ויניל שחור, צבעוני, splatter ועוד בהתאם לזמינות.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" data-faq>
+          האם אפשר לקבל ויניל צבעוני?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer" role="region">
+          <p>כן, בהתאם לאפשרויות של מפעל הלחיצה. ויניל צבעוני, splatter, marbled — נברר אפשרויות ספציפיות לפי הפרויקט.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" data-faq>
+          מה לגבי אריזות מיוחדות?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer" role="region">
+          <p>אנחנו מציעים gatefold, double pocket, slipcase, inner sleeves, תוספות, כרטיסי ממוספר ועוד — הכל מותאם אישית.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <h2 class="section-title" style="margin-bottom: 0.5rem;">עיצוב ולוחות זמנים</h2>
+    <div class="faq-group" style="margin-bottom: 2.5rem;">
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" data-faq>
+          האם אתם יכולים לעצב את הכיסוי?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer" role="region">
+          <p>בהחלט. יש לנו שירות עיצוב מלא — כיסוי, מדבקות, בוקלט, J-card ואריזות, כולל הדפסה רחבת-פורמט בסטודיו.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" data-faq>
+          האם אני יכול להביא עיצוב מוכן?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer" role="region">
+          <p>כן, לחלוטין. אפשר להביא artwork מוכן. נבדוק שהוא עומד בדרישות הטכניות לייצור (רזולוציה, פרופיל צבע, bleed וכד').</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" data-faq>
+          כמה זמן לוקח הייצור?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer" role="region">
+          <p>ויניל: בדרך כלל 8–16 שבועות ממפעל + זמן הכנה מצידנו. CD: 2–4 שבועות. קסטות: 3–6 שבועות. נציין זמנים מדויקים לפי הפרויקט.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <h2 class="section-title" style="margin-bottom: 0.5rem;">משלוח ועבודה מרחוק</h2>
+    <div class="faq-group" style="margin-bottom: 2.5rem;">
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" data-faq>
+          האם אתם שולחים בתוך ישראל?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer" role="region">
+          <p>כן, שינוע בתוך ישראל זמין. נסכם תנאי משלוח ואיסוף עצמי מול כל לקוח.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false" data-faq>
+          לקוחות מחוץ לישראל — האם אפשר לעבוד איתכם?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-answer" role="region">
+          <p>בהחלט. אנחנו עובדים עם אמנים ולייבלים מכל העולם. ייצוא, משלוח בינלאומי וניהול פרויקטים מרחוק — הכל אפשרי.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="legal-box" id="legal">
+      <h3>הצהרת זכויות — חשוב לקרוא</h3>
+      <p>כל הרישיונות, האישורים וההרשאות הנדרשים לייצור, שכפול והפצה של כל חומר מוזיקלי הם באחריות הלקוח בלבד. The Vinyl Lab Israel רשאית לסרב לביצוע הזמנה אם קיים חשש סביר להפרת זכויות יוצרים או זכויות מבצעים. הגשת הזמנה מהווה הצהרה של הלקוח כי יש ברשותו את כל הזכויות הנדרשות.</p>
+    </div>
+
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <a href="../index.html" class="nav-logo"><span class="nav-logo-text">The Vinyl Lab Israel</span></a>
+      <p class="footer-tagline">נולדנו מתוך אהבה למוזיקה ולוויניל</p>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>שירותים</h4>
+        <a href="mastering.html">מאסטרינג</a>
+        <a href="vinyl-production.html">ייצור ויניל</a>
+        <a href="cd-production.html">תקליטורים</a>
+        <a href="cassettes.html">קסטות</a>
+        <a href="design-packaging.html">עיצוב ואריזות</a>
+      </div>
+      <div class="footer-col">
+        <h4>מידע</h4>
+        <a href="pricing.html">מחירים וחבילות</a>
+        <a href="faq.html">שאלות נפוצות</a>
+      </div>
+      <div class="footer-col">
+        <h4>צור קשר</h4>
+        <a href="contact.html">טופס יצירת קשר</a>
+        <a href="https://wa.me/972523610464" target="_blank">WhatsApp</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2024 The Vinyl Lab Israel. כל הזכויות שמורות.</p>
+  </div>
+</footer>
+
+<a href="https://wa.me/972523610464" class="whatsapp-float" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script src="../assets/js/main.js" defer></script>
+<script>
+  document.querySelectorAll('[data-faq]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var expanded = this.getAttribute('aria-expanded') === 'true';
+      var answer = this.nextElementSibling;
+      // Close all others
+      document.querySelectorAll('[data-faq]').forEach(function(other) {
+        other.setAttribute('aria-expanded', 'false');
+        other.nextElementSibling.classList.remove('open');
+      });
+      // Toggle current
+      if (!expanded) {
+        this.setAttribute('aria-expanded', 'true');
+        answer.classList.add('open');
+      }
+    });
+  });
+</script>
+</body>
+</html>

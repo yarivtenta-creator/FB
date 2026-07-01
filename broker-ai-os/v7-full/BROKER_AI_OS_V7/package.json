@@ -1,0 +1,18 @@
+{
+  "name": "broker-ai-os-v7",
+  "version": "7.0.0",
+  "private": true,
+  "description": "BROKER_AI_OS_V7 — port 6060. Read-only Alpaca market data, no live trading, no order placement.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js && echo SYNTAX_OK",
+    "test": "node tests/v7_audit_test.js"
+  },
+  "dependencies": {
+    "express": "^4.22.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

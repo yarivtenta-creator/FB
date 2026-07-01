@@ -1,0 +1,148 @@
+================================================================================
+PROJECT 770 - COMPLETE FOLDER STRUCTURE
+================================================================================
+
+ROOT: pkg770/ (ID: 1j9Vtqs0wWjXmOVRgiqYZW8DrRdKUqEW-)
+  ├── Documentation Files (Root Level - 25 markdown/text files)
+  │   ├── README.md | ID: 1vuoXoiF9zlkhFRWEjClOD9KLGMHHh-xQ
+  │   ├── START_HERE.md | ID: 1ID86d4kldfUjxcNvLOSEvpxO3F-bQVru
+  │   ├── AI_SETUP.md | ID: 1IzinWpytb6fn7H0FLSaE3Tqz643tWEav
+  │   ├── INSTALL.md | ID: 1pMjuZqbxx56tTwpWIPFbI_f_XzhTcP2z
+  │   ├── MASTER_PLAN.md | ID: 16TzzKhii08CFqGK52bFu0iBVZDDqWsX2
+  │   ├── PROJECT_HANDOFF_SUMMARY.md | ID: 15fVE5Pp40-Jt5CxKOjLupUzSTkmhRt0w
+  │   ├── SYSTEM_MAP.md | ID: 1H78wwnIgd93SIAIwo_JkrCX0g6NnJvSp
+  │   ├── STAGE_COVERAGE.md | ID: 1-nYoCfgB-yvXlcQk_gWB4w1QiQpB-lZA
+  │   ├── WHAT_IS_COMPLETE.md | ID: 1EEtMGApi9vpDPRDFnfvXzEVKw7uWHLjp
+  │   ├── WHAT_IS_NOT_INCLUDED.md | ID: 1n0F7zQ4h4lBuFdzlSVYvZAnlBozV3-KW
+  │   ├── MODULAR_MODES.md | ID: 1zcWDTKtA6f0k4l5L7VOBB2EeA7gvVQoH
+  │   ├── SCALEXL_ALIGNMENT_BUILD.md | ID: 1HhHcKjoquJ7sGjoT3NYhz7lRMRXSejyJ
+  │   ├── MISSING_LINKS_BUILD.md | ID: 1_A9kAICU8WsvFkXHiXdVxEhj8AjpgqNL
+  │   ├── DELIVERABLES_ENGINE.md | ID: 1iBxlW4iZpLwxIbFebj_oV0pOqrPWNLrq
+  │   ├── REVENUE_ENGINE.md | ID: 1YRgyufs6oX0-0GFuAVO0R8GgOwQdo7HE
+  │   ├── MARKETING_PLAN_FEATURE.md | ID: 1BjQ4iJE09ggqUaqFTVxoCfGwQtnNUN0i
+  │   ├── CONNECTIONS_SETUP.md | ID: 1TcMtkCgH6ZQFP3bHgqWeBSAUP2yUraw-
+  │   ├── AUDIT_REPORT.md | ID: 1Q6LKQxQsZBwCZJuSHl515vQ0stE9LdsE
+  │   ├── FILE_TREE.md | ID: 1AVdHdGqSmhMHdsrOrk2_RalfwIeMiKhv
+  │   ├── FINAL_DELIVERY_REPORT.md | ID: 1ejLr7xTqMEfgladFZbXUfeEirRuxjvtB
+  │   ├── RUN_COMMANDS.md | ID: 1v9j2030KV3HuBCZQOlIg1rLpxe9IIpYu
+  │   ├── README_FIXED.md | ID: 1fqdP4kipav3kYjTqWZhRy4JPhNeYO5wN
+  │   └── START_AI_GROWTH_OS.bat | ID: 1Pgymm2NEogqCnOg65tYHZiLyUo7HY2ko
+  │
+  ├── Configuration Files (Root Level)
+  │   ├── .env | ID: 1CkXZ6CVehGu2bwoAuksf86W3kE8qFXCV
+  │   ├── .env.example | ID: 1HILNjI_LI0tHThKsc0nBCGxSCRJ9FEe6
+  │   ├── package.json | ID: 1fbamom8mRiUvsRox0YTZP7wY6ghw9yU2
+  │   ├── package-lock.json | ID: 1rxDvqOQ2L7P_PAaHHcMwKMg8my9ga84Z
+  │   └── server.js | ID: 1Q83Bk0pj5fUBBExYxHv3Rx8Hbgx45umj
+  │
+  ├── Executable Files (Root Level)
+  │   ├── start_ai_growth_os.sh | ID: 1CAUCl6opWFtnLIZkG5k18_mvZrmCuVN8
+  │   └── skill-converter.html | ID: 14e-ILCr79UovIJmJ2m9VS11_XiS3BEJd
+  │
+  ├── Intelligence Module Registry
+  │   └── intelligence_module_registry.json | ID: 1Stzf8qdWRDHZ5Esxs-3560_CFhDu4Q8s
+  │       (Also downloaded separately from Google Drive)
+  │       Contains: 535 intelligence/analysis modules + imported instruction skills
+  │
+  ├── agents/ (ID: 1ub_gp7hfUlyCUAQVXC1XJurlE66R4nXt)
+  │   ├── creative_intelligence/
+  │   ├── deliverables/
+  │   ├── creative_intelligence_workflow/
+  │   └── ... (multiple agent folders)
+  │
+  ├── business/ (ID: 1Vrk2slOfJCQw1ynFDkKrLX1Zdd6gsyTE)
+  │   └── funnel.js | ID: 11qkQoAstcycC59yUGtZRJ_uD7mwd_Pd6
+  │
+  ├── client_intake/ (ID: 1q0IJJDE2KJxdekq3o1-WJPzahcRJkzjv)
+  │   ├── intake_store.js | ID: 1Vw0X04P_5wk1UtDPcxL_5IbfqM-jNHma
+  │   ├── submissions.json | ID: 1waO6nu7mIiwRuzhxKKGNHKMm1KN830Pp
+  │   ├── questionnaire.html | ID: 1nXtRVOJZA1jEKzwak9kkmJPaAZKUs6AC
+  │   └── _test_sandbox/ | ID: 1X1prHOKs5c03AuKXuwVOt1Rur9f8eee_
+  │
+  ├── config/ (ID: 1lgjDcNxj61gYKogLsxU-vMcfB-bPRURV)
+  │   └── config.json | ID: 18nx7b7-ClUZ_qbY5OhiB5XFtPDyMI3hM
+  │
+  ├── crm/ (ID: 1cOgEPicJYGTBJDZlXMpvGQaD8ieRnM6i)
+  │   ├── discovery.json | ID: 19TUm5a0qJKadN-NNVIVrhjqMTCBjYC-G
+  │   ├── opportunities.json | ID: 1U5d-7yL-wuvwsnUxazh-GAVMt73mi8CQ
+  │   ├── clients.json | ID: 1WD9eNgRoyLHJvgOIIEKMdt1ZgxGJsEgS
+  │   ├── leads.json | ID: 1EFv0GDEMWelpQx0moizB8baADvfWGGDs
+  │   ├── followups.json | ID: 1eGPlPYPDhhR6XUNwrmv3YkJ78xo0Oals
+  │   ├── communications.json | ID: 1lua-FMUTsYLC500H6k6nLI_74fSQnrDy
+  │   └── ... (additional CRM data files)
+  │
+  ├── dashboard/ (ID: 1G2oIB61occlTnL4T-v-HHOOyOFDwox7s)
+  │   └── (contains dashboard-related files)
+  │
+  ├── intelligence_modules/ (ID: 1cRK7p9E1FHtquamMcFyj2NM2mUf9id0H)
+  │   └── (contains 535 intelligence modules)
+  │
+  ├── logs/ (ID: 12VBTT6FwoAAUnIDY46SyS_Xc1vV3TUmg)
+  │   └── (log files)
+  │
+  ├── memory/ (ID: 13bcAdRyXQnznl9CwLoyWsz7-smi_nnAl)
+  │   └── (memory/cache files)
+  │
+  ├── outputs/ (ID: 1TqNPYiN2qP9sps4EGBAn91HuHPTP2UPg)
+  │   └── (output files from runs)
+  │
+  ├── pipeline/ (ID: 1l-39XoamZ3nPFs0TxNfvKjlFnC7B2XQb)
+  │   └── (pipeline configuration/execution files)
+  │
+  ├── registries/ (ID: 1YYoQ8KZ-PpQlq4T4Hj6MW1U1nV_OeSEp)
+  │   └── (registry files)
+  │
+  ├── reports/ (ID: 1s0jNman1-mMVBdM7mBvG6tIXmb8QCQW7)
+  │   └── (generated reports)
+  │
+  ├── runtime/ (ID: 1tBaeHqvvnzXROS029TLn7XsXWpED9th6)
+  │   └── (runtime environment files)
+  │
+  ├── sample_outputs/ (ID: 1U9QwsW4VgpopenZj3dP570vybv3K2C7a)
+  │   └── (sample output examples)
+  │
+  ├── skill_converter/ (ID: 1IXcfAVVAhKddBqfJYAp78AQ3EWgjI6am)
+  │   ├── installed/ | ID: 168PKQjd_c9F51IO5WZkZJnkce5Fy-k7-
+  │   └── (skill converter related files)
+  │
+  ├── standards/ (ID: 1PdNdjcCxmv-P5u_gDx7MQz9WkSAdfgjq)
+  │   ├── tests/ | ID: 1FqDC3WuTBsZ7MMEF8GyqxLitgmB3xn4J
+  │   └── (standards/guidelines)
+  │
+  ├── tests/ (ID: 1fxxsiPPZf9SkQGeM-_1VHgjRLSwAx00c)
+  │   └── run_tests.js | ID: 1xdF7XQBvhM65reYRGAI-tLpYFbR8yOGZ
+  │
+  ├── tools/ (ID: 1-BnmCsJ09QY2HPT9BCEJ8u5_mYFB3V10)
+  │   └── ai_selftest.js | ID: 1EE6Kv8yWhzM3NezmJNjTVMar3Xj79N6y
+  │
+  └── workflows/ (ID: 1ddsfcDJMy-hYZbhX2xb0IK27Yjqr657I)
+      └── creative_intelligence_workflow/ | ID: 1k4Rj8GRSSId13ZgfH2ZLVX2_6SlMRhqW
+          └── (workflow files)
+
+================================================================================
+SUMMARY
+================================================================================
+Root Level Files: 51 files (25 markdown docs + 5 configs + 21 other files)
+Total Subfolders: 20 major folders
+Total Files Scanned: 460 files from Google Drive
+Intelligence Modules: 535 separate modules (in dedicated registry)
+
+DOWNLOADED FILE:
+- intelligence_module_registry.json: 164,441 bytes
+  Location: /tmp/claude-0/-home-user-FB/11ea83fc-9d34-5b99-ad43-0873c35f2fef/scratchpad/intelligence_module_registry.json
+
+KEY FOLDERS FOR NEXT STEPS:
+- agents/: Contains creative intelligence and other agent implementations
+- business/: Business logic and funnel processing
+- client_intake/: Client questionnaire and intake forms
+- crm/: Customer relationship data (discovery, leads, opportunities, clients)
+- intelligence_modules/: All 535 intelligence modules
+- tools/: Testing and self-test utilities
+- workflows/: Workflow orchestration and execution
+
+TREE STRUCTURE FILES:
+- /tmp/claude-0/-home-user-FB/11ea83fc-9d34-5b99-ad43-0873c35f2fef/scratchpad/pkg770_tree_complete.json
+- /tmp/claude-0/-home-user-FB/11ea83fc-9d34-5b99-ad43-0873c35f2fef/scratchpad/pkg770_full_details.json
+- /tmp/claude-0/-home-user-FB/11ea83fc-9d34-5b99-ad43-0873c35f2fef/scratchpad/intelligence_module_registry.json
+
+================================================================================

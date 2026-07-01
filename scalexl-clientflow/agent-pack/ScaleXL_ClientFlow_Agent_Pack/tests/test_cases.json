@@ -1,0 +1,12 @@
+[
+  {"id":1,"name":"Hot sales lead detected","agent":"sales_agent","input":{"message":"I want to buy now, what's the price?","lead_profile":{"name":"John","business_type":"ecommerce"},"channel":"whatsapp"},"expect":{"action":["pitch","close"],"intent_score_min":70}},
+  {"id":2,"name":"Support billing issue","agent":"support_agent","input":{"message":"I was charged twice, need refund","conversation_history":[],"customer_id":"cust_001"},"expect":{"type":"billing"}},
+  {"id":3,"name":"Booking confirmed","agent":"booking_agent","input":{"message":"I want to book","existing_booking_data":{"name":"Jane Doe","date":"2024-01-15","time":"10:00","service_type":"consultation"}},"expect":{"status":"confirmed"}},
+  {"id":4,"name":"Cold lead scored","agent":"lead_scoring_agent","input":{"message":"just browsing, not interested","lead_profile":{"name":"Bob"}},"expect":{"score":["cold","spam"],"numeric_score_max":40}},
+  {"id":5,"name":"Warm follow-up scheduled","agent":"follow_up_agent","input":{"lead_profile":{"name":"Alice"},"last_message_timestamp":"2024-01-01T10:00:00Z","funnel_stage":"consideration","last_score":"warm"},"expect":{"should_follow_up":true,"delay_hours":24}},
+  {"id":6,"name":"Human handoff triggered","agent":"human_handoff_agent","input":{"message":"I want to speak to your manager NOW","conversation_history":[],"escalation_flags":[]},"expect":{"should_handoff":true}},
+  {"id":7,"name":"Ecommerce order intent","agent":"ecommerce_order_agent","input":{"message":"I want to order the blue shirt","catalog_context":{},"customer_id":"cust_002"},"expect":{"intent":["add_to_cart","checkout"]}},
+  {"id":8,"name":"Campaign routed facebook_ad ecommerce","agent":"campaign_router_agent","input":{"lead_profile":{"business_type":"ecommerce"},"source":"facebook_ad","channel":"messenger","tags":[],"message":"Hello"},"expect":{"campaign_id":"CAMP-FB-ECOM-001"}},
+  {"id":9,"name":"Inbox urgency critical","agent":"inbox_triage_agent","input":{"conversation":{"messages":[{"text":"I am furious about this payment issue!"}],"customer_id":"cust_003","unread":true},"channel":"whatsapp","timestamp":"2024-01-01T08:00:00Z"},"expect":{"urgency":"critical"}},
+  {"id":10,"name":"Safety block spam broadcast","agent":"safety_compliance_agent","input":{"message":"Buy now! Limited offer!","broadcast_request":{"recipient_count":5000,"opted_out_count":200,"opted_out_users":["u1","u2"]},"sender_history":[]},"expect":{"allowed":false,"action":"block"}}
+]

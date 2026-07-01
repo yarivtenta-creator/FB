@@ -1,0 +1,26 @@
+{
+  "_comment": "Passwords are scrypt-hashed. Placeholders documented in HOW_TO_INSTALL.md — change them.",
+  "users": [
+    {
+      "username": "admin",
+      "role": "admin",
+      "active": true,
+      "password_hash": "scrypt$2b1c40f56a2b681da28ce5a71daa8bda$87f4df03800379223cd0df2f201e20c57a16c87acbd135dd7ce6566f3f6de004ed349e6d8be62317a77e3e3f4c5907405bcc23768183f043a63d31103afdf430",
+      "created_at": "2026-06-03T04:15:47.578Z"
+    },
+    {
+      "username": "operator",
+      "role": "operator",
+      "active": true,
+      "password_hash": "scrypt$5a9d95c89f207f33e212290db8aa6705$94586c9133c555603e192558f4b0576c3c92e4da1a1bf2715437a3e58e1d213462e616a3561215cfd01e0453f2a96e86ab4eac1ea48ddc7240f61e989c3e7907",
+      "created_at": "2026-06-03T04:15:47.619Z"
+    },
+    {
+      "username": "viewer",
+      "role": "viewer",
+      "active": true,
+      "password_hash": "scrypt$fdec9b44e6b70fe574a12b026d2251d9$6a01f70ded8640a7ea53fcf564c53c1909e0a5d4eef523de0a096142d74d62a3f44a3fbd75d7ac47fa400a3d1f94695733ec6853d5252df41511696cae228043",
+      "created_at": "2026-06-03T04:15:47.657Z"
+    }
+  ]
+}

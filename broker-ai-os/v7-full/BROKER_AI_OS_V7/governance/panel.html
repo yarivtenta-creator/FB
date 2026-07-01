@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Governance — Approval Console</title>
+<style>
+:root{--bg:#0a0e14;--panel:#111722;--panel2:#161d2b;--line:#1f2937;--ink:#e6edf3;--muted:#8b98a9;--green:#2ecc71;--red:#ff5c5c;--yellow:#f5c542;--accent:#4ea1ff;--mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:13px;padding:24px}
+h1{font-size:17px;margin:0}h1 b{color:var(--accent)}
+.tags{margin:8px 0 4px}.tag{font-size:11px;padding:2px 8px;border:1px solid var(--line);border-radius:3px;color:var(--muted);margin-right:6px}
+.tag.safe{color:var(--green);border-color:#1d5e3a}
+.flow{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px;margin:14px 0 18px;flex-wrap:wrap}
+.flow b{color:var(--ink)}.flow .arrow{color:var(--accent)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px}
+.card h2{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin:0 0 12px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed #1a2230;gap:10px}
+.row:last-child{border-bottom:0}.muted{color:var(--muted)}
+button{font-family:var(--mono);font-size:11px;cursor:pointer;background:var(--panel2);color:var(--ink);border:1px solid var(--line);padding:5px 10px;border-radius:4px}
+button:hover{border-color:var(--accent);color:var(--accent)}
+.pill{font-size:10px;padding:1px 7px;border-radius:3px;border:1px solid var(--line)}
+.pending_approval,.pending{color:var(--yellow)} .approved{color:var(--green)} .rejected,.blocked{color:var(--red)}
+.gate{font-size:10px;padding:1px 6px;border-radius:3px}
+.gate.open{color:var(--green);border:1px solid #1d5e3a}.gate.closed{color:var(--red);border:1px solid #5e1d1d}
+.banner{background:#0e1f16;border:1px solid #1d5e3a;color:var(--green);padding:10px 14px;border-radius:6px;font-size:12px;margin-bottom:16px}
+</style></head><body>
+<h1>Governance <b>Approval Console</b></h1>
+<div class="tags">
+  <span class="tag safe" id="tMode">mode: manual</span>
+  <span class="tag safe" id="tResume">auto_resume: false</span>
+  <span class="tag safe">live_endpoint: OFF</span>
+</div>
+<div class="banner">🛡️ Approval opens an <b>execution-allowed gate</b> — it grants permission only. This package never places an order. Mock data.</div>
+<div class="flow">
+  <b>Signal</b><span class="arrow">→</span><b>Pending Approval</b><span class="arrow">→</span><b>Human Approval</b><span class="arrow">→</span><b>Execution ALLOWED (gate)</b><span class="muted">— execution itself is out of scope here</span>
+</div>
+
+<div class="grid">
+  <section class="card">
+    <h2>Pending Signals</h2>
+    <div id="signals" class="muted">embedded demo data…</div>
+  </section>
+  <section class="card">
+    <h2>Pending Orders (awaiting approval)</h2>
+    <div id="orders" class="muted">embedded demo data…</div>
+  </section>
+  <section class="card">
+    <h2>Approval History</h2>
+    <div id="history" class="muted">none yet</div>
+  </section>
+  <section class="card">
+    <h2>Safety Audit Log</h2>
+    <div id="audit" class="muted">…</div>
+  </section>
+</div>
+
+<script>
+// Standalone demo with embedded mock so panel.html opens with no server.
+let signals=[
+ {id:1,source:"market_intel",symbol:"NVDA",direction:"long",status:"pending"},
+ {id:2,source:"scanner",symbol:"AAPL",direction:"long",status:"pending"},
+ {id:3,source:"political",symbol:"META",direction:"long",status:"pending"}];
+let orders=[
+ {id:201,source:"strategy_engine",symbol:"AMZN",side:"buy",status:"pending_approval",execution_allowed:false}];
+let history=[]; let audit=[{action:"pack_seed",detail:"Governance initialized (manual, auto_resume=false)",at:"2026-06-03T12:00:00Z"}];
+
+function render(){
+ document.getElementById('signals').innerHTML = signals.length? signals.map(s=>
+  `<div class="row"><span>#${s.id} ${s.symbol} <span class="muted">${s.source}</span> <span class="pill ${s.status}">${s.status}</span></span>
+   ${s.status==='pending'?`<button onclick="promote(${s.id})">Promote → Order</button>`:''}</div>`).join('') : '<span class="muted">none</span>';
+ document.getElementById('orders').innerHTML = orders.length? orders.map(o=>
+  `<div class="row"><span>#${o.id} ${o.side} ${o.symbol}
+     <span class="pill ${o.status}">${o.status}</span>
+     <span class="gate ${o.execution_allowed?'open':'closed'}">gate ${o.execution_allowed?'OPEN':'closed'}</span></span>
+   <span>${o.status==='pending_approval'?`<button onclick="decide(${o.id},'approve')">Approve</button> <button onclick="decide(${o.id},'reject')">Reject</button>`:''}</span></div>`).join('') : '<span class="muted">none</span>';
+ document.getElementById('history').innerHTML = history.length? history.map(h=>
+  `<div class="row"><span>#${h.order_id} ${h.symbol} <span class="pill ${h.decision==='approve'?'approved':'rejected'}">${h.decision}</span></span><span class="muted">${h.at}</span></div>`).join('') : '<span class="muted">none yet</span>';
+ document.getElementById('audit').innerHTML = audit.map(a=>
+  `<div class="row"><span>${a.action} <span class="muted">${a.detail||''}</span></span><span class="muted">${a.at||''}</span></div>`).join('');
+}
+function promote(id){const s=signals.find(x=>x.id===id);if(!s)return;s.status='promoted';
+ const nid=Math.max(200,...orders.map(o=>o.id))+1;
+ orders.push({id:nid,source:s.source,symbol:s.symbol,side:s.direction==='short'?'sell':'buy',status:'pending_approval',execution_allowed:false});
+ audit.push({action:'signal_promoted',detail:`signal ${id} -> order ${nid}`,at:new Date().toISOString()});render();}
+function decide(id,d){const o=orders.find(x=>x.id===id);if(!o)return;
+ o.status=d==='approve'?'approved':'rejected';o.execution_allowed=(d==='approve');
+ history.push({order_id:o.id,symbol:o.symbol,decision:d,at:new Date().toISOString()});
+ audit.push({action:'approval_decision',detail:`order ${id} ${d} (executed:false)`,at:new Date().toISOString()});render();}
+render();
+</script></body></html>

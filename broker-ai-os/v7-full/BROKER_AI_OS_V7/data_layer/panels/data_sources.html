@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><title>Data Sources</title>
+<style>body{background:#0a0e14;color:#e6edf3;font-family:ui-monospace,Menlo,monospace;font-size:13px;padding:20px}
+h2{font-size:13px;color:#8b98a9;text-transform:uppercase;letter-spacing:1px}
+table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:7px 10px;border-bottom:1px solid #1f2937}
+.ok{color:#2ecc71}.mock{color:#f5c542}.off{color:#ff5c5c}.muted{color:#8b98a9}</style></head>
+<body><h2>Data Sources · Provider Status</h2>
+<table id="t"><thead><tr><th>Provider</th><th>Category</th><th>Status</th><th>Enabled</th><th>Last Update</th><th>Health</th></tr></thead><tbody></tbody></table>
+<p class="muted">Status only. No credentials, no secrets. All providers mock/disabled until explicitly wired.</p>
+<script>
+const TKN=sessionStorage.getItem('auth_token');
+fetch('/api/data/providers',{headers:{'x-auth-token':TKN}}).then(r=>r.json()).then(d=>{
+ document.querySelector('#t tbody').innerHTML=d.map(p=>{
+  const c=p.enabled?'ok':(p.status==='mock'?'mock':'off');
+  return `<tr><td>${p.name}</td><td>${p.category}</td><td class="${c}">${p.status}</td><td>${p.enabled}</td><td class="muted">${p.last_update||'—'}</td><td>${p.health}</td></tr>`;}).join('');
+}).catch(()=>{document.querySelector('#t tbody').innerHTML='<tr><td colspan=6 class="off">sign in required</td></tr>';});
+</script></body></html>

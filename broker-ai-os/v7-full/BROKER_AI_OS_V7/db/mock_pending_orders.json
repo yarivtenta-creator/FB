@@ -1,0 +1,45 @@
+{
+  "_comment": "MOCK approval queue. Approve/reject changes STATUS ONLY. Nothing here ever places a real or paper order. Execution is out of scope for this build by design (Phase 5 = foundation only).",
+  "pending_orders": [
+    {
+      "id": 101,
+      "signal_id": 1,
+      "source": "market_intel",
+      "symbol": "NVDA",
+      "side": "buy",
+      "qty": 1,
+      "type": "market",
+      "origin": "agent_proposal",
+      "status": "pending",
+      "note": "Proposed from momentum signal. Mock — not executable.",
+      "created_at": "2026-06-03T13:31:00Z"
+    },
+    {
+      "id": 102,
+      "signal_id": 2,
+      "source": "scanner",
+      "symbol": "AAPL",
+      "side": "buy",
+      "qty": 2,
+      "type": "limit",
+      "limit_price": 203,
+      "origin": "agent_proposal",
+      "status": "pending",
+      "note": "Proposed from breakout signal. Mock — not executable.",
+      "created_at": "2026-06-03T13:36:00Z"
+    },
+    {
+      "id": 103,
+      "signal_id": 6,
+      "source": "strategy_engine",
+      "symbol": "AMZN",
+      "side": "buy",
+      "qty": 1,
+      "type": "market",
+      "origin": "strategy_engine",
+      "status": "pending",
+      "note": "Strategy-engine momentum proposal. Mock — not executable.",
+      "created_at": "2026-06-03T13:56:00Z"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "_comment": "Mock agent state. Status & diagnostics only. No execution, no orders, no broker.",
+  "agents": [
+    {
+      "id": 1,
+      "name": "Market Intel",
+      "type": "market_intel",
+      "status": "stopped",
+      "enabled": 1,
+      "last_run_time": "2026-06-03T13:30:00Z",
+      "last_output_time": "2026-06-03T13:30:05Z",
+      "last_output": "Tech leaders NVDA, MSFT. Mock.",
+      "diag_notes": "OK. Mock."
+    },
+    {
+      "id": 2,
+      "name": "Scanner",
+      "type": "scanner",
+      "status": "stopped",
+      "enabled": 1,
+      "last_run_time": "2026-06-03T13:35:00Z",
+      "last_output_time": "2026-06-03T13:35:03Z",
+      "last_output": "Breakout AAPL; volume TSLA. Mock.",
+      "diag_notes": "OK. Mock."
+    },
+    {
+      "id": 3,
+      "name": "Smart Money",
+      "type": "smart_money",
+      "status": "stopped",
+      "enabled": 1,
+      "last_run_time": "2026-06-03T13:40:00Z",
+      "last_output_time": "2026-06-03T13:40:08Z",
+      "last_output": "No 13F hits this cycle. Mock.",
+      "diag_notes": "EDGAR sparse. Mock."
+    },
+    {
+      "id": 4,
+      "name": "Political",
+      "type": "political",
+      "status": "stopped",
+      "enabled": 1,
+      "last_run_time": "2026-06-03T13:45:00Z",
+      "last_output_time": "2026-06-03T13:45:02Z",
+      "last_output": "Disclosure feed offline. Mock.",
+      "diag_notes": "Feed offline. Mock."
+    },
+    {
+      "id": 5,
+      "name": "Risk",
+      "type": "risk",
+      "status": "stopped",
+      "enabled": 1,
+      "last_run_time": "2026-06-03T13:50:00Z",
+      "last_output_time": "2026-06-03T13:50:01Z",
+      "last_output": "Advisory: exposure within limits. Mock.",
+      "diag_notes": "Advisory only. Mock."
+    },
+    {
+      "id": 6,
+      "name": "Future Research (placeholder)",
+      "type": "research",
+      "status": "stopped",
+      "enabled": 0,
+      "last_run_time": null,
+      "last_output_time": null,
+      "last_output": null,
+      "diag_notes": "Not yet configured."
+    }
+  ]
+}
