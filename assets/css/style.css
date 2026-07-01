@@ -99,10 +99,10 @@ body::before {
 .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 76px; transition: height var(--transition); }
 .navbar.scrolled .nav-inner { height: 62px; }
 .nav-logo { display: flex; align-items: center; gap: 11px; cursor: pointer; }
-.nav-logo-img { height: 50px; width: auto; display: block; transition: height var(--transition), filter var(--transition); filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5)); }
-.navbar.scrolled .nav-logo-img { height: 42px; }
-.nav-logo:hover .nav-logo-img { filter: drop-shadow(0 3px 10px rgba(201,168,76,0.35)); }
-.footer-logo-img { height: 58px; width: auto; display: block; margin-bottom: 6px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5)); }
+.nav-logo-img { height: 60px; width: auto; display: block; transition: height var(--transition), filter var(--transition); filter: drop-shadow(0 2px 8px rgba(0,0,0,0.55)); }
+.navbar.scrolled .nav-logo-img { height: 50px; }
+.nav-logo:hover .nav-logo-img { filter: drop-shadow(0 3px 12px rgba(201,168,76,0.4)); }
+.footer-logo-img { height: 76px; width: auto; display: block; margin-bottom: 10px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.55)); }
 .nav-logo-badge { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--gold); display: grid; place-items: center; background: radial-gradient(circle at 50% 40%, #1a1a1a, #000); flex-shrink: 0; }
 .nav-logo-badge svg { width: 22px; height: 22px; }
 .nav-logo-text { font-size: 1.05rem; font-weight: 800; color: #fff; line-height: 1; letter-spacing: 0.5px; }
@@ -309,6 +309,10 @@ main { padding-top: 76px; }
 .gift-media::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(20,19,15,0.94), transparent 55%); }
 .gift-price { position: absolute; z-index: 2; bottom: 14px; inset-inline-start: 22px; font-size: 1.8rem; font-weight: 900; color: var(--gold); text-shadow: 0 2px 12px rgba(0,0,0,0.7); }
 .gift-grid-2 .gift-inner { padding: 24px 28px 30px; }
+/* Full gift-certificate artwork — show complete, no crop/scrim */
+.gift-media-cert { aspect-ratio: 3 / 2; background: #000; }
+.gift-media-cert img { object-fit: cover; }
+.gift-media-cert::after { display: none; }
 .gift-edu { display: grid; grid-template-columns: 1fr 1fr; margin-top: 40px; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--gold-line); background: linear-gradient(140deg, #1a1710, #0f0e0b); }
 .gift-edu-media { position: relative; min-height: 260px; }
 .gift-edu-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
