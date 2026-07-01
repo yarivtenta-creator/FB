@@ -1,13 +1,18 @@
 /* ============================================================
-   THE VINYL LAB ISRAEL — Client Preview JS (SPA, no server needed)
+   THE VINYL LAB ISRAEL — Multi-page site JS (no server needed)
    ============================================================ */
 (function () {
   'use strict';
 
   var WA = 'https://wa.me/972535315340';
+  var NAV = {
+    home: 'index.html', about: 'about.html', services: 'services.html',
+    gallery: 'gallery.html', pricing: 'pricing.html', gift: 'gift-cards.html',
+    before: 'before-you-call.html', contact: 'contact.html'
+  };
 
   document.addEventListener('DOMContentLoaded', function () {
-    initRouter();
+    initNavShortcuts();
     initMobileMenu();
     initNavbarScroll();
     initReveal();
@@ -16,45 +21,32 @@
     initBackToTop();
     initForm();
     initHeroVideoFallback();
-    // Failsafe: if anything above threw, force-reveal after 3.5s so no content stays hidden
+    // Failsafe: force-reveal after 3.5s so no content ever stays hidden
     setTimeout(function () {
       document.querySelectorAll('.reveal:not(.revealed)').forEach(function (el) { el.classList.add('revealed'); });
     }, 3500);
   });
 
-  /* ---------- SPA ROUTER ---------- */
-  function initRouter() {
-    var links = document.querySelectorAll('[data-nav]');
-    var pages = document.querySelectorAll('.page');
-
-    function go(id, push) {
-      var target = document.getElementById('page-' + id);
-      if (!target) { id = 'home'; target = document.getElementById('page-home'); }
-      pages.forEach(function (p) { p.classList.remove('active'); });
-      target.classList.add('active');
-      document.querySelectorAll('[data-nav]').forEach(function (a) {
-        a.classList.toggle('active', a.getAttribute('data-nav') === id);
-      });
-      window.scrollTo({ top: 0, behavior: 'auto' });
-      // re-trigger reveals on the newly shown page
-      requestAnimationFrame(function () { revealNow(target); });
-      if (push !== false) {
-        try { history.replaceState(null, '', '#' + id); }
-        catch (_) { location.hash = id; }
-      }
-      closeMobile();
-    }
-
+  /* ---------- NON-ANCHOR data-nav SHORTCUTS (e.g. category cards) ---------- */
+  function initNavShortcuts() {
     document.addEventListener('click', function (e) {
-      var a = e.target.closest('[data-nav]');
-      if (!a) return;
-      e.preventDefault();
-      go(a.getAttribute('data-nav'));
+      var el = e.target.closest('[data-nav]');
+      if (!el || el.tagName === 'A') return;
+      var dest = NAV[el.getAttribute('data-nav')];
+      if (dest) window.location.href = dest;
     });
-
-    var initial = (location.hash || '#home').replace('#', '');
-    go(initial, false);
-    window.__go = go;
+    document.querySelectorAll('[data-nav]').forEach(function (el) {
+      if (el.tagName === 'A') return;
+      el.setAttribute('role', 'link');
+      el.setAttribute('tabindex', '0');
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          var dest = NAV[el.getAttribute('data-nav')];
+          if (dest) window.location.href = dest;
+        }
+      });
+    });
   }
 
   /* ---------- MOBILE MENU ---------- */
@@ -67,9 +59,7 @@
       burger.classList.toggle('active', open);
       document.body.style.overflow = open ? 'hidden' : '';
     });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeMobile();
-    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMobile(); });
   }
   function closeMobile() {
     var burger = document.querySelector('.hamburger');
@@ -102,14 +92,6 @@
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
     document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
   }
-  function revealNow(scope) {
-    var els = (scope || document).querySelectorAll('.reveal');
-    els.forEach(function (el) {
-      var r = el.getBoundingClientRect();
-      if (r.top < window.innerHeight) el.classList.add('revealed');
-      else if (io) io.observe(el);
-    });
-  }
 
   /* ---------- FAQ ---------- */
   function initFAQ() {
@@ -129,14 +111,12 @@
     if (!lb) return;
     var img = lb.querySelector('img');
     var imgs = [], idx = 0;
-
     function collect() {
       imgs = [];
-      document.querySelectorAll('.page.active .gallery-item img').forEach(function (i) { imgs.push({ src: i.src, alt: i.alt }); });
+      document.querySelectorAll('.gallery-item img').forEach(function (i) { imgs.push({ src: i.src, alt: i.alt }); });
     }
     function show(i) { if (!imgs[i]) return; img.src = imgs[i].src; img.alt = imgs[i].alt; lb.classList.add('active'); document.body.style.overflow = 'hidden'; }
     function close() { lb.classList.remove('active'); document.body.style.overflow = ''; }
-
     document.addEventListener('click', function (e) {
       var item = e.target.closest('.gallery-item');
       if (item) { collect(); idx = [].indexOf.call(item.parentNode.querySelectorAll('.gallery-item'), item); show(idx); return; }
@@ -184,8 +164,6 @@
     var v = document.getElementById('heroVideo');
     if (!v) return;
     v.addEventListener('error', function () { v.style.display = 'none'; });
-    // if no source can play, ensure the poster image remains visible (it's beneath)
   }
 
 })();
-

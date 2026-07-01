@@ -1,92 +1,87 @@
-# QA_REPORT — The Vinyl Lab Israel · Full HTML Website
+# QA_REPORT — The Vinyl Lab Israel · Full HTML Website (Multi-page)
 
 **Deliverable:** `final-html-preview.zip`
 **Entry point:** `index.html` (double-click, opens in any modern browser — no server, no install)
+**Architecture:** 8 separate HTML pages sharing one `assets/css/style.css` + `assets/js/main.js`
 **Date:** 2026-07-01
 **Status:** ✅ ALL CHECKS PASS
 
 ---
 
-## 1. What was merged
+## 1. Pages (each a standalone `.html` file)
 
-The full site was assembled into a single self-contained `index.html` that behaves as a
-multi-page site through instant in-page navigation (SPA router, no server needed). All 8 pages,
-the updated menu, the official logo, and the media library live inside one package.
-
-| Requested input | Where it lives in the package | Status |
+| Page | File | Menu label |
 |---|---|---|
-| New home page (`index.html`) | `#page-home` | ✅ added |
-| New Gift Cards page (`gift-cards.html`) | `#page-gift` — menu item **גיפט קארדס** | ✅ added |
-| New "Before you call" page (`before-you-call.html`) | `#page-before` — menu item **לפני שמתקשרים** | ✅ added |
-| Old site pages (about, services, gallery, pricing, contact) | `#page-about` · `#page-services` · `#page-gallery` · `#page-pricing` · `#page-contact` | ✅ preserved, menu links updated |
-| Assets folder | `assets/` (css, js, images + thumbnails/medium/large, video) | ✅ included |
+| Home | `index.html` | דף הבית |
+| About | `about.html` | מי אנחנו |
+| Services | `services.html` | שירותים |
+| Gallery | `gallery.html` | גלריה |
+| Pricing | `pricing.html` | מחירים |
+| **Gift Cards** | `gift-cards.html` | גיפט קארדס |
+| **Before you call** | `before-you-call.html` | לפני שמתקשרים |
+| Contact | `contact.html` | צור קשר |
 
----
+The 3 new pages requested — **home (`index.html`)**, **`gift-cards.html`**, and
+**`before-you-call.html`** — are now real, separate files, merged into the site alongside the
+converted old pages (about, services, gallery, pricing, contact).
 
 ## 2. Menu (identical on every page)
 
-The header nav **and** the mobile menu carry the exact 8 items, in the requested order and Hebrew wording:
+Every page renders the same header nav **and** mobile menu, in the requested order and wording:
 
 `דף הבית · מי אנחנו · שירותים · גלריה · מחירים · גיפט קארדס · לפני שמתקשרים · צור קשר`
 
-Because navigation is a single shared header rendered on all pages, the menu is guaranteed
-consistent across every page — there is no per-page copy to drift out of sync.
-
----
+Menu links are real `<a href="…html">` links between the files, and the current page's link
+carries the `active` state. Verified by clicking every menu item from the home page: **8/8 land on
+the correct file.**
 
 ## 3. Check results (10/10)
 
 | # | Check | Method | Result |
 |---|---|---|---|
-| 1 | 3 new pages added | Page sections `#page-home`, `#page-gift`, `#page-before` present | ✅ |
-| 2 | Menu updated on all pages | Desktop nav + mobile menu both list all 8 items in order | ✅ |
-| 3 | Old pages unchanged except menu | Content sections preserved; only shared nav updated | ✅ |
-| 4 | All links verified | 8/8 internal nav targets resolve; 5 external links valid — see `LINK_CHECK.md` | ✅ |
-| 5 | All images verified | 28/28 referenced media exist; 48 rendered images load (`naturalWidth>0`) — see `IMAGE_CHECK.md` | ✅ |
-| 6 | Logo verified | `assets/images/logo-header.png` loads (847×847) in header, footer & favicon | ✅ |
-| 7 | CSS/JS verified | CSS + JS inlined in `index.html`; page loaded with **0 JS page errors** | ✅ |
-| 8 | Mobile layout verified | No horizontal overflow at **360px** and **390px** on all 8 pages; hamburger opens | ✅ |
-| 9 | Opens locally | Loaded over `file://` in headless Chromium; router + reveals work offline | ✅ |
-| 10 | ZIP created | `final-html-preview.zip` built from the verified tree | ✅ |
-
----
+| 1 | 3 new pages added | `index.html`, `gift-cards.html`, `before-you-call.html` exist as files | ✅ |
+| 2 | Menu updated on all pages | 8-item nav + mobile menu present & identical on all 8 files | ✅ |
+| 3 | Old pages unchanged except menu | about/services/gallery/pricing/contact content preserved; only nav/links updated | ✅ |
+| 4 | All links verified | 8/8 menu links click through to correct file; internal + external all valid — `LINK_CHECK.md` | ✅ |
+| 5 | All images verified | 0 broken images on any page (browser); 31/31 asset refs exist (disk) — `IMAGE_CHECK.md` | ✅ |
+| 6 | Logo verified | `logo-header.png` loads in header & footer on **all 8 pages** | ✅ |
+| 7 | CSS/JS verified | Shared `assets/css/style.css` + `assets/js/main.js` load on every page; **0 JS errors** | ✅ |
+| 8 | Mobile layout verified | No horizontal overflow at **360px** & **390px** on all 8 pages; hamburger opens | ✅ |
+| 9 | Opens locally | All 8 files load over `file://`; CSS/JS resolve; works offline | ✅ |
+| 10 | ZIP created | `final-html-preview.zip` rebuilt from the verified multi-page tree | ✅ |
 
 ## 4. How it was verified
 
-Automated headless Chromium (Playwright) drove the real page over `file://`:
+Headless Chromium (Playwright) loaded **each of the 8 files** directly over `file://` with all
+external network blocked (true offline):
 
-- Navigated to each of the 8 menu targets and confirmed the correct `.page` becomes `.active`
-  and the matching nav link gets the `.active` state. **8/8 passed.**
-- Audited every `<img>` in the document: **48 images loaded** (`naturalWidth > 0`). The only
-  `<img src="">` is the gallery **lightbox** placeholder, which is populated by JS on click —
-  expected, not a broken image.
-- Measured document scroll width vs. client width at **360px** and **390px** for all 8 pages:
-  **no horizontal overflow anywhere.** Hamburger button visible and mobile menu opens.
-- Verified the header logo image resolves and loads.
-- Static check: parsed every `src`/`href`/`poster`/`<source>` and matched it against the
-  filesystem (with `%23`/space URL-decoding) — **0 missing local assets.**
+- **Images:** audited every `<img>` per page → **0 broken** across all pages (only the gallery
+  lightbox `<img src="">` is empty by design, filled by JS on click).
+- **Active menu:** each page highlights exactly its own menu item (`.nav-links a.active`).
+- **Logo:** loads on every page (header + footer).
+- **Click-through:** clicked all 8 menu links from `index.html` → each navigates to the right file.
+- **Mobile:** document scroll width ≤ client width at **390px** and **360px** on all pages — no
+  horizontal overflow; hamburger visible and menu opens.
+- **JS:** **0 page errors** total across all 8 pages.
 
-### Known, expected notes
-- The only console message is a failed fetch of **Google Fonts** (`fonts.googleapis.com`) when
-  opened with **no internet**. This is by design: the `@import` enhances typography when online,
-  and the site cleanly falls back to system sans-serif offline. Layout and function are unaffected.
-- Unused development leftovers were **excluded from the ZIP**: `_lt.html` (a logo test scratch
-  file), `assets/videos/banner vid.mp4` (a duplicate of the used `assets/video/banner.mp4`),
-  and internal docs (`README.md`, `SITE_TEXT.md`). `assets/css/style.css` and `assets/js/main.js`
-  are kept for the documented folder structure; the live page uses inlined CSS/JS.
+Static cross-check: parsed every `src`/`href`/`poster` in all 8 files and matched against disk
+(URL-decoding spaces and `%23`) → **0 missing assets** (31 unique references).
 
----
+### Notes
+- The only network call the pages make is Google Fonts (`fonts.googleapis.com`), used for the
+  Heebo typeface when online. Offline it cleanly falls back to system sans-serif — layout and
+  function unaffected (verified with network fully blocked).
+- Excluded from the ZIP as dev leftovers: `_lt.html` (logo test), `assets/videos/` (duplicate of
+  the used `assets/video/banner.mp4`), `README.md`, `SITE_TEXT.md`, and the build script.
 
 ## 5. Contact data present (for client approval)
-
 - WhatsApp: `wa.me/972535315340`
 - אלכס (Alex): `053-531-5340` → `tel:+972535315340` · `Alexs4all@gmail.com`
 - רפי (Rafi): `052-531-5340` → `tel:+972525315340` · `rafilipelis@gmail.com`
 
-All display numbers match their `tel:` hrefs. No facts were invented; contact details come from
-the supplied material and remain subject to client confirmation (see `PREVIEW_NOTES.md`).
+All display numbers match their `tel:` hrefs. No facts invented; details subject to client confirmation.
 
 ---
 
-**Conclusion:** The full HTML website is merged, menu-consistent, link-clean, image-complete,
-responsive, and opens locally. Packaged as `final-html-preview.zip`.
+**Conclusion:** A real 8-page HTML website — separate files, shared design, consistent menu,
+link-clean, image-complete, responsive, opens locally. Packaged as `final-html-preview.zip`.
