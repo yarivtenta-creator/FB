@@ -122,6 +122,21 @@ Imported items land as `project = UNASSIGNED`, `status = NEEDS_REVIEW` until the
 one-time Deep Audit routes them to a project. See `docs/ARCHITECTURE.md` for the
 full ingestion design and `docs/INGESTION_DEMO.md` for real output.
 
+### Compile project memory (adapter-agnostic)
+
+The Project Compiler renders each project's `PROJECT_INDEX.md` + `ASSET_INDEX.md`
+from the canonical index — it knows nothing about any specific source.
+
+```powershell
+# Route an item to a project (append-only decision). Uncertain -> UNCLASSIFIED.
+.\scripts\import\Set-ItemProject.ps1 -Id fe78b9858761 -Project "Vinyl Lab" -Confident
+
+# Render every project + the UNASSIGNED/UNCLASSIFIED buckets from the index.
+.\scripts\Compile-ProjectMemory.ps1 -Project ALL
+```
+
+The canonical schema and the compiler-first build order are in `docs/SCHEMA.md`.
+
 ---
 
 ## Where files live (memory root)
@@ -191,18 +206,21 @@ driven by later phases start as placeholders and are filled in then.
 
 ```
 scripts/
-  Save-Session.ps1       # the Save Session workflow (main entry point)
-  New-Project.ps1        # idempotent scaffolding + mandatory-file verification
-  Get-ProjectContext.ps1 # runs the 5-step pre-answer protocol (read-only)
-  common.ps1             # shared helpers: backup-before-write, logging, status
-  templates/             # starter Markdown for every memory file
-  import/                # Phase 0 ingestion layer
-    common-ingest.ps1        #   hashing, raw-copy, append-index, cards, type detection
+  Save-Session.ps1        # the Save Session workflow (main entry point)
+  New-Project.ps1         # idempotent scaffolding + mandatory-file verification
+  Get-ProjectContext.ps1  # runs the 5-step pre-answer protocol (read-only)
+  Compile-ProjectMemory.ps1 # generic compiler: canonical records -> project memory
+  common.ps1              # shared helpers: backup-before-write, logging, status
+  templates/              # starter Markdown for every memory file
+  import/                 # ingestion adapters + index
+    common-ingest.ps1        #   hashing, raw-copy, append-index/overlay, cards
     Import-Files.ps1         #   files adapter: ZIP/PDF/img/video/HTML/MD/DOC/CSV/text
     Import-Conversations.ps1 #   ChatGPT + Claude export adapter (transcripts + cards)
+    Set-ItemProject.ps1      #   assign an item to a project / UNCLASSIFIED (overlay)
     Search-Index.ps1         #   retrieval: answer "where is X?" from the index
 docs/
-  ARCHITECTURE.md        # the Project OS design + token model
+  SCHEMA.md              # canonical Project Memory schema (the adapter contract)
+  ARCHITECTURE.md        # compiler-first design + token model
   INGESTION_DEMO.md      # real ingestion/retrieval output
 Save-Session.cmd         # double-clickable launcher for Save-Session.ps1
 PROJECT_RULES.md         # mandatory rules (8 files + 5-step protocol)
@@ -225,15 +243,19 @@ produces before running anything.
 
 ## Roadmap (not yet built)
 
-| Phase | Deliverable | Status |
-|-------|-------------|--------|
-| 0 | Ingestion layer — index core + files adapter + retrieval | **built & tested** |
-| 0 | Conversation adapter — ChatGPT + Claude export (transcripts + cards) | **built & tested** |
-| 0 | Ingestion adapters — claude-code / gdrive / git | next |
-| 0 | Doc→Markdown converter (Pandoc / MarkItDown) with fallback | planned |
-| 1 | One-time deep audit + idea consolidation (routes UNASSIGNED items) | planned |
-| — | Save Session + project memory scaffold (8 mandatory files) | **built & tested** |
-| later | Folder generator, dashboard, project-oriented sidebar | not started (UI deferred) |
+Compiler-first order (see `docs/SCHEMA.md`):
 
-See `docs/ARCHITECTURE.md` for the full layered design. The foundation
-(ingestion + project memory) is built and tested before any UI, by design.
+| Step | Deliverable | Status |
+|------|-------------|--------|
+| 1 | Canonical Project Memory schema (adapter contract) | **defined** |
+| 2 | Generic Project Compiler (records → project memory) | **built & tested** |
+| 3 | Doc→Markdown converter (Pandoc / MarkItDown) with fallback | next |
+| 4 | Adapters — files ✓, conversations ✓; claude-code / gdrive / github / higgsfield | in progress |
+| 5 | One-time Deep Audit — classify / merge duplicates / route (→ UNCLASSIFIED if unsure) | planned |
+| 6 | Publish canonical Project Memory (compile ALL) | ready |
+| 7 | Engine-specific caches (only if needed) | later |
+| — | Save Session + project memory scaffold (authored files) | **built & tested** |
+| later | Folder generator, dashboard, project-oriented sidebar | UI deferred |
+
+The Project Compiler never depends on any single engine's data structure —
+Claude is Adapter #1 of many. Foundation is built and tested before any UI.

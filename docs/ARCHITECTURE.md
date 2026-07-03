@@ -4,14 +4,28 @@
 > Goal: turn AI work from chat-first into **project-first** — projects are the
 > primary object; chats become archived implementation history.
 
-## Layers (build order)
+## Compiler-first, not engine-first
+
+The system is **adapter-agnostic**. Every source (Claude, ChatGPT, Drive,
+GitHub, Higgsfield, local files) is just an **adapter** that normalizes into the
+one canonical record in `SCHEMA.md`. The **Project Compiler consumes only that
+canonical shape** — it never depends on Claude's (or anyone's) data structure.
+Claude is Adapter #1 of many; the architecture assumes many adapters will exist.
+
+## Build order (compiler-first)
 
 ```
-Phase 0  INGESTION      import + index everything (this doc's focus)
-Phase 1  DEEP AUDIT     one-time: classify, merge duplicates, route to projects
-Phase 2  PROJECT MEMORY per-project current-truth files (STATE, INDEX, ...)   [partly built]
-Phase 3+ GENERATORS/UI  folder generator, dashboard, sidebar                  [later, not now]
+1  CANONICAL SCHEMA     source-independent record + project memory      [SCHEMA.md]
+2  PROJECT COMPILER     renders memory from canonical records only      [built]
+3  MARKDOWN CONVERTER   _RAW docs -> 03_CONVERTED_MD/, sets converted_md [next]
+4  ADAPTERS             Claude, ChatGPT(built), Drive, GitHub, Higgsfield, files(built)
+5  ONE-TIME DEEP AUDIT  classify / merge duplicates / route (-> UNCLASSIFIED if unsure)
+6  PUBLISH              compile ALL -> canonical Project Memory
+7  ENGINE CACHES        only if needed, derived from the canonical memory
 ```
+
+Reserved buckets `UNASSIGNED` (pre-audit) and `UNCLASSIFIED` (audited but
+uncertain) are never real projects — uncertain data is never forced into one.
 
 ## Phase 0 — Ingestion pipeline
 

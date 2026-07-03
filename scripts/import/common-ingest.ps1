@@ -147,6 +147,78 @@ function Get-IndexHashes {
     return $seen
 }
 
+function Get-AssignmentsPath {
+    # Append-only overlay of classification decisions (audit / human), kept
+    # separate from the immutable master_index so records are never overwritten.
+    param([Parameter(Mandatory)][string]$Root)
+    $dir = Join-Path $Root '_INDEX'
+    if (-not (Test-Path -LiteralPath $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
+    return (Join-Path $dir 'assignments.ndjson')
+}
+
+# Reserved bucket names — never real projects. Uncertain data lives here, not in
+# a project. UNASSIGNED = freshly ingested, not yet audited.
+# UNCLASSIFIED = audited but could not be confidently assigned (awaits review).
+$script:ReservedBuckets = @('UNASSIGNED', 'UNCLASSIFIED')
+
+function Set-ItemAssignment {
+    <#
+      Append a classification decision for one indexed item. Last write wins at
+      compile time. This is how the Audit routes items to a project — or parks
+      them in UNCLASSIFIED. Never edits the master index.
+    #>
+    param(
+        [Parameter(Mandatory)][string]$Root,
+        [Parameter(Mandatory)][string]$Id,
+        [Parameter(Mandatory)][string]$Project,
+        [string]$Status,
+        [string]$Reason = '',
+        [string]$DecidedBy = 'audit'
+    )
+    if ([string]::IsNullOrWhiteSpace($Status)) {
+        $Status = if ($script:ReservedBuckets -contains $Project.ToUpperInvariant()) { 'NEEDS_REVIEW' } else { 'CLASSIFIED' }
+    }
+    $rec = [ordered]@{
+        id = $Id; project = $Project; status = $Status; reason = $Reason
+        decided_by = $DecidedBy; decided_at = (Get-IsoNow)
+    }
+    $json = ([pscustomobject]$rec | ConvertTo-Json -Depth 4 -Compress)
+    Add-Content -LiteralPath (Get-AssignmentsPath -Root $Root) -Value $json -Encoding utf8
+    Write-ActionLog -Root $Root -Level 'STATUS' -Message "Assign $Id -> $Project ($Status) by $DecidedBy"
+}
+
+function Get-EffectiveRecords {
+    <#
+      Return the effective view of every indexed item: the immutable base record
+      from master_index.ndjson merged with the latest assignment overlay
+      (last-write-wins). Adapter-agnostic — the Compiler consumes only this.
+    #>
+    param([Parameter(Mandatory)][string]$Root)
+    $indexPath = Get-IndexPath -Root $Root
+    $base = [ordered]@{}
+    if (Test-Path -LiteralPath $indexPath) {
+        Get-Content -LiteralPath $indexPath -Encoding utf8 | ForEach-Object {
+            if ([string]::IsNullOrWhiteSpace($_)) { return }
+            try { $o = $_ | ConvertFrom-Json; if ($o.id) { $base[$o.id] = $o } } catch { }
+        }
+    }
+    $assignPath = Get-AssignmentsPath -Root $Root
+    if (Test-Path -LiteralPath $assignPath) {
+        Get-Content -LiteralPath $assignPath -Encoding utf8 | ForEach-Object {
+            if ([string]::IsNullOrWhiteSpace($_)) { return }
+            try {
+                $a = $_ | ConvertFrom-Json
+                if ($a.id -and $base.Contains($a.id)) {
+                    $base[$a.id].project = $a.project
+                    $base[$a.id].status = $a.status
+                    if ($a.reason) { $base[$a.id].needs_review_reason = $a.reason }
+                }
+            } catch { }
+        }
+    }
+    return @($base.Values)
+}
+
 function Add-IndexRecord {
     <#
       Append one record (hashtable) as a JSON line. Caller supplies the fields;
