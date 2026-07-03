@@ -109,6 +109,10 @@ interactively: pick/enter a project, type your summary, done.
 # Nothing is moved or overwritten; exact duplicates are skipped by SHA-256.
 .\scripts\import\Import-Files.ps1 -Path "D:\Downloads" -Include zip,pdf,png
 
+# Import a ChatGPT or Claude export (auto-detects format). Full transcripts go to
+# the cold archive; each conversation gets a compact card + extractive preview.
+.\scripts\import\Import-Conversations.ps1 -Path "D:\exports\conversations.json"
+
 # Retrieve WITHOUT reading any conversation history (the token-saving lookup):
 .\scripts\import\Search-Index.ps1 -Query "final website" -Type archive
 .\scripts\import\Search-Index.ps1 -Query "homepage" -Type image
@@ -193,9 +197,10 @@ scripts/
   common.ps1             # shared helpers: backup-before-write, logging, status
   templates/             # starter Markdown for every memory file
   import/                # Phase 0 ingestion layer
-    common-ingest.ps1    #   hashing, raw-copy, append-index, cards, type detection
-    Import-Files.ps1     #   files adapter: ZIP/PDF/img/video/HTML/MD/DOC/CSV/text
-    Search-Index.ps1     #   retrieval: answer "where is X?" from the index
+    common-ingest.ps1        #   hashing, raw-copy, append-index, cards, type detection
+    Import-Files.ps1         #   files adapter: ZIP/PDF/img/video/HTML/MD/DOC/CSV/text
+    Import-Conversations.ps1 #   ChatGPT + Claude export adapter (transcripts + cards)
+    Search-Index.ps1         #   retrieval: answer "where is X?" from the index
 docs/
   ARCHITECTURE.md        # the Project OS design + token model
   INGESTION_DEMO.md      # real ingestion/retrieval output
@@ -223,7 +228,8 @@ produces before running anything.
 | Phase | Deliverable | Status |
 |-------|-------------|--------|
 | 0 | Ingestion layer — index core + files adapter + retrieval | **built & tested** |
-| 0 | Ingestion adapters — chatgpt / claude-export / claude-code / gdrive / git | next |
+| 0 | Conversation adapter — ChatGPT + Claude export (transcripts + cards) | **built & tested** |
+| 0 | Ingestion adapters — claude-code / gdrive / git | next |
 | 0 | Doc→Markdown converter (Pandoc / MarkItDown) with fallback | planned |
 | 1 | One-time deep audit + idea consolidation (routes UNASSIGNED items) | planned |
 | — | Save Session + project memory scaffold (8 mandatory files) | **built & tested** |

@@ -41,6 +41,16 @@ function Get-Sha256 {
     return (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()
 }
 
+function Get-StringSha256 {
+    # Hash arbitrary text (e.g. a conversation transcript) with no temp file.
+    param([Parameter(Mandatory)][AllowEmptyString()][string]$Text)
+    $sha = [System.Security.Cryptography.SHA256]::Create()
+    try {
+        $bytes = [System.Text.Encoding]::UTF8.GetBytes($Text)
+        return ([System.BitConverter]::ToString($sha.ComputeHash($bytes))).Replace('-', '').ToLowerInvariant()
+    } finally { $sha.Dispose() }
+}
+
 function New-IngestId {
     # Deterministic short id derived from the content hash (no randomness — keeps
     # results reproducible and resumable). First 12 hex chars of the sha.
@@ -213,6 +223,46 @@ function Write-AssetCard {
 - **converted markdown:** $(if ($Record.converted_md) { $Record.converted_md } else { '_(none)_' })
 - **related sessions:** $related
 - **needs review:** $($Record.needs_review_reason)
+"@
+    Write-TextFile -Path $card -Content $body -Root $Root
+    return $card
+}
+
+# ---------------------------------------------------------------------------
+# Conversation cards (cold-archive transcript + hot-set compact card)
+# ---------------------------------------------------------------------------
+
+function Write-ConversationCard {
+    <#
+      Render a compact card for an indexed conversation into
+      _INDEX/conversations/<id>.md. The card is what normal work reads; the full
+      transcript lives in the cold archive (raw_path) and is loaded only on demand.
+    #>
+    param(
+        [Parameter(Mandatory)][string]$Root,
+        [Parameter(Mandatory)]$Record
+    )
+    $dir = Join-Path (Join-Path $Root '_INDEX') 'conversations'
+    if (-not (Test-Path -LiteralPath $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
+    $card = Join-Path $dir ("$($Record.id).md")
+
+    $body = @"
+# Conversation: $($Record.title)
+
+- **id:** $($Record.id)
+- **source:** $($Record.source)
+- **project:** $($Record.project)
+- **status:** $($Record.status)
+- **date:** $($Record.date_added)
+- **messages:** $($Record.contains)
+- **transcript (cold archive):** $($Record.raw_path)
+
+## Preview
+
+$(if ($Record.purpose) { $Record.purpose } else { '_(extractive preview unavailable)_' })
+
+> Full summary is produced during the one-time Audit (LLM-assisted). Until then
+> this card + the preview are what should be read — not the full transcript.
 "@
     Write-TextFile -Path $card -Content $body -Root $Root
     return $card
