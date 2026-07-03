@@ -15,14 +15,14 @@ Everything a fresh session needs to continue GPT SAAS without rereading this con
 
 - Workspace v1 fully reviewed; 9 findings, all with implementations (SYSTEM_REVIEW.md).
 - Spec v2 (SYSTEM_SPECIFICATION.md): schemas, lifecycle, import pipeline, handoffs — approved by operator 2026-07-03.
-- **Phase 0 DONE:** live Drive workspace deployed (structure per spec §2), v1.zip archived, git mirror pushed.
-- **Phase 1 DONE (1.1–1.4):** PROJECT_TEMPLATE.md = full schema; OUTPUT_PROTOCOL.md = 9-file list; 00_READ_FIRST.md references lifecycle/spec v2/handoffs; TOKEN_RULES.md points to enforcement doc.
-- Phase 1 step 1.5 pending: operator triage of D-1..D-4 (defaults remain safe; D-1 effectively resolved as (c) by deployment).
-- No project folders yet. Pilot P001 default: FB landing page (D-3).
+- **Phase 0 DONE:** live Drive workspace deployed, v1.zip archived, git mirror pushed.
+- **Phase 1 DONE (incl. 1.5):** rules installed; **v1.0 decisions approved** (DECISION_REQUIRED.md record): Drive+mirror canonical, pilot = 247tiket/Travel Layout, Claude Sonnet = Primary Builder/Co-worker, Claude Opus 5 = Chief System Reviewer, ChatGPT = Architect & Validator, Higgsfield = Auditor & Secondary Engineer, imports PENDING_IMPORT (build first), no final package until audit passes, architecture frozen at v1.0.
+- **Phase 2 step 2.1 DONE:** pilot `P001-247tiket-travel-layout` bootstrapped (STATUS=ACTIVE, STATE_VERSION=1) in 06_PROJECTS/ — Drive folder id `1R7UegCR4EF6D9KMfS8_jt5B5AyS032pj` — with SOURCES/ARCHIVE/EXPORTS and handoff H1 to Sonnet.
+- Open: D-5 (confirm P001 DONE_WHEN wording), D-6 (location of current Travel Layout materials).
 
 ## 3. NEXT_ACTION
 
-Phase 2 step 2.1: bootstrap pilot `P001-fb-landing-page` in 06_PROJECTS/ with prompt P-01 (GOAL/DONE_WHEN per DECISION_REQUIRED D-3 default). Owner: Claude. Waiting for operator go-ahead ("when done wait for next" — current instruction).
+P001 T1: operator drops current 247tiket/Travel Layout materials (repo/files/links) into 05_IMPORT_INBOX marked CURRENT; then Claude Sonnet executes T3 (build plan for increment 1) per handoff H1. Historical chat imports stay PENDING_IMPORT (V1-b).
 
 ## 4. Snapshot procedure (standing)
 

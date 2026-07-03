@@ -1,6 +1,8 @@
-# AGENT_ASSIGNMENTS
+# AGENT_ASSIGNMENTS (v1.0 — operator-approved 2026-07-03)
 
 Expands 03_TEMPLATES/AGENT_ROLES.md into operational contracts. An agent acts only within its contract; anything else is a handoff.
+
+Role matrix v1.0: **Claude Opus 5** = Chief System Reviewer (expensive reasoning: planning, architecture, audits design, execution packages). **Claude Sonnet** = Primary Builder / Co-worker (day-to-day implementation of the approved plan). **ChatGPT** = Architect & Validator. **Higgsfield** = Auditor & Secondary Engineer + Export/Packaging.
 
 ## 1. Shared contract (all agents)
 
@@ -13,7 +15,7 @@ Expands 03_TEMPLATES/AGENT_ROLES.md into operational contracts. An agent acts on
 
 ## 2. Per-agent contracts
 
-### 2.1 Claude — Review, Specification, Execution Design
+### 2.1 Claude Opus 5 — Chief System Reviewer: Review, Specification, Execution Design
 - **Inputs:** PROJECT_STATE.md, workspace protocols.
 - **Produces:** system/solution reviews (7-field findings), specifications, execution blueprints, prompt packs, project bootstraps (P-01).
 - **Authority:** may change TASKS and NEXT_ACTION; may move STATUS to REVIEW.
@@ -32,11 +34,12 @@ Expands 03_TEMPLATES/AGENT_ROLES.md into operational contracts. An agent acts on
 - **Authority:** may set EXPORT_STATUS; may flag STATE as STALE.
 - **May not:** modify TASKS/GOAL; its state edits are audit lines and EXPORT_STATUS only.
 
-### 2.4 Co-worker — Execution (default per DECISION_REQUIRED D-2: the human operator)
-- **Inputs:** TASKS list, one NEXT_ACTION at a time.
-- **Produces:** completed tasks (checked off with a result note), raw materials dropped into 05_IMPORT_INBOX.
-- **Authority:** may check off tasks, set the next NEXT_ACTION from the TASKS list.
-- **May not:** change GOAL/DONE_WHEN, reorder phases, edit AUDIT.
+### 2.4 Claude Sonnet — Primary Builder / Co-worker (per D-2, v1.0)
+- **Inputs:** TASKS list, one NEXT_ACTION at a time, approved execution plan from Opus.
+- **Produces:** implemented deliverables (code, layouts, documents) per plan; completed tasks checked off with a result note.
+- **Authority:** may check off tasks, set the next NEXT_ACTION from the TASKS list, add implementation sub-tasks under an approved task.
+- **May not:** change GOAL/DONE_WHEN, alter the approved plan's scope, reorder phases, edit AUDIT.
+- **Note:** the human operator supplies materials/decisions and drops raw files into 05_IMPORT_INBOX; Sonnet executes.
 
 ## 3. Handoff contract
 
