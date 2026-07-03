@@ -97,9 +97,11 @@ function Get-Messages {
             if ($null -eq $m) { continue }
             $role = $m.author.role
             if ($role -notin @('user', 'assistant')) { continue }
-            $text = (Get-PartText -Content $m.content).Trim()
+            $mProps2 = $m.PSObject.Properties.Name
+            $mContent = if ($mProps2 -contains 'content') { $m.content } else { $null }
+            $text = (Get-PartText -Content $mContent).Trim()
             if ([string]::IsNullOrWhiteSpace($text)) { continue }
-            $ct = if ($m.create_time) { [double]$m.create_time } else { 0 }
+            $ct = if (($mProps2 -contains 'create_time') -and $m.create_time) { [double]$m.create_time } else { 0 }
             $nodes += [pscustomobject]@{ Role = $role; Text = $text; T = $ct }
         }
         foreach ($n in ($nodes | Sort-Object T)) { $msgs.Add(@{ Role = $n.Role; Text = $n.Text }) }
@@ -121,7 +123,10 @@ function Get-Messages {
 
 function Get-ConvTitle {
     param($Conv, [string]$Fmt)
-    $t = if ($Fmt -eq 'claude') { $Conv.name } else { $Conv.title }
+    $p = $Conv.PSObject.Properties.Name
+    $t = if ($Fmt -eq 'claude' -and ($p -contains 'name')) { $Conv.name }
+    elseif ($p -contains 'title') { $Conv.title }
+    else { '' }
     if ([string]::IsNullOrWhiteSpace($t)) { $t = '(untitled conversation)' }
     return ([string]$t).Trim()
 }

@@ -14,3 +14,6 @@ GPT-Memory/_PUBLISH/
 Thumbs.db
 Desktop.ini
 *~
+
+# Validation suite scratch root
+GPT-Memory-VALIDATION/

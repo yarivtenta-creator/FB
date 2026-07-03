@@ -245,6 +245,7 @@ scripts/
   Invoke-DeepAudit.ps1    # one-time audit: classify/merge/route (overlay + modules)
   Approve-AuditItem.ps1   # operator approval for a queued audit candidate
   Publish-Memory.ps1      # compile ALL, verify projects, hot-tier metrics, validation report
+  Test-Foundation.ps1     # Foundation Validation Suite (5 scenarios, at scale)
   common.ps1              # shared helpers: backup-before-write, logging, status
   templates/              # starter Markdown for every memory file
   import/                 # ingestion adapters + index
@@ -294,9 +295,17 @@ Compiler-first order (see `docs/SCHEMA.md`):
 | 6 | Publish — compile ALL, verify projects, validation report | **built & tested** |
 | 7 | Engine-specific caches (only if needed) | later |
 
-**Foundation v1 is frozen** (see `docs/FOUNDATION_V1.md`). Publish validation:
+**Foundation v1.1 is frozen** (see `docs/FOUNDATION_V1.md`) — validated at scale
+by the Foundation Validation Suite (`scripts/Test-Foundation.ps1`, report
+`docs/VALIDATION_SUITE.md`): 5 scenarios, 4,301 records, all passed; hot-tier
+stays bounded (~2k tok) regardless of project size. Publish validation:
 `docs/PUBLISH_VALIDATION.md`. Next: the Project Control Center (UI), which
 renders the canonical memory — it never authors it.
+
+```powershell
+# Stress-test the foundation before touching the UI:
+.\scripts\Test-Foundation.ps1 -Conversations 2000 -Assets 2000 -Ideas 300
+```
 | — | Save Session → **SessionDelta only**; Compiler owns all generated files | **built & tested** |
 | later | Folder generator, dashboard, project-oriented sidebar | UI deferred |
 

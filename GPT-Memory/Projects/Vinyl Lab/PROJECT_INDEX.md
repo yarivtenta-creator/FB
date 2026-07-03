@@ -3,15 +3,15 @@
 - **Items:** 7  (2×image, 1×archive, 1×conversation, 1×pdf, 1×repository, 1×video)
 - **Assets:** 6   **Active conversations:** 1   **Archived:** 0   **Modules:** 0
 - **Last activity:** 2026-07-03
-- **Compiled:** 2026-07-03 08:42 (generated — do not hand-edit)
+- **Compiled:** 2026-07-03 11:19 (generated — do not hand-edit)
 
-## Conversations (active)
+## Conversations (active) — showing 1 of 1
 
 | Date | Title | Source | Status | Transcript |
 |------|-------|--------|--------|------------|
 | 2025-06-15 | Vinyl Lab deploy | chatgpt | CLASSIFIED | _RAW/chatgpt/2026-07-03/conv_Vinyl_Lab_deploy_1a693a5b4dc2.md |
 
-## Assets
+## Assets — showing 6 of 6
 
 | Date | Title | Type | Status | Path |
 |------|-------|------|--------|------|

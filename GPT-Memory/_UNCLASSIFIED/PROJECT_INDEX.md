@@ -6,9 +6,9 @@
 - **Items:** 1  (1×conversation)
 - **Assets:** 0   **Active conversations:** 1   **Archived:** 0   **Modules:** 0
 - **Last activity:** 2025-06-15
-- **Compiled:** 2026-07-03 08:42 (generated — do not hand-edit)
+- **Compiled:** 2026-07-03 11:19 (generated — do not hand-edit)
 
-## Conversations (active)
+## Conversations (active) — showing 1 of 1
 
 | Date | Title | Source | Status | Transcript |
 |------|-------|--------|--------|------------|

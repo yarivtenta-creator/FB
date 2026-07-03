@@ -1,8 +1,30 @@
-# Foundation v1 — FROZEN
+# Foundation v1.1 — FROZEN (validated at scale)
 
 The foundation of the Project Operating System is complete, proven end-to-end,
-and frozen. No architecture changes belong in v1 — only the layers below, all
-built and validated.
+stress-tested by the Foundation Validation Suite, and frozen at **v1.1**. No
+architecture changes — only the layers below, all built and validated.
+
+## v1.1 — Validation Suite (`scripts/Test-Foundation.ps1`, report `docs/VALIDATION_SUITE.md`)
+
+Ran 5 real-world scenarios at scale (**4,301 records**) — **ALL PASSED**:
+
+| Scenario | Result |
+|----------|--------|
+| Large project (2,000 conv + 2,000 assets) | hot-tier stays **~2,010 tok** for 4,000 records — bounded; compile 0.88s |
+| Multi-engine identity | same conversation via ChatGPT+Claude → **one** canonical record (content-hash dedup) |
+| Duplicate stress (300 ideas) | **deterministic** merge (180 members, identical across runs); explainable; operator queue populated |
+| Recovery | recompile **byte-identical** (reproducible); re-ingest of raw history **idempotent** |
+| Performance | compile 0.88s · publish 2.99s · footprint 10.44 MB |
+
+Two issues the suite caught and fixed (before any UI):
+1. **Hot-tier unbounded at scale** — `PROJECT_INDEX` listed every item. Now capped
+   (top-25 preview + totals); full enumerations stay in the warm `ASSET_INDEX`.
+2. **Adapter fragility** — conversation adapter threw under StrictMode on exports
+   missing optional `create_time` / `title`. Now property-safe.
+
+---
+
+## Foundation (v1) — the layers
 
 ## What v1 contains
 

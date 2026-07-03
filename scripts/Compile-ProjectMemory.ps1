@@ -94,34 +94,40 @@ function Compile-One {
         }
         [void]$sb.AppendLine()
     }
+    # Hot-tier stays BOUNDED regardless of project size: PROJECT_INDEX shows a
+    # capped, most-recent preview; the full enumerations live in ASSET_INDEX (warm).
+    $cap = 25
     if (@($activeConvos).Count) {
-        [void]$sb.AppendLine("## Conversations (active)")
+        [void]$sb.AppendLine("## Conversations (active) — showing $([math]::Min($cap, @($activeConvos).Count)) of $(@($activeConvos).Count)")
         [void]$sb.AppendLine()
         [void]$sb.AppendLine("| Date | Title | Source | Status | Transcript |")
         [void]$sb.AppendLine("|------|-------|--------|--------|------------|")
-        foreach ($c in ($activeConvos | Sort-Object date_added -Descending)) {
+        foreach ($c in (@($activeConvos | Sort-Object date_added -Descending) | Select-Object -First $cap)) {
             [void]$sb.AppendLine("| $($c.date_added) | $($c.title) | $($c.source) | $($c.status) | $($c.raw_path) |")
         }
+        if (@($activeConvos).Count -gt $cap) { [void]$sb.AppendLine("| … | _$(@($activeConvos).Count - $cap) more_ | | | _see ASSET_INDEX / index_ |") }
         [void]$sb.AppendLine()
     }
     if (@($archivedConvos).Count) {
-        [void]$sb.AppendLine("## Archived (duplicate discussions — cold history, not active memory)")
+        [void]$sb.AppendLine("## Archived (duplicate discussions — cold history, not active memory) — $(@($archivedConvos).Count) total")
         [void]$sb.AppendLine()
         [void]$sb.AppendLine("| Date | Title | Source | Transcript |")
         [void]$sb.AppendLine("|------|-------|--------|------------|")
-        foreach ($c in ($archivedConvos | Sort-Object date_added -Descending)) {
+        foreach ($c in (@($archivedConvos | Sort-Object date_added -Descending) | Select-Object -First $cap)) {
             [void]$sb.AppendLine("| $($c.date_added) | $($c.title) | $($c.source) | $($c.raw_path) |")
         }
+        if (@($archivedConvos).Count -gt $cap) { [void]$sb.AppendLine("| … | _$(@($archivedConvos).Count - $cap) more archived_ | | |") }
         [void]$sb.AppendLine()
     }
     if (@($assets).Count) {
-        [void]$sb.AppendLine("## Assets")
+        [void]$sb.AppendLine("## Assets — showing $([math]::Min($cap, @($assets).Count)) of $(@($assets).Count)")
         [void]$sb.AppendLine()
         [void]$sb.AppendLine("| Date | Title | Type | Status | Path |")
         [void]$sb.AppendLine("|------|-------|------|--------|------|")
-        foreach ($a in ($assets | Sort-Object date_added -Descending)) {
+        foreach ($a in (@($assets | Sort-Object date_added -Descending) | Select-Object -First $cap)) {
             [void]$sb.AppendLine("| $($a.date_added) | $($a.title) | $($a.type) | $($a.status) | $($a.raw_path) |")
         }
+        if (@($assets).Count -gt $cap) { [void]$sb.AppendLine("| … | _$(@($assets).Count - $cap) more_ | | | _see ASSET_INDEX_ |") }
         [void]$sb.AppendLine()
     }
     Write-TextFile -Path (Join-Path $dir 'PROJECT_INDEX.md') -Content $sb.ToString() -Root $Root
