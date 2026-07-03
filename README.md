@@ -244,6 +244,7 @@ scripts/
   Convert-Documents.ps1   # Markdown converter: _RAW docs -> 03_CONVERTED_MD (Pandoc/MarkItDown/native)
   Invoke-DeepAudit.ps1    # one-time audit: classify/merge/route (overlay + modules)
   Approve-AuditItem.ps1   # operator approval for a queued audit candidate
+  Publish-Memory.ps1      # compile ALL, verify projects, hot-tier metrics, validation report
   common.ps1              # shared helpers: backup-before-write, logging, status
   templates/              # starter Markdown for every memory file
   import/                 # ingestion adapters + index
@@ -290,8 +291,12 @@ Compiler-first order (see `docs/SCHEMA.md`):
 | 3 | Doc→Markdown converter (Pandoc / MarkItDown / native fallback) | **built & tested** |
 | 4 | Adapters — files ✓, conversations ✓, claude-code ✓, gdrive ✓, github ✓, higgsfield ✓ | **built & tested** |
 | 5 | One-time Deep Audit — classify / merge duplicates / route (→ UNCLASSIFIED if unsure) | **built & tested** |
-| 6 | Publish canonical Project Memory (compile ALL) | ready |
+| 6 | Publish — compile ALL, verify projects, validation report | **built & tested** |
 | 7 | Engine-specific caches (only if needed) | later |
+
+**Foundation v1 is frozen** (see `docs/FOUNDATION_V1.md`). Publish validation:
+`docs/PUBLISH_VALIDATION.md`. Next: the Project Control Center (UI), which
+renders the canonical memory — it never authors it.
 | — | Save Session → **SessionDelta only**; Compiler owns all generated files | **built & tested** |
 | later | Folder generator, dashboard, project-oriented sidebar | UI deferred |
 

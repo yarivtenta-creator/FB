@@ -3,14 +3,14 @@
 > Single-glance snapshot of where this project stands. Updated on every Save Session.
 
 - **Status:** 🟡 YELLOW (Pending changes)
-- **Last session:** 2026-07-03 07:39 (SESSION_2026-07-03_07-39_1.md)
-- **Last saved:** 2026-07-03 07:39
+- **Last session:** 2026-07-03 08:42 (SESSION_2026-07-03_08-42_1.md)
+- **Last saved:** 2026-07-03 08:42
 - **Blocked reason:** (none)
-- **Next action:** Get hosting credentials
+- **Next action:** Get credentials
 
 ## Latest session summary
 
-Started deploy prep; waiting on hosting credentials.
+Deploy prep; waiting on credentials.
 
 ## Notes
 

@@ -7,6 +7,8 @@ GPT-Memory/_logs/
 GPT-Memory/_RAW/
 GPT-Memory/_INDEX/
 GPT-Memory/_STAGING/
+GPT-Memory/_AUDIT/
+GPT-Memory/_PUBLISH/
 
 # Windows / editor cruft
 Thumbs.db

@@ -4,4 +4,4 @@
 
 | Date | Decision | Rationale |
 |------|----------|-----------|
-| 2026-07-03 | Use vinyl_lab_FINAL_READY.zip as source of truth | Newest audited build; older folders archived not deleted |
+| 2026-07-03 | Use FINAL_READY zip as source of truth | newest audited build |

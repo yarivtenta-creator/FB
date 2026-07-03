@@ -4,4 +4,9 @@
 
 | Asset | Date added | What it contains | Used for | Status | Related session | Local path | Converted MD |
 |-------|-----------|------------------|----------|--------|-----------------|------------|--------------|
-| vinyl_lab_FINAL_READY.zip | 2026-07-03 | website files, CSS, JS | final website audit | CLASSIFIED | SESSION_2026-07-03_07-39.md | D:\Downloads\vinyl_lab_FINAL_READY.zip |  |
+| homepage.png | 2026-07-03 |  |  | CLASSIFIED |  | _RAW/files/2026-07-03/homepage.png |  |
+| vinyl_lab_FINAL_READY.zip | 2026-07-03 | 3 entries; top-level: site |  | CLASSIFIED |  | _RAW/files/2026-07-03/vinyl_lab_FINAL_READY.zip |  |
+| vinyl record hero banner | 2026-06-23 | AI image generation | vinyl record hero banner | CLASSIFIED |  | https://cdn.higgsfield.ai/h1.png |  |
+| spinning vinyl loop | 2026-06-23 | AI video generation | spinning vinyl loop | CLASSIFIED |  | https://cdn.higgsfield.ai/h2.mp4 |  |
+| yariv/vinyl-lab-site | 2026-06-22 | lang: JavaScript; public | Final vinyl website | CLASSIFIED |  | https://github.com/yariv/vinyl-lab-site |  |
+| vinyl_brief.pdf | 2026-06-19 | application/pdf |  | CLASSIFIED |  | https://drive.google.com/file/d/d1/view |  |

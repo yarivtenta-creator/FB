@@ -4,7 +4,7 @@
 
 ## Open
 
-- [ ] Verify homepage image after deploy
+- [ ] Verify homepage
 
 ## Done (recent)
 
