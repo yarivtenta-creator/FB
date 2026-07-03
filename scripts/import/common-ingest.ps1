@@ -237,6 +237,50 @@ function Set-ItemEnrichment {
     Write-ActionLog -Root $Root -Level 'WRITE' -Message "Enrich $Id.$Field = $Value"
 }
 
+function Get-AuditDir {
+    param([Parameter(Mandatory)][string]$Root)
+    $dir = Join-Path $Root '_AUDIT'
+    if (-not (Test-Path -LiteralPath $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
+    return $dir
+}
+
+function Get-ModulesPath {
+    # Append-only store of consolidated module records (Deep Audit output). One
+    # module record collapses a duplicate-idea cluster into a single canonical
+    # entry; last write per module id wins.
+    param([Parameter(Mandatory)][string]$Root)
+    $dir = Join-Path $Root '_INDEX'
+    if (-not (Test-Path -LiteralPath $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
+    return (Join-Path $dir 'modules.ndjson')
+}
+
+function Add-Module {
+    param([Parameter(Mandatory)][string]$Root, [Parameter(Mandatory)][hashtable]$Module)
+    $defaults = [ordered]@{
+        id = ''; name = ''; project = 'UNASSIGNED'; status = 'Not Built'
+        aliases = @(); members = @(); relevant_files = @()
+        decision = 'keep consolidated state; archive duplicate discussions'; updated_at = (Get-IsoNow)
+    }
+    foreach ($k in $Module.Keys) { $defaults[$k] = $Module[$k] }
+    Add-Content -LiteralPath (Get-ModulesPath -Root $Root) -Value (([pscustomobject]$defaults) | ConvertTo-Json -Depth 6 -Compress) -Encoding utf8
+    Write-ActionLog -Root $Root -Level 'WRITE' -Message "Module '$($defaults.name)' -> $($defaults.project) [$($defaults.status)] members=$(@($defaults.members).Count)"
+    return $defaults
+}
+
+function Get-Modules {
+    param([Parameter(Mandatory)][string]$Root, [string]$Project)
+    $path = Get-ModulesPath -Root $Root
+    if (-not (Test-Path -LiteralPath $path)) { return @() }
+    $byId = [ordered]@{}
+    Get-Content -LiteralPath $path -Encoding utf8 | ForEach-Object {
+        if ([string]::IsNullOrWhiteSpace($_)) { return }
+        try { $m = $_ | ConvertFrom-Json; if ($m.id) { $byId[$m.id] = $m } } catch { }
+    }
+    $all = @($byId.Values)
+    if ($Project) { $all = $all | Where-Object { $_.project -eq $Project } }
+    return @($all)
+}
+
 function Get-SessionDeltasPath {
     # Append-only store of SessionDeltas emitted by Save-Session. The Compiler
     # generates STATE/TODO/DECISIONS/CHANGELOG/SESSION_LOG/SKILLS_USED/snapshots

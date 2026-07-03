@@ -55,6 +55,17 @@ time. Keeps the master index immutable.
  "reason":"final website zip","decided_by":"audit","decided_at":"..."}
 ```
 
+### Module record (Deep Audit output) — `_INDEX/modules.ndjson`
+
+The audit collapses a duplicate-idea cluster into ONE canonical module; the raw
+discussions are archived (status=ARCHIVED), never active. Last write per id wins.
+
+```json
+{"id":"mod_...","name":"Skill Safety Check","project":"Skill Safety",
+ "status":"Not Built|Partial|Built|Cancelled","aliases":[...],"members":[ids],
+ "relevant_files":[...],"decision":"keep consolidated state; archive duplicates"}
+```
+
 ## 3. Reserved buckets (never real projects)
 
 | Bucket | Meaning | Folder |

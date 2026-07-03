@@ -154,6 +154,20 @@ from the canonical index — it knows nothing about any specific source.
 
 The canonical schema and the compiler-first build order are in `docs/SCHEMA.md`.
 
+### One-time Deep Audit (consolidate a project)
+
+```powershell
+# Dry-run report; then apply confident decisions (append-only overlay + module):
+.\scripts\Invoke-DeepAudit.ps1 -Project "Skill Safety" -ModuleName "Skill Safety Check"
+.\scripts\Invoke-DeepAudit.ps1 -Project "Skill Safety" -ModuleName "Skill Safety Check" -Apply
+# Operator approves a queued candidate, then recompile:
+.\scripts\Approve-AuditItem.ps1 -Id <queued-id>
+.\scripts\Compile-ProjectMemory.ps1 -Project ALL
+```
+
+Duplicate ideas merge into one module; uncertain items go to UNCLASSIFIED; the
+raw discussions are archived (never active). See `docs/AUDIT_DEMO.md` for proof.
+
 ---
 
 ## Where files live (memory root)
@@ -228,6 +242,8 @@ scripts/
   Get-ProjectContext.ps1  # runs the 5-step pre-answer protocol (read-only)
   Compile-ProjectMemory.ps1 # generic compiler: canonical records -> project memory
   Convert-Documents.ps1   # Markdown converter: _RAW docs -> 03_CONVERTED_MD (Pandoc/MarkItDown/native)
+  Invoke-DeepAudit.ps1    # one-time audit: classify/merge/route (overlay + modules)
+  Approve-AuditItem.ps1   # operator approval for a queued audit candidate
   common.ps1              # shared helpers: backup-before-write, logging, status
   templates/              # starter Markdown for every memory file
   import/                 # ingestion adapters + index
@@ -273,7 +289,7 @@ Compiler-first order (see `docs/SCHEMA.md`):
 | 2 | Generic Project Compiler (records → project memory) | **built & tested** |
 | 3 | Doc→Markdown converter (Pandoc / MarkItDown / native fallback) | **built & tested** |
 | 4 | Adapters — files ✓, conversations ✓, claude-code ✓, gdrive ✓, github ✓, higgsfield ✓ | **built & tested** |
-| 5 | One-time Deep Audit — classify / merge duplicates / route (→ UNCLASSIFIED if unsure) | next |
+| 5 | One-time Deep Audit — classify / merge duplicates / route (→ UNCLASSIFIED if unsure) | **built & tested** |
 | 6 | Publish canonical Project Memory (compile ALL) | ready |
 | 7 | Engine-specific caches (only if needed) | later |
 | — | Save Session → **SessionDelta only**; Compiler owns all generated files | **built & tested** |

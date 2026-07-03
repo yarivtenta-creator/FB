@@ -61,6 +61,10 @@ function Compile-One {
 
     $assets = @($Items | Where-Object { $_.type -ne 'conversation' })
     $convos = @($Items | Where-Object { $_.type -eq 'conversation' })
+    # Archived items (duplicate discussions merged into a module) are NOT active memory.
+    $activeConvos = @($convos | Where-Object { $_.status -ne 'ARCHIVED' })
+    $archivedConvos = @($convos | Where-Object { $_.status -eq 'ARCHIVED' })
+    $modules = if ($isBucket) { @() } else { @(Get-Modules -Root $Root -Project $Name) }
 
     $byType = $Items | Group-Object type | Sort-Object Count -Descending |
         ForEach-Object { "{0}×{1}" -f $_.Count, $_.Name }
@@ -76,17 +80,37 @@ function Compile-One {
         [void]$sb.AppendLine()
     }
     [void]$sb.AppendLine("- **Items:** $(@($Items).Count)  ($($byType -join ', '))")
-    [void]$sb.AppendLine("- **Assets:** $(@($assets).Count)   **Conversations:** $(@($convos).Count)")
+    [void]$sb.AppendLine("- **Assets:** $(@($assets).Count)   **Active conversations:** $(@($activeConvos).Count)   **Archived:** $(@($archivedConvos).Count)   **Modules:** $(@($modules).Count)")
     [void]$sb.AppendLine("- **Last activity:** $lastActivity")
     [void]$sb.AppendLine("- **Compiled:** $(Get-IsoNow) (generated — do not hand-edit)")
     [void]$sb.AppendLine()
-    if (@($convos).Count) {
-        [void]$sb.AppendLine("## Conversations")
+    if (@($modules).Count) {
+        [void]$sb.AppendLine("## Modules (consolidated — the active canonical record)")
+        [void]$sb.AppendLine()
+        [void]$sb.AppendLine("| Module | Status | Aliases | Members | Decision |")
+        [void]$sb.AppendLine("|--------|--------|---------|---------|----------|")
+        foreach ($m in $modules) {
+            [void]$sb.AppendLine("| $($m.name) | $($m.status) | $((@($m.aliases)) -join '; ') | $(@($m.members).Count) | $($m.decision) |")
+        }
+        [void]$sb.AppendLine()
+    }
+    if (@($activeConvos).Count) {
+        [void]$sb.AppendLine("## Conversations (active)")
         [void]$sb.AppendLine()
         [void]$sb.AppendLine("| Date | Title | Source | Status | Transcript |")
         [void]$sb.AppendLine("|------|-------|--------|--------|------------|")
-        foreach ($c in ($convos | Sort-Object date_added -Descending)) {
+        foreach ($c in ($activeConvos | Sort-Object date_added -Descending)) {
             [void]$sb.AppendLine("| $($c.date_added) | $($c.title) | $($c.source) | $($c.status) | $($c.raw_path) |")
+        }
+        [void]$sb.AppendLine()
+    }
+    if (@($archivedConvos).Count) {
+        [void]$sb.AppendLine("## Archived (duplicate discussions — cold history, not active memory)")
+        [void]$sb.AppendLine()
+        [void]$sb.AppendLine("| Date | Title | Source | Transcript |")
+        [void]$sb.AppendLine("|------|-------|--------|------------|")
+        foreach ($c in ($archivedConvos | Sort-Object date_added -Descending)) {
+            [void]$sb.AppendLine("| $($c.date_added) | $($c.title) | $($c.source) | $($c.raw_path) |")
         }
         [void]$sb.AppendLine()
     }

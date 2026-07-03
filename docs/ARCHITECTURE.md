@@ -19,7 +19,7 @@ Claude is Adapter #1 of many; the architecture assumes many adapters will exist.
 2  PROJECT COMPILER     renders memory from canonical records only      [built]
 3  MARKDOWN CONVERTER   _RAW docs -> 03_CONVERTED_MD/, sets converted_md [next]
 4  ADAPTERS             Claude, ChatGPT(built), Drive, GitHub, Higgsfield, files(built)
-5  ONE-TIME DEEP AUDIT  classify / merge duplicates / route (-> UNCLASSIFIED if unsure)
+5  ONE-TIME DEEP AUDIT  classify / merge duplicates / route (-> UNCLASSIFIED if unsure)  [proven]
 6  PUBLISH              compile ALL -> canonical Project Memory
 7  ENGINE CACHES        only if needed, derived from the canonical memory
 ```
