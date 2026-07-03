@@ -2,6 +2,12 @@
 GPT-Memory/**/_backups/
 GPT-Memory/_logs/
 
+# Ingestion output is generated from the user's own data (copies of originals +
+# machine-specific paths) — runtime, not repo source.
+GPT-Memory/_RAW/
+GPT-Memory/_INDEX/
+GPT-Memory/_STAGING/
+
 # Windows / editor cruft
 Thumbs.db
 Desktop.ini

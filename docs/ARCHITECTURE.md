@@ -1,0 +1,108 @@
+# Architecture — Project Operating System
+
+> This file is the durable design record. It does not depend on Claude's memory.
+> Goal: turn AI work from chat-first into **project-first** — projects are the
+> primary object; chats become archived implementation history.
+
+## Layers (build order)
+
+```
+Phase 0  INGESTION      import + index everything (this doc's focus)
+Phase 1  DEEP AUDIT     one-time: classify, merge duplicates, route to projects
+Phase 2  PROJECT MEMORY per-project current-truth files (STATE, INDEX, ...)   [partly built]
+Phase 3+ GENERATORS/UI  folder generator, dashboard, sidebar                  [later, not now]
+```
+
+## Phase 0 — Ingestion pipeline
+
+Deterministic ETL run by **scripts, not the LLM**. The LLM is used only in the
+Audit (Phase 1) for judgment. Stages:
+
+```
+SOURCES ─▶ EXTRACT ─▶ _RAW/ (immutable copy)
+              └─▶ NORMALIZE ─▶ one canonical record per item
+                       └─▶ INDEX ─▶ _INDEX/master_index.ndjson  (+ .md card)
+                              └─▶ CONVERT ─▶ 03_CONVERTED_MD/ (pandoc/markitdown; skip if absent)
+Everything lands as project=UNASSIGNED, status=NEEDS_REVIEW until the Audit routes it.
+```
+
+Ingestion never guesses a project and never merges ideas — it captures truth.
+
+### Source adapters (uniform interface: Extract → Normalize → records[])
+
+| Adapter | Input | Runs on | Notes |
+|---------|-------|---------|-------|
+| files | ZIP/PDF/HTML/MD/DOC/CSV/img/video | local (PowerShell) | ZIP indexed by manifest; media = metadata only |
+| chatgpt | ChatGPT `conversations.json` | local | Cleanest structured export |
+| claude-export | Claude Privacy export JSON | local | Partial (no uploaded files) |
+| claude-code | `~/.claude/**/*.jsonl`, `history.jsonl` | local | Versioned format — parse defensively |
+| gdrive | file **metadata** | this session (MCP) | Metadata/links, not bulk download |
+| git | repositories | session/local | Repo IS the export; index, don't copy blobs |
+
+### Canonical index record (`_INDEX/master_index.ndjson`, append-only, one JSON/line)
+
+```json
+{"id":"...","ingested_at":"...","type":"zip","source":"files",
+ "project":"UNASSIGNED","title":"...","date_added":"YYYY-MM-DD",
+ "sha256":"...","bytes":0,"ext":".zip","contains":"...","purpose":null,
+ "status":"NEEDS_REVIEW","raw_path":"_RAW/...","original_path":"...",
+ "converted_md":null,"related_sessions":[],"related_files":[],
+ "source_ref":"local","needs_review_reason":"unassigned project"}
+```
+
+Each item also gets a small Markdown **card** so the same data is browsable
+without a tool. Per-project `ASSET_INDEX.md` / `PROJECT_INDEX.md` are **rendered
+from** this index — the NDJSON is the source of truth for assets.
+
+### Safety
+- `_RAW/` is write-once; originals are **copied, never moved or modified**.
+- Index is **append-only**; conversions write **new** files beside originals.
+- Every item hashed (SHA-256) → exact-duplicate detection is deterministic.
+- Near-duplicate **ideas** are merged only in the Audit, always `NEEDS_REVIEW`.
+- Every action logged to `_logs/actions.log`.
+
+## Folder layout (ingestion additions)
+
+```
+GPT-Memory/
+  _RAW/<source>/<date>/...      immutable originals
+  _INDEX/
+    master_index.ndjson         every item, structured
+    assets/<id>.md              one card per file/asset
+    conversations/<id>.md       one card per conversation
+  _STAGING/                     ingested, awaiting audit (project=UNASSIGNED)
+  _SKILLS/SKILLS_LIBRARY.md     master skills catalog
+  Projects/<Name>/...           audit routes items here
+  _logs/actions.log
+```
+
+## Token minimization (the reason this exists)
+
+Tiered memory — a tiny hot set is always in context; the large cold archive is
+touched only on demand.
+
+| Tier | Files | ~Size | Read when |
+|------|-------|-------|-----------|
+| Hot (current truth) | STATE, PROJECT_INDEX, SOURCE_OF_TRUTH, SKILLS_AVAILABLE | 2–5k tok/project | every request |
+| Warm (lookup) | ASSET_INDEX / master_index.ndjson | queried, not read whole | on retrieval |
+| Cold (archive) | full conversations, 01_SESSIONS, _RAW | millions of tok | only if hot+warm insufficient |
+
+Mechanisms:
+1. **Summarize once, read forever** — each conversation → ~150-token card at
+   ingest; normal work reads the card, not the transcript.
+2. **Retrieval returns a pointer, not a payload** — a grep/jq over the index
+   returns one line (path + description), never the file or surrounding chats.
+3. **Deterministic scanning** — hashing/listing/indexing cost zero LLM tokens.
+4. **Current-state-only working memory** — the AI answers from STATE.md; the
+   hundreds of superseded conversations never enter context.
+
+Accuracy while small: STATE is **regenerated** from append-only sources (index +
+decisions + latest session), never hand-drifted; claims link to their cold source.
+
+## Known limitations
+- The cloud container can't see the user's local machine — local adapters are
+  PowerShell scripts the user runs on Windows.
+- Claude export is partial; Claude Code `.jsonl` format is versioned/undocumented.
+- Doc→MD needs Pandoc or MarkItDown installed; fall back to "conversion unavailable".
+- Images/video are metadata-only; no faithful Markdown conversion exists.
+- Idea-merging needs human-confirmed judgment (Audit), not a pure script.

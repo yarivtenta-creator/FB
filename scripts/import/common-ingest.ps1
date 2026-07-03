@@ -1,0 +1,242 @@
+# common-ingest.ps1
+# Shared ingestion helpers: raw preservation, hashing, append-only indexing,
+# type detection, and Markdown card rendering. Deterministic — no LLM.
+#
+# Dot-source AFTER common.ps1:
+#   . "$PSScriptRoot\..\common.ps1"
+#   . "$PSScriptRoot\common-ingest.ps1"
+
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+
+# ---------------------------------------------------------------------------
+# Index / raw paths
+# ---------------------------------------------------------------------------
+
+function Get-IndexPath {
+    param([Parameter(Mandatory)][string]$Root)
+    $indexDir = Join-Path $Root '_INDEX'
+    if (-not (Test-Path -LiteralPath $indexDir)) { New-Item -ItemType Directory -Path $indexDir -Force | Out-Null }
+    return (Join-Path $indexDir 'master_index.ndjson')
+}
+
+function Get-RawDir {
+    param(
+        [Parameter(Mandatory)][string]$Root,
+        [Parameter(Mandatory)][string]$Source,
+        [string]$DateStr
+    )
+    if ([string]::IsNullOrWhiteSpace($DateStr)) { $DateStr = (Get-Date -Format 'yyyy-MM-dd') }
+    $dir = Join-Path (Join-Path (Join-Path $Root '_RAW') $Source) $DateStr
+    if (-not (Test-Path -LiteralPath $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
+    return $dir
+}
+
+# ---------------------------------------------------------------------------
+# Hashing / ids
+# ---------------------------------------------------------------------------
+
+function Get-Sha256 {
+    param([Parameter(Mandatory)][string]$Path)
+    return (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()
+}
+
+function New-IngestId {
+    # Deterministic short id derived from the content hash (no randomness — keeps
+    # results reproducible and resumable). First 12 hex chars of the sha.
+    param([Parameter(Mandatory)][string]$Sha256)
+    return $Sha256.Substring(0, 12)
+}
+
+# ---------------------------------------------------------------------------
+# Type detection
+# ---------------------------------------------------------------------------
+
+function Get-AssetType {
+    param([Parameter(Mandatory)][string]$Extension)
+    $e = $Extension.TrimStart('.').ToLowerInvariant()
+    switch -Regex ($e) {
+        '^(zip|7z|rar|tar|gz|tgz)$'            { return 'archive' }
+        '^pdf$'                                { return 'pdf' }
+        '^(png|jpg|jpeg|gif|webp|bmp|svg|tiff|ico)$' { return 'image' }
+        '^(mp4|mov|avi|mkv|webm|m4v|flv)$'     { return 'video' }
+        '^(mp3|wav|flac|aac|ogg|m4a)$'         { return 'audio' }
+        '^(html|htm)$'                         { return 'html' }
+        '^(md|markdown)$'                      { return 'markdown' }
+        '^(doc|docx|odt|rtf|pages)$'           { return 'document' }
+        '^(xls|xlsx|ods)$'                     { return 'spreadsheet' }
+        '^csv$'                                { return 'csv' }
+        '^txt$'                                { return 'text' }
+        '^(json|xml|yaml|yml)$'                { return 'data' }
+        default                                { return 'other' }
+    }
+}
+
+# Which types can we (attempt to) convert to Markdown later (Phase 5 / converter)?
+function Test-Convertible {
+    param([Parameter(Mandatory)][string]$Type)
+    return @('pdf', 'html', 'markdown', 'document', 'csv', 'text') -contains $Type
+}
+
+# ---------------------------------------------------------------------------
+# Raw preservation (copy, never move; never overwrite different content)
+# ---------------------------------------------------------------------------
+
+function Copy-ToRaw {
+    <#
+      Copy a source file into _RAW/<source>/<date>/ without ever overwriting a
+      different file. Returns the destination path (repo-relative to $Root).
+    #>
+    param(
+        [Parameter(Mandatory)][string]$Root,
+        [Parameter(Mandatory)][string]$SourceFile,
+        [Parameter(Mandatory)][string]$Source,
+        [Parameter(Mandatory)][string]$Sha256,
+        [string]$DateStr
+    )
+    $rawDir = Get-RawDir -Root $Root -Source $Source -DateStr $DateStr
+    $name = [System.IO.Path]::GetFileName($SourceFile)
+    $dest = Join-Path $rawDir $name
+
+    if (Test-Path -LiteralPath $dest) {
+        # Same content already there? Leave it. Different? Disambiguate with hash.
+        $existingHash = Get-Sha256 -Path $dest
+        if ($existingHash -ne $Sha256) {
+            $base = [System.IO.Path]::GetFileNameWithoutExtension($name)
+            $ext = [System.IO.Path]::GetExtension($name)
+            $dest = Join-Path $rawDir ('{0}.{1}{2}' -f $base, (New-IngestId $Sha256), $ext)
+        }
+    }
+    if (-not (Test-Path -LiteralPath $dest)) {
+        Copy-Item -LiteralPath $SourceFile -Destination $dest -Force
+        Write-ActionLog -Root $Root -Level 'CREATE' -Message "Raw copy: '$SourceFile' -> '$dest'"
+    }
+    return $dest
+}
+
+# ---------------------------------------------------------------------------
+# Index (append-only NDJSON) with SHA-based dedup
+# ---------------------------------------------------------------------------
+
+function Get-IndexHashes {
+    <#
+      Return a hashtable of sha256 -> id already present in the index, so ingest
+      is idempotent and exact duplicates are detected deterministically.
+    #>
+    param([Parameter(Mandatory)][string]$Root)
+    $seen = @{}
+    $indexPath = Get-IndexPath -Root $Root
+    if (-not (Test-Path -LiteralPath $indexPath)) { return $seen }
+    Get-Content -LiteralPath $indexPath -Encoding utf8 | ForEach-Object {
+        if ([string]::IsNullOrWhiteSpace($_)) { return }
+        try {
+            $obj = $_ | ConvertFrom-Json
+            if ($obj.sha256) { $seen[$obj.sha256] = $obj.id }
+        } catch { }
+    }
+    return $seen
+}
+
+function Add-IndexRecord {
+    <#
+      Append one record (hashtable) as a JSON line. Caller supplies the fields;
+      this fills defaults and enforces the canonical shape.
+    #>
+    param(
+        [Parameter(Mandatory)][string]$Root,
+        [Parameter(Mandatory)][hashtable]$Record
+    )
+    $defaults = [ordered]@{
+        id                  = ''
+        ingested_at         = (Get-IsoNow)
+        type                = 'other'
+        source              = 'files'
+        project             = 'UNASSIGNED'
+        title               = ''
+        date_added          = (Get-Date -Format 'yyyy-MM-dd')
+        sha256              = ''
+        bytes               = 0
+        ext                 = ''
+        contains            = ''
+        purpose             = $null
+        status              = 'NEEDS_REVIEW'
+        raw_path            = ''
+        original_path       = ''
+        converted_md        = $null
+        related_sessions    = @()
+        related_files       = @()
+        source_ref          = 'local'
+        needs_review_reason = 'unassigned project'
+    }
+    foreach ($k in $Record.Keys) { $defaults[$k] = $Record[$k] }
+
+    $indexPath = Get-IndexPath -Root $Root
+    $json = ([pscustomobject]$defaults | ConvertTo-Json -Depth 6 -Compress)
+    Add-Content -LiteralPath $indexPath -Value $json -Encoding utf8
+    Write-ActionLog -Root $Root -Level 'CREATE' -Message "Indexed [$($defaults.type)] $($defaults.title) (id=$($defaults.id))"
+    return $defaults
+}
+
+# ---------------------------------------------------------------------------
+# Markdown card
+# ---------------------------------------------------------------------------
+
+function Write-AssetCard {
+    <#
+      Render a compact, human-readable card for an indexed asset into
+      _INDEX/assets/<id>.md. Never overwrites without backup (via Write-TextFile).
+    #>
+    param(
+        [Parameter(Mandatory)][string]$Root,
+        [Parameter(Mandatory)]$Record   # pscustomobject or hashtable from Add-IndexRecord
+    )
+    $cardsDir = Join-Path (Join-Path $Root '_INDEX') 'assets'
+    if (-not (Test-Path -LiteralPath $cardsDir)) { New-Item -ItemType Directory -Path $cardsDir -Force | Out-Null }
+    $card = Join-Path $cardsDir ("$($Record.id).md")
+
+    $related = if ($Record.related_sessions) { ($Record.related_sessions -join ', ') } else { '(none)' }
+    $body = @"
+# Asset: $($Record.title)
+
+- **id:** $($Record.id)
+- **type:** $($Record.type)
+- **source:** $($Record.source)
+- **project:** $($Record.project)
+- **status:** $($Record.status)
+- **date added:** $($Record.date_added)
+- **size:** $($Record.bytes) bytes
+- **sha256:** $($Record.sha256)
+- **contains:** $($Record.contains)
+- **purpose:** $(if ($Record.purpose) { $Record.purpose } else { '_(set during audit)_' })
+- **current location (raw):** $($Record.raw_path)
+- **original path:** $($Record.original_path)
+- **converted markdown:** $(if ($Record.converted_md) { $Record.converted_md } else { '_(none)_' })
+- **related sessions:** $related
+- **needs review:** $($Record.needs_review_reason)
+"@
+    Write-TextFile -Path $card -Content $body -Root $Root
+    return $card
+}
+
+# ---------------------------------------------------------------------------
+# Light content probes (deterministic, no LLM)
+# ---------------------------------------------------------------------------
+
+function Get-ZipManifest {
+    <#
+      Return a short "contains" description for a ZIP: entry count + a sample of
+      top-level names. Read-only; does not extract.
+    #>
+    param([Parameter(Mandatory)][string]$Path)
+    try {
+        Add-Type -AssemblyName System.IO.Compression.FileSystem -ErrorAction SilentlyContinue
+        $zip = [System.IO.Compression.ZipFile]::OpenRead($Path)
+        try {
+            $entries = @($zip.Entries)
+            $top = $entries | ForEach-Object { ($_.FullName -split '[\\/]')[0] } | Sort-Object -Unique | Select-Object -First 8
+            return ("{0} entries; top-level: {1}" -f $entries.Count, ($top -join ', '))
+        } finally { $zip.Dispose() }
+    } catch {
+        return 'archive (manifest unreadable)'
+    }
+}

@@ -102,6 +102,22 @@ interactively: pick/enter a project, type your summary, done.
 .\scripts\New-Project.ps1 -Project "New Idea"
 ```
 
+### Ingest assets (Phase 0) and retrieve them
+
+```powershell
+# Import a folder or file — copies originals to _RAW, indexes each, writes cards.
+# Nothing is moved or overwritten; exact duplicates are skipped by SHA-256.
+.\scripts\import\Import-Files.ps1 -Path "D:\Downloads" -Include zip,pdf,png
+
+# Retrieve WITHOUT reading any conversation history (the token-saving lookup):
+.\scripts\import\Search-Index.ps1 -Query "final website" -Type archive
+.\scripts\import\Search-Index.ps1 -Query "homepage" -Type image
+```
+
+Imported items land as `project = UNASSIGNED`, `status = NEEDS_REVIEW` until the
+one-time Deep Audit routes them to a project. See `docs/ARCHITECTURE.md` for the
+full ingestion design and `docs/INGESTION_DEMO.md` for real output.
+
 ---
 
 ## Where files live (memory root)
@@ -176,10 +192,18 @@ scripts/
   Get-ProjectContext.ps1 # runs the 5-step pre-answer protocol (read-only)
   common.ps1             # shared helpers: backup-before-write, logging, status
   templates/             # starter Markdown for every memory file
+  import/                # Phase 0 ingestion layer
+    common-ingest.ps1    #   hashing, raw-copy, append-index, cards, type detection
+    Import-Files.ps1     #   files adapter: ZIP/PDF/img/video/HTML/MD/DOC/CSV/text
+    Search-Index.ps1     #   retrieval: answer "where is X?" from the index
+docs/
+  ARCHITECTURE.md        # the Project OS design + token model
+  INGESTION_DEMO.md      # real ingestion/retrieval output
 Save-Session.cmd         # double-clickable launcher for Save-Session.ps1
 PROJECT_RULES.md         # mandatory rules (8 files + 5-step protocol)
 GPT-Memory/
   _SKILLS/SKILLS_LIBRARY.md  # master skills catalog
+  _RAW/ _INDEX/ _STAGING/    # ingestion output (runtime; gitignored)
   Projects/Vinyl Lab/        # tested sample project
 README.md
 ```
@@ -196,15 +220,14 @@ produces before running anything.
 
 ## Roadmap (not yet built)
 
-| Phase | Deliverable |
-|-------|-------------|
-| 2 | Full folder structure generator *(scaffold already produced by Phase 1)* |
-| 3 | One-time deep audit + idea consolidation |
-| 4 | Full asset indexing |
-| 5 | Markdown conversion (MarkItDown / Pandoc) |
-| 6 | Multi-project dashboard with progress bars + extended colors |
-| 7 | Local search / retrieval |
-| 8 | Extended safety rules |
+| Phase | Deliverable | Status |
+|-------|-------------|--------|
+| 0 | Ingestion layer — index core + files adapter + retrieval | **built & tested** |
+| 0 | Ingestion adapters — chatgpt / claude-export / claude-code / gdrive / git | next |
+| 0 | Doc→Markdown converter (Pandoc / MarkItDown) with fallback | planned |
+| 1 | One-time deep audit + idea consolidation (routes UNASSIGNED items) | planned |
+| — | Save Session + project memory scaffold (8 mandatory files) | **built & tested** |
+| later | Folder generator, dashboard, project-oriented sidebar | not started (UI deferred) |
 
-Phase 1 was built first, in isolation, and tested against one real project
-folder — per the plan of record.
+See `docs/ARCHITECTURE.md` for the full layered design. The foundation
+(ingestion + project memory) is built and tested before any UI, by design.
