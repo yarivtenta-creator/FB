@@ -24,6 +24,12 @@ When you run **Save Session** it:
    - 🟡 **Yellow** = pending changes
    - 🔴 **Red / Blocked** = unsaved / blocked
 
+**Ownership:** Save-Session emits a **SessionDelta** (+ asset records) only. The
+**Compiler owns every generated file** — STATE, TODO, SOURCE_OF_TRUTH,
+ASSET_INDEX, PROJECT_INDEX, DECISIONS, CHANGELOG, SESSION_LOG, SKILLS_USED,
+snapshots. Save-Session auto-invokes the Compiler after each save. See
+`docs/SCHEMA.md`.
+
 ### Safety (baked in from day one)
 
 - **Never deletes** an original file.
@@ -260,7 +266,7 @@ Compiler-first order (see `docs/SCHEMA.md`):
 | 5 | One-time Deep Audit — classify / merge duplicates / route (→ UNCLASSIFIED if unsure) | planned |
 | 6 | Publish canonical Project Memory (compile ALL) | ready |
 | 7 | Engine-specific caches (only if needed) | later |
-| — | Save Session + project memory scaffold (authored files) | **built & tested** |
+| — | Save Session → **SessionDelta only**; Compiler owns all generated files | **built & tested** |
 | later | Folder generator, dashboard, project-oriented sidebar | UI deferred |
 
 The Project Compiler never depends on any single engine's data structure —

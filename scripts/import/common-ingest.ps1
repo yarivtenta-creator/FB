@@ -216,6 +216,47 @@ function Set-ItemEnrichment {
     Write-ActionLog -Root $Root -Level 'WRITE' -Message "Enrich $Id.$Field = $Value"
 }
 
+function Get-SessionDeltasPath {
+    # Append-only store of SessionDeltas emitted by Save-Session. The Compiler
+    # generates STATE/TODO/DECISIONS/CHANGELOG/SESSION_LOG/SKILLS_USED/snapshots
+    # from these — Save-Session never writes those generated files itself.
+    param([Parameter(Mandatory)][string]$Root)
+    $dir = Join-Path $Root '_INDEX'
+    if (-not (Test-Path -LiteralPath $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
+    return (Join-Path $dir 'session_deltas.ndjson')
+}
+
+function Get-SessionDeltas {
+    param([Parameter(Mandatory)][string]$Root, [string]$Project)
+    $path = Get-SessionDeltasPath -Root $Root
+    if (-not (Test-Path -LiteralPath $path)) { return @() }
+    $all = Get-Content -LiteralPath $path -Encoding utf8 | ForEach-Object {
+        if ([string]::IsNullOrWhiteSpace($_)) { return }
+        try { $_ | ConvertFrom-Json } catch { }
+    }
+    if ($Project) { $all = $all | Where-Object { $_.project -eq $Project } }
+    return @($all)
+}
+
+function Add-SessionDelta {
+    <#
+      Append one SessionDelta. Returns the delta (with a unique snapshot name).
+    #>
+    param([Parameter(Mandatory)][string]$Root, [Parameter(Mandatory)][hashtable]$Delta)
+    # Ensure a unique snapshot name across this project's existing deltas.
+    $existing = @(Get-SessionDeltas -Root $Root -Project $Delta.project | ForEach-Object { $_.snapshot })
+    if ($existing -contains $Delta.snapshot) {
+        $baseName = [System.IO.Path]::GetFileNameWithoutExtension($Delta.snapshot)
+        $n = 1
+        do { $cand = "${baseName}_$n.md"; $n++ } while ($existing -contains $cand)
+        $Delta.snapshot = $cand
+    }
+    $json = ([pscustomobject]$Delta | ConvertTo-Json -Depth 6 -Compress)
+    Add-Content -LiteralPath (Get-SessionDeltasPath -Root $Root) -Value $json -Encoding utf8
+    Write-ActionLog -Root $Root -Level 'CREATE' -Message "SessionDelta for '$($Delta.project)': $($Delta.snapshot)"
+    return $Delta
+}
+
 function Resolve-BucketDir {
     <#
       Map a project/bucket name to its folder. Reserved buckets get special dirs

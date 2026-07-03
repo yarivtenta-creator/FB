@@ -79,14 +79,29 @@ Compiler **owns all generated project outputs** — nothing else writes them.
 
 | Class | Files | Owner |
 |-------|-------|-------|
-| **Fed** (append-only inputs) | canonical records, DECISIONS, CHANGELOG, SKILLS_USED, session deltas | adapters / Save-Session |
-| **Generated** (compiler-owned, do not hand-edit) | PROJECT_INDEX, ASSET_INDEX, **STATE, TODO, SOURCE_OF_TRUTH** | **Compiler** |
+| **Fed** (append-only inputs) | canonical records (`master_index.ndjson`), assignment/enrichment overlays, **SessionDeltas** (`session_deltas.ndjson`) | adapters / Save-Session |
+| **Generated** (compiler-owned, do not hand-edit) | STATE, TODO, SOURCE_OF_TRUTH, ASSET_INDEX, PROJECT_INDEX, DECISIONS, CHANGELOG, SESSION_LOG, SKILLS_USED, session snapshots, STATUS.txt | **Compiler** |
 
-Migration status: `ASSET_INDEX.md` is now compiler-owned (Save-Session feeds an
-asset record instead of writing it). **STATE / TODO / SOURCE_OF_TRUTH are the
-next to migrate** — Save-Session will emit a session-delta record and the
-Compiler will render them (currently Save-Session still writes STATE/TODO as an
-interim). Tracked as the next foundation step.
+**Migration complete.** Save-Session no longer writes any generated file. It
+appends one **SessionDelta** and feeds asset records, then invokes the Compiler,
+which regenerates every file above. Each generated file carries a "generated —
+do not hand-edit" banner.
+
+### SessionDelta (Save-Session output contract)
+
+Append-only `_INDEX/session_deltas.ndjson`, one per save:
+
+```json
+{"project":"Vinyl Lab","ts":"...","date":"...","snapshot":"SESSION_....md",
+ "summary":"...","todos_added":[...],"todos_done":[...],
+ "decision":{"text":"...","rationale":"..."},"change":"...","next_action":"...",
+ "status":"GREEN","blocked_reason":"","skills_used":[...],
+ "source_of_truth":[{"item":"...","path":"...","note":"..."}],"assets":["<id>"]}
+```
+
+The Compiler derives current truth from deltas: STATE = latest; TODO =
+Σ todos_added − todos_done; DECISIONS/CHANGELOG/SESSION_LOG/SKILLS_USED = the
+full ledger; snapshots = one page per delta.
 
 Later, per the product vision, a project also carries identity metadata
 (icon, color, status, progress) — rendered from the same canonical records.
