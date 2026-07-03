@@ -6,19 +6,20 @@ architecture changes — only the layers below, all built and validated.
 
 ## v1.1 — Validation Suite (`scripts/Test-Foundation.ps1`, report `docs/VALIDATION_SUITE.md`)
 
-Ran 5 real-world scenarios at scale (**4,301 records**) — **ALL PASSED**:
+Ran the 5 required scenarios at scale (**5,304 records**) — **ALL PASSED**:
 
-| Scenario | Result |
-|----------|--------|
-| Large project (2,000 conv + 2,000 assets) | hot-tier stays **~2,010 tok** for 4,000 records — bounded; compile 0.88s |
-| Multi-engine identity | same conversation via ChatGPT+Claude → **one** canonical record (content-hash dedup) |
-| Duplicate stress (300 ideas) | **deterministic** merge (180 members, identical across runs); explainable; operator queue populated |
-| Recovery | recompile **byte-identical** (reproducible); re-ingest of raw history **idempotent** |
-| Performance | compile 0.88s · publish 2.99s · footprint 10.44 MB |
+| # | Scenario | Result |
+|---|----------|--------|
+| 1 | Large-scale (1,500×2 conv + 2,000 assets + 200 sessions) | hot-tier **bounded**: 2,012 → 1,972 tok as records went 3,500 → 5,000; compile 0.94s |
+| 2 | Multi-engine (ChatGPT/Claude/Drive/GitHub/Higgsfield) | identical 20-field canonical schema; same conversation across engines → **one** record (source-independent identity) |
+| 3 | Recovery | **deleted** all compiled memory, rebuilt from the canonical layer → **211 files reproduced identically** |
+| 4 | Determinism | 3 independent compiles **match** except metadata exclusions (timestamps) |
+| 5 | Performance | compile 0.94s · publish 3.53s · recover 1.19s · footprint 11.3 MB · **~99.9%** token reduction (hot vs raw history) |
 
-Two issues the suite caught and fixed (before any UI):
+Two issues earlier suite runs caught and fixed (before any UI):
 1. **Hot-tier unbounded at scale** — `PROJECT_INDEX` listed every item. Now capped
    (top-25 preview + totals); full enumerations stay in the warm `ASSET_INDEX`.
+   Hot-tier now holds ~2k tok whether a project has 300 or 5,000 records.
 2. **Adapter fragility** — conversation adapter threw under StrictMode on exports
    missing optional `create_time` / `title`. Now property-safe.
 
