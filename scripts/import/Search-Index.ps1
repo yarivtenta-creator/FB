@@ -62,13 +62,14 @@ if ($found.Count -eq 0) { Write-Host "No matches." -ForegroundColor Yellow; retu
 
 Write-Host ("{0} match(es):" -f $found.Count) -ForegroundColor Green
 foreach ($r in $found) {
-    $exists = Test-Path -LiteralPath (Join-Path $Root $r.raw_path)
+    $isUrl = ($r.raw_path -match '^https?://')
+    $where = if ($isUrl) { '(external)' } elseif (Test-Path -LiteralPath (Join-Path $Root $r.raw_path)) { '(exists)' } else { '(MISSING)' }
     Write-Host ""
     Write-Host ("  {0}  [{1}]" -f $r.title, $r.type) -ForegroundColor Cyan
-    Write-Host ("    project : {0}   status : {1}" -f $r.project, $r.status)
+    Write-Host ("    project : {0}   status : {1}   source : {2}" -f $r.project, $r.status, $r.source)
     if ($r.contains) { Write-Host ("    contains: {0}" -f $r.contains) }
     if ($r.purpose)  { Write-Host ("    purpose : {0}" -f $r.purpose) }
-    Write-Host ("    path    : {0}  {1}" -f $r.raw_path, $(if ($exists) { '(exists)' } else { '(MISSING)' }))
+    Write-Host ("    path    : {0}  {1}" -f $r.raw_path, $where)
     if ($r.related_sessions -and @($r.related_sessions).Count) {
         Write-Host ("    sessions: {0}" -f ($r.related_sessions -join ', '))
     }

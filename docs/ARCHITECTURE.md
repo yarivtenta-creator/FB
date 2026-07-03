@@ -46,12 +46,17 @@ Ingestion never guesses a project and never merges ideas — it captures truth.
 
 | Adapter | Input | Runs on | Notes |
 |---------|-------|---------|-------|
-| files | ZIP/PDF/HTML/MD/DOC/CSV/img/video | local (PowerShell) | ZIP indexed by manifest; media = metadata only |
-| chatgpt | ChatGPT `conversations.json` | local | Cleanest structured export |
-| claude-export | Claude Privacy export JSON | local | Partial (no uploaded files) |
-| claude-code | `~/.claude/**/*.jsonl`, `history.jsonl` | local | Versioned format — parse defensively |
-| gdrive | file **metadata** | this session (MCP) | Metadata/links, not bulk download |
-| git | repositories | session/local | Repo IS the export; index, don't copy blobs |
+| files | ZIP/PDF/HTML/MD/DOC/CSV/img/video | local | ZIP by manifest; media = metadata only | ✓ built |
+| chatgpt | ChatGPT `conversations.json` | local | Cleanest structured export | ✓ built |
+| claude-export | Claude Privacy export JSON | local | Partial (no uploaded files) | ✓ built |
+| claude-code | `~/.claude/**/*.jsonl` | local | Versioned format — parse defensively | ✓ built |
+| gdrive | Drive metadata JSON (API/MCP shape) | local | Metadata/links, not bulk download | ✓ built |
+| github | repos JSON or `-Owner` + token | local | Repo IS the export; index, don't copy blobs | ✓ built |
+| higgsfield | generations JSON (prompt = purpose) | local | AI media; URL ref, metadata only | ✓ built |
+
+Every adapter reads its provider-shaped input and emits the **same** canonical
+record. Connector sources (gdrive/github/higgsfield) store an external URL as
+`raw_path` (metadata only); file/conversation sources copy originals to `_RAW`.
 
 ### Canonical index record (`_INDEX/master_index.ndjson`, append-only, one JSON/line)
 

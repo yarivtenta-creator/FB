@@ -147,6 +147,27 @@ function Get-IndexHashes {
     return $seen
 }
 
+function Add-CanonicalItem {
+    <#
+      Add one canonical record with SHA dedup, and write the matching card
+      (conversation card for type=conversation, asset card otherwise). Shared by
+      every adapter. $Seen is a hashtable of sha256 -> id (mutated in place).
+      Returns the record, or $null if it was a duplicate.
+    #>
+    param(
+        [Parameter(Mandatory)][string]$Root,
+        [Parameter(Mandatory)][hashtable]$Record,
+        [Parameter(Mandatory)][hashtable]$Seen
+    )
+    $sha = [string]$Record['sha256']
+    if ($sha -and $Seen.ContainsKey($sha)) { return $null }
+    $rec = Add-IndexRecord -Root $Root -Record $Record
+    if ($rec.type -eq 'conversation') { Write-ConversationCard -Root $Root -Record $rec | Out-Null }
+    else { Write-AssetCard -Root $Root -Record $rec | Out-Null }
+    if ($sha) { $Seen[$sha] = $rec.id }
+    return $rec
+}
+
 function Get-AssignmentsPath {
     # Append-only overlay of classification decisions (audit / human), kept
     # separate from the immutable master_index so records are never overwritten.

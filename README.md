@@ -119,6 +119,12 @@ interactively: pick/enter a project, type your summary, done.
 # the cold archive; each conversation gets a compact card + extractive preview.
 .\scripts\import\Import-Conversations.ps1 -Path "D:\exports\conversations.json"
 
+# More adapters (each normalizes its provider input to the same canonical record):
+.\scripts\import\Import-ClaudeCode.ps1 -Path "$env:USERPROFILE\.claude\projects"  # session .jsonl
+.\scripts\import\Import-GDrive.ps1     -Path drive_files.json    # Drive metadata (API/MCP shape)
+.\scripts\import\Import-GitHub.ps1     -Owner myuser             # or -Path repos.json
+.\scripts\import\Import-Higgsfield.ps1 -Path higgsfield.json     # AI generations (prompt=purpose)
+
 # Retrieve WITHOUT reading any conversation history (the token-saving lookup):
 .\scripts\import\Search-Index.ps1 -Query "final website" -Type archive
 .\scripts\import\Search-Index.ps1 -Query "homepage" -Type image
@@ -225,9 +231,13 @@ scripts/
   common.ps1              # shared helpers: backup-before-write, logging, status
   templates/              # starter Markdown for every memory file
   import/                 # ingestion adapters + index
-    common-ingest.ps1        #   hashing, raw-copy, append-index/overlay, cards
+    common-ingest.ps1        #   hashing, raw-copy, append-index/overlay/deltas, cards
     Import-Files.ps1         #   files adapter: ZIP/PDF/img/video/HTML/MD/DOC/CSV/text
     Import-Conversations.ps1 #   ChatGPT + Claude export adapter (transcripts + cards)
+    Import-ClaudeCode.ps1    #   Claude Code session .jsonl adapter
+    Import-GDrive.ps1        #   Google Drive metadata adapter
+    Import-GitHub.ps1        #   GitHub repositories adapter
+    Import-Higgsfield.ps1    #   Higgsfield AI-generations adapter
     Set-ItemProject.ps1      #   assign an item to a project / UNCLASSIFIED (overlay)
     Search-Index.ps1         #   retrieval: answer "where is X?" from the index
 docs/
@@ -262,8 +272,8 @@ Compiler-first order (see `docs/SCHEMA.md`):
 | 1 | Canonical Project Memory schema (adapter contract) | **defined** |
 | 2 | Generic Project Compiler (records → project memory) | **built & tested** |
 | 3 | Doc→Markdown converter (Pandoc / MarkItDown / native fallback) | **built & tested** |
-| 4 | Adapters — files ✓, conversations ✓; claude-code / gdrive / github / higgsfield | in progress |
-| 5 | One-time Deep Audit — classify / merge duplicates / route (→ UNCLASSIFIED if unsure) | planned |
+| 4 | Adapters — files ✓, conversations ✓, claude-code ✓, gdrive ✓, github ✓, higgsfield ✓ | **built & tested** |
+| 5 | One-time Deep Audit — classify / merge duplicates / route (→ UNCLASSIFIED if unsure) | next |
 | 6 | Publish canonical Project Memory (compile ALL) | ready |
 | 7 | Engine-specific caches (only if needed) | later |
 | — | Save Session → **SessionDelta only**; Compiler owns all generated files | **built & tested** |
