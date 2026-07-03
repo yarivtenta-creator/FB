@@ -37,6 +37,9 @@
 .PARAMETER Asset
     An asset row to append to ASSET_INDEX.md: "name|contains|used for|path".
 
+.PARAMETER SkillUsed
+    One or more skills/modules used this session; each is logged to SKILLS_USED.md.
+
 .PARAMETER NextAction
     The single most important next step.
 
@@ -68,6 +71,7 @@ param(
     [string]$Decision,
     [string]$Change,
     [string]$Asset,
+    [string[]]$SkillUsed,
     [string]$NextAction,
     [ValidateSet('Green', 'Yellow', 'Red', 'Blocked')]
     [string]$Status = 'Green',
@@ -306,6 +310,17 @@ if ($Asset) {
     Write-TextFile -Path $aiPath -Content $aiContent -Root $Root
 }
 
+# 6g. SKILLS_USED.md — append a row per skill/module used this session.
+if ($SkillUsed) {
+    $suPath = Join-Path $projectDir 'SKILLS_USED.md'
+    $suContent = Read-TextFile -Path $suPath
+    foreach ($skill in $SkillUsed) {
+        $suRow = "| $isoNow | $skill | $snapshotName |  |"
+        $suContent = Add-RowUnderTableHeader -Content $suContent -Row $suRow
+    }
+    Write-TextFile -Path $suPath -Content $suContent -Root $Root
+}
+
 # ---------------------------------------------------------------------------
 # 7. Stamp status
 # ---------------------------------------------------------------------------
@@ -320,11 +335,12 @@ Write-Host "Session saved." -ForegroundColor Green
 Write-Host ("  Project : {0}" -f $Project)
 Write-Host ("  Status  : {0} {1} ({2})" -f $statusEmoji, $finalStatus, $statusMeaning)
 Write-Host ("  Snapshot: {0}" -f $snapshotPath)
-Write-Host ("  Updated : STATE.md, SESSION_LOG.md{0}{1}{2}{3}" -f `
+Write-Host ("  Updated : STATE.md, SESSION_LOG.md{0}{1}{2}{3}{4}" -f `
     $(if ($Todo) { ', TODO.md' } else { '' }), `
     $(if ($Decision) { ', DECISIONS.md' } else { '' }), `
     $(if ($Change) { ', CHANGELOG.md' } else { '' }), `
-    $(if ($Asset) { ', ASSET_INDEX.md' } else { '' }))
+    $(if ($Asset) { ', ASSET_INDEX.md' } else { '' }), `
+    $(if ($SkillUsed) { ', SKILLS_USED.md' } else { '' }))
 Write-Host ("  Log     : {0}" -f (Join-Path (Join-Path $Root '_logs') 'actions.log')) -ForegroundColor DarkGray
 
 return [pscustomobject]@{

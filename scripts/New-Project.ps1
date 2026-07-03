@@ -73,6 +73,8 @@ $fileMap = [ordered]@{
     (Join-Path $currentDir 'SOURCE_OF_TRUTH.md') = 'SOURCE_OF_TRUTH.md'
     (Join-Path $projectDir 'SESSION_LOG.md')    = 'SESSION_LOG.md'
     (Join-Path $projectDir 'ASSET_INDEX.md')    = 'ASSET_INDEX.md'
+    (Join-Path $projectDir 'SKILLS_AVAILABLE.md') = 'SKILLS_AVAILABLE.md'
+    (Join-Path $projectDir 'SKILLS_USED.md')    = 'SKILLS_USED.md'
     (Join-Path $projectDir 'PROJECT_DASHBOARD.md') = 'PROJECT_DASHBOARD.md'
 }
 
@@ -102,6 +104,28 @@ foreach ($f in $folders) {
     elseif (Test-Path -LiteralPath $keep) {
         Remove-Item -LiteralPath $keep -Force   # our own marker only; never a user file
     }
+}
+
+# Enforce the mandatory-files rule: every project MUST contain these eight.
+$mandatory = @(
+    (Join-Path $currentDir 'STATE.md'),
+    (Join-Path $currentDir 'TODO.md'),
+    (Join-Path $currentDir 'DECISIONS.md'),
+    (Join-Path $currentDir 'CHANGELOG.md'),
+    (Join-Path $currentDir 'SOURCE_OF_TRUTH.md'),
+    (Join-Path $projectDir 'ASSET_INDEX.md'),
+    (Join-Path $projectDir 'SKILLS_AVAILABLE.md'),
+    (Join-Path $projectDir 'SKILLS_USED.md')
+)
+$missing = @($mandatory | Where-Object { -not (Test-Path -LiteralPath $_) })
+if ($missing.Count -gt 0) {
+    foreach ($m in $missing) {
+        Write-ActionLog -Root $Root -Level 'WARN' -Message "MANDATORY FILE MISSING: $m"
+    }
+    Write-Warning ("Mandatory files missing: {0}" -f ($missing -join ', '))
+}
+else {
+    Write-ActionLog -Root $Root -Level 'INFO' -Message "Mandatory-files check passed for '$Project' (8/8)"
 }
 
 if ($createdAnything) {
