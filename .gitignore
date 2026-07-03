@@ -1,0 +1,8 @@
+# Backups and logs are runtime artifacts, not source.
+GPT-Memory/**/_backups/
+GPT-Memory/_logs/
+
+# Windows / editor cruft
+Thumbs.db
+Desktop.ini
+*~
