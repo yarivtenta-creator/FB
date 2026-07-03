@@ -133,6 +133,11 @@ from the canonical index — it knows nothing about any specific source.
 
 # Render every project + the UNASSIGNED/UNCLASSIFIED buckets from the index.
 .\scripts\Compile-ProjectMemory.ps1 -Project ALL
+
+# Convert readable docs in _RAW to Markdown under 03_CONVERTED_MD (records
+# converted_md in the index). Uses Pandoc/MarkItDown if present, else native
+# conversion; unconvertible files (e.g. PDF without a tool) are logged, skipped.
+.\scripts\Convert-Documents.ps1 -Project ALL
 ```
 
 The canonical schema and the compiler-first build order are in `docs/SCHEMA.md`.
@@ -210,6 +215,7 @@ scripts/
   New-Project.ps1         # idempotent scaffolding + mandatory-file verification
   Get-ProjectContext.ps1  # runs the 5-step pre-answer protocol (read-only)
   Compile-ProjectMemory.ps1 # generic compiler: canonical records -> project memory
+  Convert-Documents.ps1   # Markdown converter: _RAW docs -> 03_CONVERTED_MD (Pandoc/MarkItDown/native)
   common.ps1              # shared helpers: backup-before-write, logging, status
   templates/              # starter Markdown for every memory file
   import/                 # ingestion adapters + index
@@ -249,7 +255,7 @@ Compiler-first order (see `docs/SCHEMA.md`):
 |------|-------------|--------|
 | 1 | Canonical Project Memory schema (adapter contract) | **defined** |
 | 2 | Generic Project Compiler (records → project memory) | **built & tested** |
-| 3 | Doc→Markdown converter (Pandoc / MarkItDown) with fallback | next |
+| 3 | Doc→Markdown converter (Pandoc / MarkItDown / native fallback) | **built & tested** |
 | 4 | Adapters — files ✓, conversations ✓; claude-code / gdrive / github / higgsfield | in progress |
 | 5 | One-time Deep Audit — classify / merge duplicates / route (→ UNCLASSIFIED if unsure) | planned |
 | 6 | Publish canonical Project Memory (compile ALL) | ready |

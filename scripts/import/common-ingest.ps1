@@ -187,6 +187,48 @@ function Set-ItemAssignment {
     Write-ActionLog -Root $Root -Level 'STATUS' -Message "Assign $Id -> $Project ($Status) by $DecidedBy"
 }
 
+function Get-EnrichmentsPath {
+    # Append-only overlay of DERIVED fields (e.g. converted_md) produced by the
+    # compiler/converter — keeps the master index immutable.
+    param([Parameter(Mandatory)][string]$Root)
+    $dir = Join-Path $Root '_INDEX'
+    if (-not (Test-Path -LiteralPath $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
+    return (Join-Path $dir 'enrichments.ndjson')
+}
+
+# Fields the converter/compiler may patch via the enrichment overlay.
+$script:EnrichableFields = @('converted_md', 'purpose', 'contains', 'related_sessions', 'related_files')
+
+function Set-ItemEnrichment {
+    <#
+      Append a derived-field update for one item. Never edits the master index.
+    #>
+    param(
+        [Parameter(Mandatory)][string]$Root,
+        [Parameter(Mandatory)][string]$Id,
+        [Parameter(Mandatory)][string]$Field,
+        [Parameter(Mandatory)][AllowEmptyString()]$Value,
+        [string]$Note = ''
+    )
+    if ($script:EnrichableFields -notcontains $Field) { throw "Field '$Field' is not enrichable." }
+    $rec = [ordered]@{ id = $Id; field = $Field; value = $Value; note = $Note; decided_at = (Get-IsoNow) }
+    Add-Content -LiteralPath (Get-EnrichmentsPath -Root $Root) -Value (([pscustomobject]$rec) | ConvertTo-Json -Depth 5 -Compress) -Encoding utf8
+    Write-ActionLog -Root $Root -Level 'WRITE' -Message "Enrich $Id.$Field = $Value"
+}
+
+function Resolve-BucketDir {
+    <#
+      Map a project/bucket name to its folder. Reserved buckets get special dirs
+      so uncertain data is never placed under Projects\.
+    #>
+    param([Parameter(Mandatory)][string]$Root, [Parameter(Mandatory)][string]$Name)
+    switch ($Name.ToUpperInvariant()) {
+        'UNASSIGNED'   { return (Join-Path $Root '_STAGING') }
+        'UNCLASSIFIED' { return (Join-Path $Root '_UNCLASSIFIED') }
+        default        { return (Join-Path (Join-Path $Root 'Projects') $Name) }
+    }
+}
+
 function Get-EffectiveRecords {
     <#
       Return the effective view of every indexed item: the immutable base record
@@ -202,6 +244,20 @@ function Get-EffectiveRecords {
             try { $o = $_ | ConvertFrom-Json; if ($o.id) { $base[$o.id] = $o } } catch { }
         }
     }
+    # Apply derived-field enrichments (converted_md, purpose, ...) first.
+    $enrichPath = Get-EnrichmentsPath -Root $Root
+    if (Test-Path -LiteralPath $enrichPath) {
+        Get-Content -LiteralPath $enrichPath -Encoding utf8 | ForEach-Object {
+            if ([string]::IsNullOrWhiteSpace($_)) { return }
+            try {
+                $e = $_ | ConvertFrom-Json
+                if ($e.id -and $base.Contains($e.id) -and $e.field) {
+                    $base[$e.id] | Add-Member -NotePropertyName $e.field -NotePropertyValue $e.value -Force
+                }
+            } catch { }
+        }
+    }
+
     $assignPath = Get-AssignmentsPath -Root $Root
     if (Test-Path -LiteralPath $assignPath) {
         Get-Content -LiteralPath $assignPath -Encoding utf8 | ForEach-Object {

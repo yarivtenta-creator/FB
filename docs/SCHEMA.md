@@ -67,12 +67,26 @@ confident, it goes to `UNCLASSIFIED` and stays there until reviewed.
 
 ## 4. Canonical Project Memory (what a project *is*)
 
-A project is a named workspace whose files split into two ownership classes:
+A project is a named workspace. **Ownership model (accepted):**
+
+```
+_RAW / adapter output / session delta  ->  canonical records  ->  assignment overlay
+                                                                      -> PROJECT COMPILER -> generated files
+```
+
+Adapters and Save-Session **feed** canonical records / session deltas. The
+Compiler **owns all generated project outputs** — nothing else writes them.
 
 | Class | Files | Owner |
 |-------|-------|-------|
-| **Authored** (current truth) | STATE, TODO, DECISIONS, CHANGELOG, SOURCE_OF_TRUTH, SKILLS_AVAILABLE, SKILLS_USED | human / Save-Session |
-| **Generated** (rendered from the index) | PROJECT_INDEX.md, ASSET_INDEX.md | **Compiler** (do not hand-edit) |
+| **Fed** (append-only inputs) | canonical records, DECISIONS, CHANGELOG, SKILLS_USED, session deltas | adapters / Save-Session |
+| **Generated** (compiler-owned, do not hand-edit) | PROJECT_INDEX, ASSET_INDEX, **STATE, TODO, SOURCE_OF_TRUTH** | **Compiler** |
+
+Migration status: `ASSET_INDEX.md` is now compiler-owned (Save-Session feeds an
+asset record instead of writing it). **STATE / TODO / SOURCE_OF_TRUTH are the
+next to migrate** — Save-Session will emit a session-delta record and the
+Compiler will render them (currently Save-Session still writes STATE/TODO as an
+interim). Tracked as the next foundation step.
 
 Later, per the product vision, a project also carries identity metadata
 (icon, color, status, progress) — rendered from the same canonical records.

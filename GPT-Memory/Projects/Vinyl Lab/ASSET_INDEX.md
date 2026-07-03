@@ -5,4 +5,6 @@
 | Asset | Date added | What it contains | Used for | Status | Related session | Local path | Converted MD |
 |-------|-----------|------------------|----------|--------|-----------------|------------|--------------|
 | homepage.png | 2026-07-03 |  |  | CLASSIFIED |  | _RAW/files/2026-07-03/homepage.png |  |
+| pricing.csv | 2026-07-03 |  |  | CLASSIFIED |  | _RAW/files/2026-07-03/pricing.csv | _STAGING/03_CONVERTED_MD/pricing.e3c1bca4713a.md |
 | vinyl_lab_FINAL_READY.zip | 2026-07-03 | 4 entries; top-level: site |  | CLASSIFIED |  | _RAW/files/2026-07-03/vinyl_lab_FINAL_READY.zip |  |
+| launch_banner.png | 2026-07-03 | hero banner image | homepage hero | CLASSIFIED | SESSION_2026-07-03_07-26.md | D:\assets\launch_banner.png |  |

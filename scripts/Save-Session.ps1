@@ -81,6 +81,7 @@ param(
 )
 
 . "$PSScriptRoot\common.ps1"
+. "$PSScriptRoot\import\common-ingest.ps1"
 
 $Root = Get-MemoryRoot -Root $Root
 $projectsRoot = Join-Path $Root 'Projects'
@@ -300,14 +301,29 @@ if ($Change) {
     Write-TextFile -Path $clPath -Content $clContent -Root $Root
 }
 
-# 6f. ASSET_INDEX.md — append a row if an asset was provided.
+# 6f. Asset — FEED a canonical record (do NOT write the generated ASSET_INDEX.md).
+#     Ownership model: Save-Session feeds records; the Compiler owns ASSET_INDEX.md.
 if ($Asset) {
-    $aiPath = Join-Path $projectDir 'ASSET_INDEX.md'
-    $aiContent = Read-TextFile -Path $aiPath
-    $convMd = ''
-    $aiRow = "| $assetName | $date | $assetContains | $assetUsed | NEEDS_REVIEW | $snapshotName | $assetPath | $convMd |"
-    $aiContent = Add-RowUnderTableHeader -Content $aiContent -Row $aiRow
-    Write-TextFile -Path $aiPath -Content $aiContent -Root $Root
+    $assetId = New-IngestId (Get-StringSha256 -Text ("$assetName|$assetPath"))
+    $assetType = Get-AssetType -Extension ([System.IO.Path]::GetExtension($assetName))
+    Add-IndexRecord -Root $Root -Record @{
+        id                  = $assetId
+        type                = $assetType
+        source              = 'session'
+        project             = $Project
+        title               = $assetName
+        date_added          = $date
+        sha256              = (Get-StringSha256 -Text ("$assetName|$assetPath"))
+        ext                 = ([System.IO.Path]::GetExtension($assetName)).ToLowerInvariant()
+        contains            = $assetContains
+        purpose             = $assetUsed
+        status              = 'CLASSIFIED'
+        raw_path            = $assetPath
+        original_path       = $assetPath
+        related_sessions    = @($snapshotName)
+        source_ref          = 'save-session'
+        needs_review_reason = ''
+    } | Out-Null
 }
 
 # 6g. SKILLS_USED.md — append a row per skill/module used this session.
@@ -339,8 +355,9 @@ Write-Host ("  Updated : STATE.md, SESSION_LOG.md{0}{1}{2}{3}{4}" -f `
     $(if ($Todo) { ', TODO.md' } else { '' }), `
     $(if ($Decision) { ', DECISIONS.md' } else { '' }), `
     $(if ($Change) { ', CHANGELOG.md' } else { '' }), `
-    $(if ($Asset) { ', ASSET_INDEX.md' } else { '' }), `
+    $(if ($Asset) { ', +asset record (index)' } else { '' }), `
     $(if ($SkillUsed) { ', SKILLS_USED.md' } else { '' }))
+if ($Asset) { Write-Host "  Note    : asset fed to canonical index; run Compile-ProjectMemory to render ASSET_INDEX.md" -ForegroundColor DarkGray }
 Write-Host ("  Log     : {0}" -f (Join-Path (Join-Path $Root '_logs') 'actions.log')) -ForegroundColor DarkGray
 
 return [pscustomobject]@{
