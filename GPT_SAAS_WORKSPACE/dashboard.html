@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GPT SAAS v1 — Dashboard</title>
+<style>
+  :root{
+    --bg:#0b0e14; --panel:#141925; --panel2:#1b2130; --line:#252c3d;
+    --text:#e6e9ef; --muted:#8a93a6; --accent:#5b8cff; --green:#3ecf8e;
+    --amber:#f5c451; --red:#ff6b6b; --violet:#a78bfa;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  header{padding:28px 32px 18px;border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,#111725,#0b0e14)}
+  header h1{margin:0;font-size:24px;letter-spacing:.3px}
+  header p{margin:6px 0 0;color:var(--muted);font-size:14px}
+  .wrap{max-width:1200px;margin:0 auto;padding:24px 32px 60px}
+  .grid{display:grid;gap:16px}
+  .stats{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-bottom:26px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+  .stat .n{font-size:30px;font-weight:700}
+  .stat .l{color:var(--muted);font-size:13px;margin-top:2px}
+  h2{font-size:15px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);
+    margin:32px 0 12px;font-weight:600}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+  tr:hover td{background:var(--panel2)}
+  .pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:600}
+  .ACTIVE{background:rgba(62,207,142,.15);color:var(--green)}
+  .BLOCKED{background:rgba(255,107,107,.15);color:var(--red)}
+  .REVIEW{background:rgba(245,196,81,.15);color:var(--amber)}
+  .INTAKE{background:rgba(91,140,255,.15);color:var(--accent)}
+  .DONE{background:rgba(167,139,250,.18);color:var(--violet)}
+  .DORMANT{background:rgba(138,147,166,.15);color:var(--muted)}
+  .bar{height:7px;background:var(--panel2);border-radius:6px;overflow:hidden;min-width:80px}
+  .bar>span{display:block;height:100%;background:linear-gradient(90deg,#5b8cff,#3ecf8e)}
+  .prio{font-weight:700}
+  .P0{color:var(--red)} .P1{color:var(--amber)} .P2{color:var(--accent)} .P3{color:var(--muted)}
+  .files{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  .files .card{padding:14px 16px}
+  .files .card b{display:block;font-size:13px;margin-bottom:4px}
+  .files .card span{color:var(--muted);font-size:12px}
+  .ok{color:var(--green)} .foot{color:var(--muted);font-size:12px;margin-top:40px;
+    border-top:1px solid var(--line);padding-top:16px}
+  .tag{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:6px;
+    padding:1px 6px;margin-right:4px;white-space:nowrap}
+</style>
+</head>
+<body>
+<header>
+  <h1>⚡ GPT SAAS v1 — Project Operating System</h1>
+  <p>Local-first source of truth for Claude · ChatGPT · Higgsfield · co-workers &nbsp;•&nbsp;
+     State lives in files, not in chat &nbsp;•&nbsp; Updated 2026-07-03</p>
+</header>
+<div class="wrap">
+
+  <div class="grid stats" id="stats"></div>
+
+  <h2>Project Registry</h2>
+  <div class="card" style="padding:0;overflow:auto">
+    <table id="reg">
+      <thead><tr>
+        <th>ID</th><th>Project</th><th>Prio</th><th>Status</th>
+        <th>Sources</th><th>Recovery</th><th>Completion</th><th>Next action</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <h2>System Files</h2>
+  <div class="grid files" id="sysfiles"></div>
+
+  <div class="foot">
+    GPT SAAS v1 · No final ZIP produced · All outputs written to files ·
+    <a href="PROJECT_REGISTRY.md">PROJECT_REGISTRY.md</a> ·
+    <a href="GPT_SAAS_MASTER_STATE.md">MASTER_STATE</a> ·
+    <a href="09_AUDIT/VERIFICATION_REPORT.md">VERIFICATION_REPORT</a>
+  </div>
+</div>
+
+<script>
+// Registry data mirrors PROJECT_REGISTRY.md (single source of truth is the .md file).
+const projects = [
+  {id:"P001",name:"247tiket / Travel Layout",prio:"P0",status:"ACTIVE",
+   src:["Claude","Git","Drive","ChatGPT"],rec:70,done:45,
+   next:"Operator drops current materials into import inbox → build increment 1"},
+  {id:"P002",name:"Marketing AI Growth OS (landing)",prio:"P1",status:"REVIEW",
+   src:["Claude","Git"],rec:90,done:80,
+   next:"Verify multilingual landing page, then deploy to Vercel"},
+  {id:"P003",name:"Project 770",prio:"P1",status:"ACTIVE",
+   src:["Claude","Git"],rec:65,done:40,next:"Consolidate 770 module + complete branch into one project folder"},
+  {id:"P004",name:"The Vinyl Lab",prio:"P2",status:"ACTIVE",
+   src:["Claude","Git"],rec:60,done:35,next:"Recover vinyl-lab HTML preview branch → PROJECT_STATE"},
+  {id:"P005",name:"ClientFlow Agent Pack",prio:"P1",status:"ACTIVE",
+   src:["Claude","Git"],rec:55,done:30,next:"Recover CRM bulk-leads branch → define DONE_WHEN"},
+  {id:"P006",name:"SDR Mini",prio:"P2",status:"ACTIVE",
+   src:["Claude","Git"],rec:50,done:25,next:"Recover before-you-call page branch → scope"},
+  {id:"P007",name:"GPT SAAS (this system)",prio:"P0",status:"REVIEW",
+   src:["Claude","Git","Drive"],rec:95,done:85,next:"Verify v1, then run P001 finish workflow"},
+  {id:"P008",name:"Sale XL / Scale XL",prio:"P2",status:"DORMANT",
+   src:["ChatGPT","Claude"],rec:25,done:15,next:"Locate source chats → import → registry entry"},
+  {id:"P009",name:"Broker AI OS",prio:"P2",status:"DORMANT",
+   src:["ChatGPT"],rec:20,done:10,next:"Locate Broker OS chats → import inbox"},
+  {id:"P010",name:"Broker World System",prio:"P3",status:"DORMANT",
+   src:["ChatGPT"],rec:15,done:8,next:"Locate source chats → import inbox"},
+  {id:"P011",name:"Innovation Tools",prio:"P3",status:"DORMANT",
+   src:["ChatGPT"],rec:15,done:5,next:"Locate source chats → import inbox"},
+  {id:"P012",name:"Ableton Tools",prio:"P3",status:"DORMANT",
+   src:["ChatGPT"],rec:15,done:5,next:"Locate source chats → import inbox"},
+  {id:"P013",name:"Filmora Tools",prio:"P3",status:"DORMANT",
+   src:["ChatGPT"],rec:15,done:5,next:"Locate source chats → import inbox"},
+];
+
+const sysFiles = [
+  ["GPT_SAAS_MASTER_STATE.md","Workspace source of truth"],
+  ["PROJECT_REGISTRY.md","All real build projects"],
+  ["00_CORE/00_READ_FIRST.md","Entry contract"],
+  ["01_SPEC/SYSTEM_SPECIFICATION.md","System spec v2"],
+  ["02_PROTOCOLS/RECOVERY_PROTOCOL.md","Recovery workflow"],
+  ["02_PROTOCOLS/FINISH_PROTOCOL.md","Finish-project mode"],
+  ["05_IMPORT_INBOX/README.md","Import drop zone"],
+  ["08_HANDOFFS/CLAUDE_HANDOFF.md","Claude sync"],
+  ["08_HANDOFFS/CHATGPT_HANDOFF.md","ChatGPT sync"],
+  ["08_HANDOFFS/HIGGSFIELD_HANDOFF.md","Higgsfield sync"],
+  ["09_AUDIT/VERIFICATION_REPORT.md","Verification results"],
+  ["TOMORROW_PLAN.md","Next-day plan"],
+];
+
+const counts = projects.reduce((a,p)=>{a[p.status]=(a[p.status]||0)+1;return a},{});
+const stats = [
+  ["Projects", projects.length],
+  ["Active", counts.ACTIVE||0],
+  ["In review", counts.REVIEW||0],
+  ["Dormant", counts.DORMANT||0],
+  ["Avg recovery", Math.round(projects.reduce((a,p)=>a+p.rec,0)/projects.length)+"%"],
+];
+document.getElementById("stats").innerHTML = stats.map(([l,n])=>
+  `<div class="card stat"><div class="n">${n}</div><div class="l">${l}</div></div>`).join("");
+
+document.querySelector("#reg tbody").innerHTML = projects.map(p=>`
+  <tr>
+    <td><b>${p.id}</b></td>
+    <td>${p.name}</td>
+    <td class="prio ${p.prio}">${p.prio}</td>
+    <td><span class="pill ${p.status}">${p.status}</span></td>
+    <td>${p.src.map(s=>`<span class="tag">${s}</span>`).join("")}</td>
+    <td><div class="bar"><span style="width:${p.rec}%"></span></div><small>${p.rec}%</small></td>
+    <td><div class="bar"><span style="width:${p.done}%"></span></div><small>${p.done}%</small></td>
+    <td style="color:var(--muted)">${p.next}</td>
+  </tr>`).join("");
+
+document.getElementById("sysfiles").innerHTML = sysFiles.map(([f,d])=>
+  `<a class="card" href="${f}"><b>${f.split("/").pop()}</b><span>${d}</span></a>`).join("");
+</script>
+</body>
+</html>
