@@ -34,8 +34,10 @@
     reveals.forEach(function (el) { io.observe(el); });
   }
 
-  /* ---------- Header: solid after scroll, hide on scroll down ---------- */
+  /* ---------- Header, scroll progress, kinetic ghost ---------- */
   var header = document.getElementById("siteHeader");
+  var progress = document.getElementById("scrollProgress");
+  var ghost = document.getElementById("heroGhost");
   var lastY = window.scrollY;
   function onScroll() {
     var y = window.scrollY;
@@ -43,9 +45,32 @@
     if (y > 420 && y > lastY + 6) header.classList.add("hidden");
     else if (y < lastY - 6 || y < 420) header.classList.remove("hidden");
     lastY = y;
+
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    if (progress && max > 0) progress.style.transform = "scaleX(" + Math.min(y / max, 1) + ")";
+
+    if (ghost && !prefersReduced && y < window.innerHeight * 1.4) {
+      ghost.style.transform = "translateY(" + y * -0.12 + "px)";
+    }
   }
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
+
+  /* ---------- Process steps: tick the level chips as you pass them ---------- */
+  var steps = document.querySelectorAll(".process-step");
+  if ("IntersectionObserver" in window && steps.length) {
+    var stepIo = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("done");
+          stepIo.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.6 });
+    steps.forEach(function (s) { stepIo.observe(s); });
+  } else {
+    steps.forEach(function (s) { s.classList.add("done"); });
+  }
 
   /* ---------- Active nav link ---------- */
   var navLinks = Array.prototype.slice.call(document.querySelectorAll(".main-nav a"));
