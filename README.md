@@ -1,6 +1,6 @@
 # Go-Bigger Solutions — Website
 
-The public site for **Go-Bigger Solutions**, a strategy consultancy. Premium one-page design ("Acid Editorial", 2026 direction): dark-first near-black botanical base, acid-lime accent with aurora glows, glass surfaces, Fraunces serif display type + Space Grotesk labels. Static HTML/CSS/JS — no build step.
+The public site for **Go-Bigger Solutions**, a strategy consultancy. Premium one-page design ("Deep Space 3D", 2026 direction): marine-dark base, turquoise glow accent, live 3D orbital-network canvas in the hero, aurora light ribbons, perspective wireframe grid, glass surfaces, 3D-tilting cards. Fraunces serif display + Space Grotesk labels. All 3D is dependency-free vanilla canvas. Static HTML/CSS/JS — no build step.
 
 Built from `GoBigger_Website_Plan_v2.md`. Brand rule respected throughout: a **human company that uses AI** — the site never says "AI-powered".
 

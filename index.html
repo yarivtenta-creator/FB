@@ -8,8 +8,8 @@
   <meta property="og:title" content="Go-Bigger Solutions — Strategy, built for your goal" />
   <meta property="og:description" content="You bring a destination. We build the path — research first, strategy second, execution last." />
   <meta property="og:type" content="website" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%23cdf553%22/><text x=%2250%22 y=%2271%22 font-size=%2258%22 text-anchor=%22middle%22 font-family=%22Georgia,serif%22 fill=%22%230b0e0b%22>G</text></svg>" />
-  <meta name="theme-color" content="#0b0e0b" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%232ee6e0%22/><text x=%2250%22 y=%2271%22 font-size=%2258%22 text-anchor=%22middle%22 font-family=%22Georgia,serif%22 fill=%22%23070d12%22>G</text></svg>" />
+  <meta name="theme-color" content="#070d12" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -61,6 +61,7 @@
     <!-- ======================= HERO ======================= -->
     <section class="hero" aria-label="Introduction">
       <div class="hero-bg" aria-hidden="true">
+        <canvas class="scene3d" id="scene3d"></canvas>
         <span class="hero-ghost" id="heroGhost">Bigger</span>
       </div>
       <div class="hero-stickers" aria-hidden="true">
@@ -338,6 +339,7 @@
 
     <!-- ======================= CLOSING CTA ======================= -->
     <section class="closing">
+      <canvas class="ribbons" id="ribbons" aria-hidden="true"></canvas>
       <div class="container closing-inner reveal">
         <p class="closing-kicker">Go-Bigger Solutions</p>
         <h2 class="closing-title">Ready to go <em class="chrome">bigger?</em><span class="burst" aria-hidden="true">✦</span></h2>

@@ -170,4 +170,209 @@
       f.addEventListener("input", function () { f.classList.remove("invalid"); });
     });
   }
+
+  /* ==========================================================
+     3D layer — vanilla canvas, no dependencies
+     ========================================================== */
+
+  var DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+  // Soft glow sprite shared by both scenes
+  function makeGlow(color) {
+    var c = document.createElement("canvas");
+    c.width = c.height = 64;
+    var g = c.getContext("2d");
+    var grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grad.addColorStop(0, "rgba(255,255,255,0.9)");
+    grad.addColorStop(0.25, color);
+    grad.addColorStop(1, "rgba(0,0,0,0)");
+    g.fillStyle = grad;
+    g.fillRect(0, 0, 64, 64);
+    return c;
+  }
+  var glowCyan = makeGlow("rgba(46,230,224,0.55)");
+  var glowViolet = makeGlow("rgba(160,107,255,0.5)");
+
+  function fitCanvas(canvas) {
+    var r = canvas.getBoundingClientRect();
+    canvas.width = Math.max(1, r.width * DPR);
+    canvas.height = Math.max(1, r.height * DPR);
+    return { w: canvas.width, h: canvas.height };
+  }
+
+  // Run a render loop only while the canvas is on screen
+  function runWhileVisible(canvas, frame) {
+    var running = false, raf = 0, t0 = performance.now();
+    function loop(now) {
+      frame((now - t0) / 1000);
+      raf = requestAnimationFrame(loop);
+    }
+    if (prefersReduced) { frame(0); return; } // single static frame
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting && !running) { running = true; raf = requestAnimationFrame(loop); }
+        else if (!e.isIntersecting && running) { running = false; cancelAnimationFrame(raf); }
+      });
+    }, { threshold: 0.02 });
+    io.observe(canvas);
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden && running) { cancelAnimationFrame(raf); running = false; }
+      else if (!document.hidden) { io.unobserve(canvas); io.observe(canvas); }
+    });
+  }
+
+  /* ---------- Hero: rotating orbital network ---------- */
+  (function () {
+    var canvas = document.getElementById("scene3d");
+    if (!canvas) return;
+    var ctx = canvas.getContext("2d");
+    var size = fitCanvas(canvas);
+    window.addEventListener("resize", function () { size = fitCanvas(canvas); });
+
+    // Fibonacci sphere
+    var N = 190, pts = [], golden = Math.PI * (3 - Math.sqrt(5));
+    for (var i = 0; i < N; i++) {
+      var y = 1 - (i / (N - 1)) * 2;
+      var r = Math.sqrt(1 - y * y);
+      var th = golden * i;
+      pts.push([Math.cos(th) * r, y, Math.sin(th) * r]);
+    }
+    // Static topology: connect points that are close on the sphere
+    var pairs = [];
+    for (var a = 0; a < N; a++) {
+      for (var b = a + 1; b < N; b++) {
+        var dx = pts[a][0] - pts[b][0], dy = pts[a][1] - pts[b][1], dz = pts[a][2] - pts[b][2];
+        if (dx * dx + dy * dy + dz * dz < 0.11) pairs.push([a, b]);
+      }
+    }
+
+    var mx = 0, my = 0, tx = 0, ty = 0;
+    window.addEventListener("pointermove", function (e) {
+      tx = (e.clientX / window.innerWidth - 0.5) * 0.5;
+      ty = (e.clientY / window.innerHeight - 0.5) * 0.35;
+    }, { passive: true });
+
+    function project(p, rotY, rotX, cx, cy, R) {
+      var x = p[0] * Math.cos(rotY) - p[2] * Math.sin(rotY);
+      var z = p[0] * Math.sin(rotY) + p[2] * Math.cos(rotY);
+      var y = p[1] * Math.cos(rotX) - z * Math.sin(rotX);
+      z = p[1] * Math.sin(rotX) + z * Math.cos(rotX);
+      var s = 2.4 / (2.4 - z);
+      return [cx + x * R * s, cy + y * R * s, z, s];
+    }
+
+    runWhileVisible(canvas, function (t) {
+      mx += (tx - mx) * 0.04;
+      my += (ty - my) * 0.04;
+      var w = size.w, h = size.h;
+      var cx = w * (w > h ? 0.68 : 0.5), cy = h * 0.46;
+      var R = Math.min(w, h) * 0.34;
+      var rotY = t * 0.14 + mx, rotX = 0.3 + my;
+      ctx.clearRect(0, 0, w, h);
+
+      var proj = [];
+      for (var i = 0; i < N; i++) proj.push(project(pts[i], rotY, rotX, cx, cy, R));
+
+      // Links
+      ctx.globalCompositeOperation = "lighter";
+      ctx.lineWidth = DPR * 0.6;
+      for (var k = 0; k < pairs.length; k++) {
+        var p1 = proj[pairs[k][0]], p2 = proj[pairs[k][1]];
+        var depth = (p1[2] + p2[2]) / 2;
+        var al = 0.05 + (depth + 1) * 0.09;
+        ctx.strokeStyle = "rgba(46,230,224," + al + ")";
+        ctx.beginPath();
+        ctx.moveTo(p1[0], p1[1]);
+        ctx.lineTo(p2[0], p2[1]);
+        ctx.stroke();
+      }
+
+      // Nodes
+      for (var j = 0; j < N; j++) {
+        var p = proj[j];
+        var sz = (2.2 + (p[2] + 1) * 3.4) * p[3] * DPR;
+        ctx.globalAlpha = 0.25 + (p[2] + 1) * 0.34;
+        ctx.drawImage(glowCyan, p[0] - sz, p[1] - sz, sz * 2, sz * 2);
+      }
+      ctx.globalAlpha = 1;
+
+      // Two orbit rings, each with a bright traveller
+      for (var ring = 0; ring < 2; ring++) {
+        var RR = 1.28 + ring * 0.22, tilt = 0.5 + ring * 0.55;
+        ctx.beginPath();
+        for (var s = 0; s <= 90; s++) {
+          var ang = (s / 90) * Math.PI * 2;
+          var q = project([Math.cos(ang) * RR, Math.sin(ang) * Math.sin(tilt) * RR, Math.sin(ang) * Math.cos(tilt) * RR], rotY, rotX, cx, cy, R);
+          if (s === 0) ctx.moveTo(q[0], q[1]); else ctx.lineTo(q[0], q[1]);
+        }
+        ctx.strokeStyle = ring ? "rgba(160,107,255,0.16)" : "rgba(46,230,224,0.18)";
+        ctx.lineWidth = DPR;
+        ctx.stroke();
+        var ta = t * (ring ? -0.45 : 0.6) + ring * 2;
+        var tp = project([Math.cos(ta) * RR, Math.sin(ta) * Math.sin(tilt) * RR, Math.sin(ta) * Math.cos(tilt) * RR], rotY, rotX, cx, cy, R);
+        var tsz = 9 * tp[3] * DPR;
+        ctx.drawImage(ring ? glowViolet : glowCyan, tp[0] - tsz, tp[1] - tsz, tsz * 2, tsz * 2);
+      }
+      ctx.globalCompositeOperation = "source-over";
+    });
+  })();
+
+  /* ---------- Closing: aurora light ribbons ---------- */
+  (function () {
+    var canvas = document.getElementById("ribbons");
+    if (!canvas) return;
+    var ctx = canvas.getContext("2d");
+    var size = fitCanvas(canvas);
+    window.addEventListener("resize", function () { size = fitCanvas(canvas); });
+
+    var COLORS = ["46,230,224", "110,231,255", "160,107,255", "232,121,249"];
+    var ribbons = [];
+    for (var i = 0; i < 14; i++) {
+      ribbons.push({
+        phase: i * 0.7,
+        amp: 0.08 + (i % 5) * 0.035,
+        freq: 0.0022 + (i % 4) * 0.0009,
+        speed: 0.25 + (i % 3) * 0.14,
+        color: COLORS[i % COLORS.length],
+        width: 0.7 + (i % 3) * 0.5
+      });
+    }
+
+    runWhileVisible(canvas, function (t) {
+      var w = size.w, h = size.h;
+      ctx.clearRect(0, 0, w, h);
+      ctx.globalCompositeOperation = "lighter";
+      for (var i = 0; i < ribbons.length; i++) {
+        var rb = ribbons[i];
+        ctx.beginPath();
+        for (var x = -40; x <= w + 40; x += 14 * DPR) {
+          var y = h * 0.52
+            + Math.sin(x * rb.freq / DPR + t * rb.speed + rb.phase) * h * rb.amp
+            + Math.sin(x * rb.freq * 0.37 / DPR - t * rb.speed * 0.6 + rb.phase * 2) * h * rb.amp * 0.7;
+          if (x === -40) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.strokeStyle = "rgba(" + rb.color + ",0.35)";
+        ctx.lineWidth = rb.width * DPR;
+        ctx.stroke();
+      }
+      ctx.globalCompositeOperation = "source-over";
+    });
+  })();
+
+  /* ---------- 3D tilt on cards ---------- */
+  if (!prefersReduced && matchMedia("(hover: hover)").matches) {
+    document.querySelectorAll(".service-card, .result-card").forEach(function (card) {
+      card.addEventListener("pointermove", function (e) {
+        var r = card.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width - 0.5;
+        var py = (e.clientY - r.top) / r.height - 0.5;
+        card.style.setProperty("--ry", (px * 7) + "deg");
+        card.style.setProperty("--rx", (-py * 7) + "deg");
+      });
+      card.addEventListener("pointerleave", function () {
+        card.style.setProperty("--ry", "0deg");
+        card.style.setProperty("--rx", "0deg");
+      });
+    });
+  }
 })();
