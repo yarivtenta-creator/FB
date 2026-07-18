@@ -3,14 +3,390 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Business Growth Platform</title>
-  <meta name="description" content="The AI Business Growth Platform: define a goal and the system researches the market, builds the strategy, finds the right people, tests campaigns, manages batches, and improves itself until the goal is achieved." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>" />
+  <title>Go-Bigger Solutions — Strategy, built for your goal</title>
+  <meta name="description" content="Go-Bigger Solutions is a strategy consultancy. You bring a destination — we build the research, the strategy, and the plan to get there. Business Strategy, Marketing Plans, and Creative Packs grounded in evidence, not guesswork." />
+  <meta property="og:title" content="Go-Bigger Solutions — Strategy, built for your goal" />
+  <meta property="og:description" content="You bring a destination. We build the path — research first, strategy second, execution last." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%231a1915%22/><text x=%2250%22 y=%2271%22 font-size=%2258%22 text-anchor=%22middle%22 font-family=%22Georgia,serif%22 fill=%22%23faf6ec%22>G</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
-  <div id="app"></div>
-  <script src="assets/translations.js"></script>
+
+  <!-- ======================= HEADER ======================= -->
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a class="brand" href="#top" aria-label="Go-Bigger Solutions — home">
+        <span class="brand-mark" aria-hidden="true">G</span>
+        <span class="brand-name">Go&#8209;Bigger<span class="brand-sub">Solutions</span></span>
+      </a>
+      <nav class="main-nav" aria-label="Main">
+        <a href="#services">Services</a>
+        <a href="#process">How It Works</a>
+        <a href="#about">About</a>
+        <a href="#results">Results</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <a class="client-login" href="#" data-tooltip="Portal opening soon" aria-disabled="true">Client Login</a>
+        <a class="btn btn-solid btn-sm" href="#contact">Get a Free Diagnostic</a>
+        <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <nav aria-label="Mobile">
+      <a href="#services">Services</a>
+      <a href="#process">How It Works</a>
+      <a href="#about">About</a>
+      <a href="#results">Results</a>
+      <a href="#contact">Contact</a>
+      <a class="mobile-login" href="#" aria-disabled="true">Client Login <small>· soon</small></a>
+      <a class="btn btn-solid" href="#contact">Get a Free Diagnostic</a>
+    </nav>
+  </div>
+
+  <main id="top">
+
+    <!-- ======================= HERO ======================= -->
+    <section class="hero" aria-label="Introduction">
+      <div class="hero-bg" aria-hidden="true">
+        <span class="hero-ghost">Bigger</span>
+      </div>
+      <div class="container hero-inner">
+        <p class="eyebrow reveal">A strategy consultancy · a human company</p>
+        <h1 class="hero-title">
+          <span class="line-mask"><span class="line">You bring the</span></span>
+          <span class="line-mask"><span class="line"><em>destination.</em></span></span>
+          <span class="line-mask"><span class="line">We build the path.</span></span>
+        </h1>
+        <div class="hero-foot">
+          <p class="hero-sub reveal">
+            Research before strategy. Strategy before execution. We diagnose your business
+            with evidence, present three tailored paths, and hand you a plan your team can
+            actually run — built by people who fall in love with your goal, not with their own solution.
+          </p>
+          <div class="hero-cta reveal">
+            <a class="btn btn-solid btn-lg" href="#contact">Get a Free Diagnostic</a>
+            <a class="btn btn-ghost btn-lg" href="#process">See how we work<span class="arrow" aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </div>
+      <div class="hero-scroll" aria-hidden="true"><span></span></div>
+    </section>
+
+    <!-- ======================= TRUST MARQUEE ======================= -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>Research before strategy</span><i>◆</i>
+        <span>Strategy before execution</span><i>◆</i>
+        <span>Decisions grounded in data</span><i>◆</i>
+        <span>Measured by your results — not our output</span><i>◆</i>
+        <span>Human judgment, always</span><i>◆</i>
+        <span>Research before strategy</span><i>◆</i>
+        <span>Strategy before execution</span><i>◆</i>
+        <span>Decisions grounded in data</span><i>◆</i>
+        <span>Measured by your results — not our output</span><i>◆</i>
+        <span>Human judgment, always</span><i>◆</i>
+      </div>
+    </div>
+
+    <!-- ======================= SERVICES ======================= -->
+    <section class="section" id="services">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-no">01</span>
+          <div>
+            <h2 class="section-title">Three ways in.<br /><em>One standard of rigor.</em></h2>
+            <p class="section-lede">Every engagement starts the same way — with research and an honest diagnosis. What you walk away with depends on where you are.</p>
+          </div>
+        </div>
+
+        <div class="services-grid">
+          <article class="service-card reveal" id="svc-strategy">
+            <span class="card-no">S/01</span>
+            <h3>Business Strategy</h3>
+            <p class="card-tag">For founders and owners deciding <strong>where to go next</strong>.</p>
+            <ul>
+              <li>Full research &amp; diagnosis of your market, position, and gaps</li>
+              <li>Three tailored strategic paths — with honest trade-offs for each</li>
+              <li>A prioritized roadmap your team can execute without us</li>
+              <li>Working session to pressure-test the chosen path</li>
+            </ul>
+            <p class="card-price">Investment <span>—</span></p>
+          </article>
+
+          <article class="service-card reveal" id="svc-marketing">
+            <span class="card-no">S/02</span>
+            <h3>Marketing Plan</h3>
+            <p class="card-tag">For businesses that know the goal but need <strong>the route to customers</strong>.</p>
+            <ul>
+              <li>Audience, channel, and competitor research — evidence, not hunches</li>
+              <li>Positioning and messaging that sounds like you, aimed at buyers</li>
+              <li>Channel-by-channel plan with budgets, sequencing, and owners</li>
+              <li>Success metrics tied to business results, not vanity numbers</li>
+            </ul>
+            <p class="card-price">Investment <span>—</span></p>
+          </article>
+
+          <article class="service-card reveal" id="svc-creative">
+            <span class="card-no">S/03</span>
+            <h3>Creative Pack</h3>
+            <p class="card-tag">For teams with a plan who need <strong>the assets to run it</strong>.</p>
+            <ul>
+              <li>Campaign concepts built on the research — never off a template</li>
+              <li>Copy and creative direction for your chosen channels</li>
+              <li>Ready-to-use asset set, organized for handoff</li>
+              <li>Usage notes so the work stays on-strategy after delivery</li>
+            </ul>
+            <p class="card-price">Investment <span>—</span></p>
+          </article>
+        </div>
+
+        <div class="services-foot reveal">
+          <button class="btn btn-outline btn-lg" id="pricingOpen">See Pricing Options</button>
+          <p class="services-note">Compare all three side by side.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= PROCESS ======================= -->
+    <section class="section section-alt" id="process">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-no">02</span>
+          <div>
+            <h2 class="section-title">How it works.<br /><em>Deliberately in this order.</em></h2>
+            <p class="section-lede">Most plans fail because they start at step three. We don't.</p>
+          </div>
+        </div>
+
+        <ol class="process-list">
+          <li class="process-step reveal">
+            <span class="step-no">1</span>
+            <div class="step-body">
+              <h3>Discovery</h3>
+              <p>You tell us where you're trying to go — the business, the goal, the constraints, and what's been tried. We listen more than we talk.</p>
+            </div>
+          </li>
+          <li class="process-step reveal">
+            <span class="step-no">2</span>
+            <div class="step-body">
+              <h3>Research &amp; Diagnosis</h3>
+              <p>Our team gathers the evidence: your market, your customers, your competitors, your numbers. Before proposing anything, we check whether the question you brought is even the right question.</p>
+            </div>
+          </li>
+          <li class="process-step reveal">
+            <span class="step-no">3</span>
+            <div class="step-body">
+              <h3>Strategy Options</h3>
+              <p>You get three tailored paths — A, B, and C — each with its logic, cost, and risk laid out honestly. You choose with clear eyes; we recommend, never railroad.</p>
+            </div>
+          </li>
+          <li class="process-step reveal">
+            <span class="step-no">4</span>
+            <div class="step-body">
+              <h3>Delivery &amp; Roadmap</h3>
+              <p>The chosen path becomes a concrete deliverable: the strategy, the plan, or the creative pack — plus a roadmap with sequence, owners, and milestones.</p>
+            </div>
+          </li>
+          <li class="process-step reveal">
+            <span class="step-no">5</span>
+            <div class="step-body">
+              <h3>Ongoing Support</h3>
+              <p>Markets move. When reality contradicts the plan, we help you change the plan — not deny reality. Check-ins keep the strategy current as you execute.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ======================= MANIFESTO / ABOUT ======================= -->
+    <section class="section section-dark" id="about">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-no">03</span>
+          <div>
+            <h2 class="section-title">Don't fall in love with the solution.<br /><em>Fall in love with the goal.</em></h2>
+            <p class="section-lede section-lede-dark" lang="he" dir="rtl">לא מתאהבים בפתרון. מתאהבים במטרה.</p>
+          </div>
+        </div>
+
+        <div class="manifesto">
+          <p class="reveal">The tools serve the goal — <em>not the other way around.</em></p>
+          <p class="reveal">Research before strategy. <em>Strategy before execution.</em></p>
+          <p class="reveal">The right answer starts with checking it's <em>the right question.</em></p>
+          <p class="reveal">Success isn't measured by the quality of our output. It's measured by <em>your business results.</em></p>
+          <p class="reveal">When reality contradicts the idea, we change the idea — <em>not reality.</em></p>
+        </div>
+
+        <div class="about-story reveal">
+          <div class="about-col">
+            <h3>A human company.</h3>
+            <p>Go-Bigger Solutions is run by people, based in Israel, and built on a simple belief: good strategy comes from data, research, and business understanding — filtered through human judgment. We use modern tools where they help, but every recommendation you receive was reasoned, argued over, and signed off by a person who understands your business.</p>
+          </div>
+          <div class="about-col">
+            <h3>What that means for you.</h3>
+            <p>No recycled playbooks. No deliverables that look impressive and change nothing. You bring a destination; we build the path, the team, the tools, and the working process needed to reach it — and we consider the job done when your numbers move, not when the PDF lands in your inbox.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= RESULTS ======================= -->
+    <section class="section" id="results">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-no">04</span>
+          <div>
+            <h2 class="section-title">Proof, honestly framed.<br /><em>Our own ventures first.</em></h2>
+            <p class="section-lede">We're a young consultancy, so we'll say plainly what most won't: our first case studies are businesses we built and ran ourselves. Client results will be published here as they're earned — with real numbers only.</p>
+          </div>
+        </div>
+
+        <div class="results-grid">
+          <article class="result-card reveal">
+            <span class="result-kicker">Founder venture</span>
+            <h3>Club Lab</h3>
+            <p>An events venture built from zero using the exact method on this page: research the audience first, choose the positioning second, spend on marketing last. The playbook we sell is the one we ran.</p>
+            <p class="result-note">Full write-up with numbers — coming as it's documented.</p>
+          </article>
+          <article class="result-card reveal">
+            <span class="result-kicker">Founder venture</span>
+            <h3>Vinyl Lab</h3>
+            <p>A retail concept where the research said "no" to the obvious plan — so we changed the plan. A working example of choosing reality over a beloved idea, and of strategy as a living document.</p>
+            <p class="result-note">Full write-up with numbers — coming as it's documented.</p>
+          </article>
+          <article class="result-card result-card-open reveal">
+            <span class="result-kicker">Your business</span>
+            <h3>This space is reserved.</h3>
+            <p>The next case study here will be a client's. If you want it to be yours, the diagnostic is free and the findings are yours to keep either way.</p>
+            <a class="text-link" href="#contact">Start with a free diagnostic <span aria-hidden="true">→</span></a>
+          </article>
+        </div>
+
+        <figure class="pull-quote reveal">
+          <blockquote>
+            &ldquo;Every decision is grounded in data, research, and business understanding — and every promise on this page is one we're prepared to be measured against.&rdquo;
+          </blockquote>
+          <figcaption>— The founding principle, Go-Bigger Solutions</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ======================= CONTACT ======================= -->
+    <section class="section section-alt" id="contact">
+      <div class="container contact-grid">
+        <div class="contact-intro reveal">
+          <span class="section-no">05</span>
+          <h2 class="section-title">Tell us the destination.<br /><em>The first look is free.</em></h2>
+          <p class="section-lede">Share a few lines about your business and goal. We'll come back with an honest first read — whether we're the right fit or not.</p>
+          <ul class="contact-points">
+            <li>A real person replies — usually within two business days</li>
+            <li>The free diagnostic is yours to keep, no strings</li>
+            <li>If we're not the right fit, we'll say so and point you elsewhere</li>
+          </ul>
+        </div>
+
+        <form class="contact-form reveal" id="contactForm" novalidate>
+          <div class="field">
+            <label for="f-name">Your name</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required />
+          </div>
+          <div class="field">
+            <label for="f-email">Email</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required />
+          </div>
+          <div class="field">
+            <label for="f-company">Business / company</label>
+            <input id="f-company" name="company" type="text" autocomplete="organization" />
+          </div>
+          <div class="field">
+            <label for="f-goal">Where are you trying to go?</label>
+            <textarea id="f-goal" name="goal" rows="4" placeholder="The goal, in your own words. One sentence is enough to start." required></textarea>
+          </div>
+          <button class="btn btn-solid btn-lg btn-block" type="submit">Request my free diagnostic</button>
+          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ======================= CLOSING CTA ======================= -->
+    <section class="closing">
+      <div class="container closing-inner reveal">
+        <p class="closing-kicker">Go-Bigger Solutions</p>
+        <h2 class="closing-title">Ready to go <em>bigger?</em></h2>
+        <a class="btn btn-paper btn-lg" href="#contact">Get a Free Diagnostic</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ======================= FOOTER ======================= -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="brand-mark" aria-hidden="true">G</span>
+        <p>Go-Bigger Solutions<br /><span>A human company. Israel-based, working worldwide.</span></p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="#services">Services</a>
+        <a href="#process">How It Works</a>
+        <a href="#results">Results</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="footer-meta">
+        <a href="#" aria-disabled="true">Privacy Policy</a>
+        <a href="#" aria-disabled="true">Terms</a>
+        <a href="#" aria-disabled="true">Client Login</a>
+      </div>
+    </div>
+    <div class="container footer-base">
+      <p>© <span id="year"></span> Go-Bigger Solutions. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- ======================= PRICING MODAL ======================= -->
+  <div class="modal" id="pricingModal" role="dialog" aria-modal="true" aria-labelledby="pricingTitle" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-panel">
+      <button class="modal-close" data-close aria-label="Close pricing">×</button>
+      <p class="modal-kicker">Pricing Options</p>
+      <h2 id="pricingTitle">Three deliverables, side by side.</h2>
+      <p class="modal-note">Final pricing is being calibrated with our first client cohort — the structure below is exactly what you'll be choosing between.</p>
+      <div class="pricing-table-wrap">
+        <table class="pricing-table">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Business<br />Strategy</th>
+              <th scope="col">Marketing<br />Plan</th>
+              <th scope="col">Creative<br />Pack</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Research &amp; diagnosis</th><td>●</td><td>●</td><td>●</td></tr>
+            <tr><th scope="row">Three strategic paths (A/B/C)</th><td>●</td><td>○</td><td>—</td></tr>
+            <tr><th scope="row">Channel plan &amp; budgets</th><td>—</td><td>●</td><td>—</td></tr>
+            <tr><th scope="row">Campaign concepts &amp; assets</th><td>—</td><td>—</td><td>●</td></tr>
+            <tr><th scope="row">Execution roadmap</th><td>●</td><td>●</td><td>○</td></tr>
+            <tr><th scope="row">Working session included</th><td>●</td><td>●</td><td>●</td></tr>
+            <tr class="pricing-row-price"><th scope="row">Investment</th><td>—</td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="pricing-legend">● Included &nbsp;&nbsp; ○ Partial / summary form &nbsp;&nbsp; — Not part of this deliverable</p>
+      <a class="btn btn-solid btn-lg" href="#contact" data-close>Talk to us about fit</a>
+    </div>
+  </div>
+
   <script src="assets/app.js"></script>
 </body>
 </html>

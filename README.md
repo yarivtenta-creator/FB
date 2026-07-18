@@ -1,52 +1,45 @@
-# AI Business Growth Platform — Landing Page
+# Go-Bigger Solutions — Website
 
-A premium, dark-themed marketing landing page for the AI Business Growth Platform. Static HTML/CSS/JS — no build step required.
+The public site for **Go-Bigger Solutions**, a strategy consultancy. Premium one-page design ("Confident Editorial" direction): ink charcoal + warm paper palette, burnt-orange accent, Fraunces serif display type. Static HTML/CSS/JS — no build step.
 
-## What this is
+Built from `GoBigger_Website_Plan_v2.md`. Brand rule respected throughout: a **human company that uses AI** — the site never says "AI-powered".
 
-The client defines a business goal (find sales agents, find buyers, find distributors, build a local sales team, test a new market, etc.). The platform researches the market, builds a strategy, finds the right people, tests campaigns, manages candidates in classes/batches, drives sales, and continuously improves itself. This site explains and sells that platform — it does not implement the platform itself.
+## Sections
+
+| Section | Notes |
+|---|---|
+| Hero | Outcome-led headline, "Get a Free Diagnostic" CTA, animated line reveal |
+| Trust marquee | The manifesto principles as a scrolling strip |
+| Services | Business Strategy · Marketing Plan · Creative Pack — placeholder prices ("Investment: —") |
+| Pricing modal | "See Pricing Options" opens a side-by-side comparison table; drop real numbers into the last row later, no restructuring needed |
+| How It Works | 5 steps: Discovery → Research & Diagnosis → Strategy Options → Delivery & Roadmap → Ongoing Support |
+| About / Manifesto | Dark section; the philosophy ("Don't fall in love with the solution…") incl. the Hebrew original line |
+| Results | Founder ventures (Club Lab, Vinyl Lab) honestly framed + a reserved slot for the first client case study |
+| Contact | Intake form (front-end only — wire to backend `src/intake/normalize.js` later) |
+| Client Login | Small top-right placeholder link with "Portal opening soon" tooltip; activates with backend P6/P7 |
 
 ## Structure
 
 ```
-index.html            Page shell, loads assets/translations.js then assets/app.js
-assets/styles.css      All styling — dark SaaS theme, gradients, cards, animations
-assets/translations.js Full copy for all 17 sections in 6 languages (en, nl, de, it, fr, es)
-assets/app.js          Renders the page from translations.js, handles language switching,
-                        the mission-flow animation, FAQ accordion, scroll reveals, sticky CTA
+index.html         All markup (single page, anchor navigation)
+assets/styles.css  All styling — design tokens at the top (:root)
+assets/app.js      Scroll reveals, header behavior, mobile menu, pricing modal, form validation
 ```
-
-## Language switching
-
-On first visit, users see a full-screen welcome step with a language selector (English, Dutch, German, Italian, French, Spanish). Choosing a language stores it in `localStorage` and renders the entire site — headings, buttons, FAQ, pricing, use cases, CTA, footer — in that language. The language can be changed again anytime from the dropdown in the sticky nav bar, which re-renders the whole page.
-
-All copy lives in `assets/translations.js` as one object keyed by language code, so adding a language means adding one more key with the same shape.
 
 ## Run locally
 
-No build tools needed. From the project root:
-
 ```bash
-npx serve .
-# or
 python3 -m http.server 8080
+# or: npx serve .
 ```
 
-Then open the printed URL in a browser.
+## Deploy
 
-## Deploy to Vercel
+Static site — deploys as-is to Vercel/Netlify/GitHub Pages (no build command, root as output).
 
-This is a static site, so no build command or output directory override is needed.
+## Editing later
 
-```bash
-npm i -g vercel   # if you don't already have it
-vercel --prod
-```
-
-Or import the GitHub repo directly at https://vercel.com/new — Vercel auto-detects it as a static site (Framework Preset: "Other", no build command, root as output).
-
-## Editing content
-
-- Change any copy: edit the matching key in `assets/translations.js` for each language.
-- Change the WhatsApp number/message: edit `WHATSAPP_URL` at the top of `assets/app.js`.
-- Change colors/spacing: edit the CSS custom properties at the top of `assets/styles.css`.
+- **Real prices**: replace the `—` in each `.card-price span` (index.html) and in the modal's `pricing-row-price` cells.
+- **Colors/type**: edit the CSS custom properties at the top of `assets/styles.css`.
+- **Form backend**: replace the `TODO` in the submit handler in `assets/app.js` with a `fetch` POST to the intake endpoint.
+- **Client portal**: point the `Client Login` links at the portal URL and remove the tooltip/`aria-disabled`.
