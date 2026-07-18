@@ -1,6 +1,6 @@
 # Go-Bigger Solutions — Website
 
-The public site for **Go-Bigger Solutions**, a strategy consultancy. Premium one-page design ("Confident Editorial" direction): ink charcoal + warm paper palette, burnt-orange accent, Fraunces serif display type. Static HTML/CSS/JS — no build step.
+The public site for **Go-Bigger Solutions**, a strategy consultancy. Premium one-page design ("Acid Editorial", 2026 direction): dark-first near-black botanical base, acid-lime accent with aurora glows, glass surfaces, Fraunces serif display type + Space Grotesk labels. Static HTML/CSS/JS — no build step.
 
 Built from `GoBigger_Website_Plan_v2.md`. Brand rule respected throughout: a **human company that uses AI** — the site never says "AI-powered".
 
