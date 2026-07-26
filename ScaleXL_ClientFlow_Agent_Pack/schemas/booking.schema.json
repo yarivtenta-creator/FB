@@ -1,0 +1,1 @@
+{"$schema":"http://json-schema.org/draft-07/schema#","title":"Booking","type":"object","required":["id","name","date","time","service_type","status"],"properties":{"id":{"type":"string"},"name":{"type":"string"},"date":{"type":"string"},"time":{"type":"string"},"service_type":{"type":"string"},"status":{"type":"string","enum":["confirmed","collecting","missing_fields"]}}}

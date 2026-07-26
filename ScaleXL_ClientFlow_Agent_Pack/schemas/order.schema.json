@@ -1,0 +1,1 @@
+{"$schema":"http://json-schema.org/draft-07/schema#","title":"Order","type":"object","required":["order_id","customer_id","status"],"properties":{"order_id":{"type":"string"},"customer_id":{"type":"string"},"items":{"type":"array"},"status":{"type":"string"},"payment_link":{"type":"string"}}}
