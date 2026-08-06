@@ -55,6 +55,32 @@ app.get('/api/data/providers', (req, res) => {
 // ── Alpaca read-only routes (unauthenticated for diagnostics) ─────────────
 app.use('/api/alpaca', require('./connectors/alpaca/alpaca_routes'));
 
+// ── Key coverage: which providers are usable, which need a key ────────────
+// Reports env var NAMES and presence only. Never a key value.
+app.get('/api/keys', (req, res) => {
+  try {
+    const all = require('./data_layer/provider_registry').list();
+    const usable = all.filter(p => p.usable);
+    res.json({
+      system: 'BROKER_AI_OS_V7',
+      total: all.length,
+      usable_now: usable.length,
+      keyless: all.filter(p => p.keyless).length,
+      configured: all.filter(p => p.configured).length,
+      missing: all.length - usable.length,
+      providers: all.map(p => ({
+        id: p.id, name: p.name, category: p.category,
+        usable: p.usable, keyless: p.keyless, configured: p.configured,
+        env_keys: p.env_keys, free_tier: p.free_tier,
+        get_key_url: (p.links && p.links.apiKeys) || null
+      })),
+      note: 'Env var names and presence only. No key values are ever returned.'
+    });
+  } catch (e) {
+    res.status(500).json({ error: 'keys_status_failed', message: e.message });
+  }
+});
+
 app.use('/api/auth', authRouter);
 
 app.get('/api/health/full', requireAuth, (req, res) => {

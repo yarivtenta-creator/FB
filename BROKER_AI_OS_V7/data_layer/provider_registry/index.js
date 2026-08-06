@@ -15,41 +15,7 @@ const config = require('../../config');
 
 // Static catalog. enabled=false means "not wired to live". Links help the operator
 // set up keys MANUALLY (Provider Setup Center) — the app never collects the key.
-const PROVIDERS = [
-  { id:'alpaca',   name:'Alpaca',            category:'equities',   status:'not_configured', enabled:false, health:'mock',
-    envKeys:['ALPACA_API_KEY','ALPACA_SECRET_KEY'],
-    envKeysAlt:['ALPACA_API_KEY_ID','ALPACA_API_SECRET_KEY'],
-    links:{ website:'https://alpaca.markets', apiKeys:'https://app.alpaca.markets/paper/dashboard/overview',
-            docs:'https://docs.alpaca.markets/docs/getting-started', setupGuide:'/docs/operator/CONNECT_ALPACA.md' } },
-  { id:'t4',       name:'T4 / Plus500',      category:'futures',    status:'mock',           enabled:false, health:'mock',
-    envKeys:[],
-    links:{ website:'https://www.cqg.com/products/t4', apiKeys:'',
-            docs:'https://www.cqg.com/partners/api-documentation', setupGuide:'/docs/operator/PROVIDER_SETUP_CENTER.md' },
-    note:'DATA/STATUS ONLY. No execution, no FIX. Never an order path.' },
-  { id:'news',     name:'News',              category:'news',       status:'mock',           enabled:true,  health:'ok',
-    envKeys:['NEWS_API_KEY'],
-    links:{ website:'https://newsapi.org', apiKeys:'https://newsapi.org/account',
-            docs:'https://newsapi.org/docs', setupGuide:'/docs/operator/PROVIDER_SETUP_CENTER.md' } },
-  { id:'calendar', name:'Economic Calendar', category:'macro',      status:'mock',           enabled:true,  health:'ok',
-    envKeys:['ECON_CALENDAR_API_KEY'],
-    links:{ website:'https://www.tradingeconomics.com', apiKeys:'https://developer.tradingeconomics.com',
-            docs:'https://docs.tradingeconomics.com', setupGuide:'/docs/operator/PROVIDER_SETUP_CENTER.md' } },
-  { id:'congress', name:'Congress Trades',   category:'alt_signal', status:'mock',           enabled:true,  health:'ok',
-    envKeys:['CONGRESS_API_KEY'],
-    links:{ website:'https://www.quiverquant.com', apiKeys:'https://www.quiverquant.com/auth/signup',
-            docs:'https://api.quiverquant.com/docs', setupGuide:'/docs/operator/PROVIDER_SETUP_CENTER.md' } },
-  { id:'13f',      name:'13F Filings',       category:'alt_signal', status:'mock',           enabled:true,  health:'ok',
-    envKeys:['THIRTEEN_F_API_KEY'],
-    links:{ website:'https://www.sec.gov/edgar', apiKeys:'',
-            docs:'https://www.sec.gov/edgar/sec-api-documentation', setupGuide:'/docs/operator/PROVIDER_SETUP_CENTER.md' } },
-  { id:'insider',  name:'Insider Trading',   category:'alt_signal', status:'mock',           enabled:true,  health:'ok',
-    envKeys:['INSIDER_API_KEY'],
-    links:{ website:'https://www.sec.gov/edgar', apiKeys:'',
-            docs:'https://www.sec.gov/edgar/sec-api-documentation', setupGuide:'/docs/operator/PROVIDER_SETUP_CENTER.md' } },
-  { id:'reserved', name:'Future Providers',  category:'reserved',   status:'planned',        enabled:false, health:'n/a',
-    envKeys:[],
-    links:{ website:'', apiKeys:'', docs:'', setupGuide:'/docs/operator/PROVIDER_SETUP_CENTER.md' } }
-];
+const { PROVIDERS } = require('./catalog');
 
 // configured = ALL required env vars for the provider are PRESENT (value never read).
 // Supports both primary and alternate key names.
@@ -72,7 +38,11 @@ function decorate(p){
     ? (p.id === 'alpaca' ? 'configured' : (config.DATA_MODE === 'live' ? 'live' : p.status))
     : p.status;
   const base = S.ProviderStatus({ ...p, status, enabled, last_update: enabled ? now : null });
-  return { ...base, id:p.id, configured, links:p.links, note:p.note };
+  return { ...base, id:p.id, configured, links:p.links, note:p.note,
+    keyless: !!p.keyless, free_tier: p.freeTier || null,
+    env_keys: p.envKeys || [], env_keys_alt: p.envKeysAlt || [],
+    // A provider is USABLE if it needs no key, or its keys are present.
+    usable: !!p.keyless || configured };
 }
 
 function list(){ return PROVIDERS.map(decorate); }
