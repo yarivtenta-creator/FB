@@ -4,3 +4,8 @@
 # OS noise
 .DS_Store
 Thumbs.db
+
+# Alpaca MCP server: vendored source, but not its build artifacts
+mcp/alpaca/server/.venv/
+mcp/alpaca/server/**/__pycache__/
+mcp/alpaca/server/*.egg-info/

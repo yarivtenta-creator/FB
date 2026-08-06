@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "alpaca": {
+      "command": "uv",
+      "args": ["run", "--directory", "./mcp/alpaca/server", "alpaca-mcp-server"],
+      "env": {
+        "ALPACA_API_KEY": "${ALPACA_API_KEY}",
+        "ALPACA_SECRET_KEY": "${ALPACA_SECRET_KEY}",
+        "ALPACA_PAPER_TRADE": "true",
+        "ALPACA_TOOLSETS": "account,assets,stock-data,crypto-data,options-data,news,index-data,corporate-actions"
+      }
+    }
+  }
+}
