@@ -8,6 +8,33 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 
+// ── Load .env BEFORE anything reads process.env ────────────────────────────
+// Without this, keys in .env are silently ignored when started via
+// `node server.js` or `npm start`. Real env vars always win over the file.
+(function loadDotEnv() {
+  const file = path.join(__dirname, '.env');
+  if (!fs.existsSync(file)) return;
+  try {
+    if (typeof process.loadEnvFile === 'function') { process.loadEnvFile(file); return; }
+    // Fallback for Node < 20.6
+    for (const raw of fs.readFileSync(file, 'utf8').split(/\r?\n/)) {
+      const line = raw.trim();
+      if (!line || line.startsWith('#')) continue;
+      const eq = line.indexOf('=');
+      if (eq < 1) continue;
+      const key = line.slice(0, eq).trim();
+      if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(key)) continue;
+      if (process.env[key] !== undefined) continue;   // don't clobber real env
+      let val = line.slice(eq + 1).trim();
+      if ((val.startsWith('"') && val.endsWith('"')) ||
+          (val.startsWith("'") && val.endsWith("'"))) val = val.slice(1, -1);
+      process.env[key] = val;
+    }
+  } catch (e) {
+    console.warn('[boot] .env present but could not be read:', e.message);
+  }
+})();
+
 const config = require('./config');
 const health = require('./health/healthcheck');
 const board = require('./agents/signal_board');

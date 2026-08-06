@@ -23,13 +23,7 @@ if not exist "node_modules" (
   call npm install --no-audit --no-fund
 )
 
-REM Load .env if present
-if exist ".env" (
-  echo [config] Loading .env ...
-  for /f "usebackq tokens=1,* delims==" %%a in (".env") do (
-    if not "%%a"=="" if not "%%a:~0,1%"=="#" set "%%a=%%b"
-  )
-)
+REM .env is loaded by server.js itself (cross-platform, comment-safe)
 
 REM Lock to port 6060 — override anything in .env
 set PORT=6060
