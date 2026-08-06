@@ -70,6 +70,30 @@ main{padding:0 24px 28px;display:grid;gap:16px;grid-template-columns:repeat(12,1
   <section class="card c6"><h2>3 · Data Hub <span class="muted">(source of truth)</span></h2><div id="hub" class="muted">loading…</div></section>
 
   <section class="card c12"><h2>6 · Research Signals <span class="muted">(from /trade and /crypto skills — feeds ranking, trades and statistics)</span></h2>
+    <div style="background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:12px;margin-bottom:14px">
+      <div class="muted" style="margin-bottom:8px;font-size:11px">
+        <b style="color:var(--ink)">Add a signal.</b> Run <code>/trade analyze NVDA</code> in Claude Code, then type the result here. No terminal needed.
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+        <label style="display:flex;flex-direction:column;gap:3px"><span class="muted" style="font-size:10px">SYMBOL</span>
+          <input id="rsSymbol" placeholder="NVDA" style="width:90px;padding:6px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:4px;font-family:var(--mono)"/></label>
+        <label style="display:flex;flex-direction:column;gap:3px"><span class="muted" style="font-size:10px">DIRECTION</span>
+          <select id="rsDir" style="padding:6px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:4px;font-family:var(--mono)">
+            <option value="long">long</option><option value="short">short</option><option value="neutral">neutral</option></select></label>
+        <label style="display:flex;flex-direction:column;gap:3px"><span class="muted" style="font-size:10px">SCORE (0-100)</span>
+          <input id="rsScore" type="number" min="0" max="100" placeholder="88" style="width:90px;padding:6px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:4px;font-family:var(--mono)"/></label>
+        <label style="display:flex;flex-direction:column;gap:3px"><span class="muted" style="font-size:10px">SKILL</span>
+          <select id="rsSkill" style="padding:6px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:4px;font-family:var(--mono)">
+            <option>trade-analyze</option><option>trade-thesis</option><option>trade-technical</option>
+            <option>trade-fundamental</option><option>trade-sentiment</option><option>trade-quick</option>
+            <option>crypto-analyze</option><option>crypto-onchain</option><option>crypto-technical</option>
+            <option>manual</option></select></label>
+        <label style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:180px"><span class="muted" style="font-size:10px">RATIONALE (optional)</span>
+          <input id="rsWhy" placeholder="Composite Trade Score 88/100" style="width:100%;padding:6px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:4px;font-family:var(--mono)"/></label>
+        <button onclick="addResearch()" style="padding:8px 18px;font-weight:700">Add signal</button>
+      </div>
+      <div id="rsMsg" style="margin-top:8px;font-size:11px"></div>
+    </div>
     <div id="research" class="muted">loading…</div></section>
 
   <section class="card c6"><h2>7 · Paper Signal Board</h2><div id="signals" class="muted">loading…</div></section>
@@ -130,6 +154,25 @@ async function probeKeyless(){
      + esc(ok?('OK '+JSON.stringify(r.sample||{}).slice(0,70)):(r.error||'').slice(0,80))+'</td></tr>';
   }
   el.innerHTML=h+'</table>';
+}
+async function addResearch(){
+  const msg=document.getElementById('rsMsg');
+  const sym=document.getElementById('rsSymbol').value.trim();
+  const score=document.getElementById('rsScore').value.trim();
+  if(!sym||score===''){ msg.innerHTML='<span style="color:var(--red)">Symbol and score are required.</span>'; return; }
+  msg.innerHTML='<span class="muted">saving…</span>';
+  const body={ symbol:sym, direction:document.getElementById('rsDir').value,
+    score:Number(score), skill:document.getElementById('rsSkill').value,
+    rationale:document.getElementById('rsWhy').value.trim() };
+  const r=await fetch('/api/data/research',{method:'POST',headers:H,body:JSON.stringify(body)});
+  const d=await r.json().catch(()=>null);
+  if(r.ok&&d&&d.ok){
+    msg.innerHTML='<span style="color:var(--green)">Added '+esc(d.signal.symbol)+' '+esc(d.signal.direction)+' @ '+d.signal.score+'. It now ranks with the other signals.</span>';
+    document.getElementById('rsSymbol').value=''; document.getElementById('rsScore').value=''; document.getElementById('rsWhy').value='';
+    loadResearch(); loadRanked(); loadSignals();
+  } else {
+    msg.innerHTML='<span style="color:var(--red)">'+esc((d&&d.errors?d.errors.join(', '):'failed'))+'</span>';
+  }
 }
 async function loadResearch(){
   const st=await get('/api/data/research/stats'); const d=await get('/api/data/research');

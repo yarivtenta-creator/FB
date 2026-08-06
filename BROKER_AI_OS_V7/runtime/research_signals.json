@@ -46,5 +46,21 @@
     "ingested_at": "2026-08-06T05:27:56.246Z",
     "paper": true,
     "executed": false
+  },
+  {
+    "id": "msh2wxb613",
+    "provider": "research",
+    "symbol": "TSLA",
+    "direction": "short",
+    "score": 0.79,
+    "confidence": 0.79,
+    "skill": "trade-thesis",
+    "rationale": "Valuation stretched vs delivery guidance",
+    "price": null,
+    "horizon_days": null,
+    "tags": [],
+    "ingested_at": "2026-08-06T05:32:15.908Z",
+    "paper": true,
+    "executed": false
   }
 ]
