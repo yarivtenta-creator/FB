@@ -1,0 +1,8 @@
+Run VERIFY on the file/folder/build I've attached.
+
+"Looks done" and "works" are not the same thing. Prove it actually works:
+- Check integrity and internal consistency (and checksums if present).
+- If it's code or a web page: run it, take screenshots at desktop and mobile if visual, click through it, and try to break it with malformed/edge-case inputs.
+- If it's a document/spec: verify every claim/number traces to a source, and that it's complete against its own criteria.
+
+Report PASS/FAIL for each check with the actual evidence (screenshots, logs, output) — not "I checked". End with a short "definition of done" and an honest list of anything thin, missing, or broken. Do not declare it done without evidence.

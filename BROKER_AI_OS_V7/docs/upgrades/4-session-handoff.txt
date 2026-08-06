@@ -1,0 +1,14 @@
+Run SESSION-HANDOFF on the file/folder I've attached (or on this whole chat if I say so).
+
+Write a dense, specific resume summary so I (or anyone) can pick up later with zero loss. Use these sections, and pull from the REAL content — never invent:
+
+- Where it started (the goal, 1-2 lines)
+- Decisions locked (each with the reason, so it isn't relitigated)
+- What shipped (concrete outputs so far)
+- Key files (path + why each matters)
+- Running state (what works now, what's half-done)
+- Verification status (what's tested/passed, what hasn't been checked)
+- Open questions / decisions still owed
+- Pick up here (the exact next action)
+
+Keep it lean — the shortest thing that fully rebuilds the context.

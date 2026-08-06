@@ -1,0 +1,19 @@
+THE 4 UPGRADES — copy-paste commands
+=====================================
+
+How to use (30 seconds):
+1. Open the .txt file for what you want.
+2. Copy ALL the text inside it.
+3. Paste it into Claude, and attach/upload the file or folder you want tested.
+4. Send. Claude runs that upgrade on your file.
+
+Files in this folder:
+  RUN-ALL.txt          -> runs all 4 upgrades on one file/folder
+  1-roast.txt          -> pressure-test an idea/plan (go / reshape / kill)
+  2-verify.txt         -> prove it actually works (not just "looks done")
+  3-goal.txt           -> build/finish the pieces with parallel sub-agents
+  4-session-handoff.txt-> a clean "where we are / pick up here" summary
+  COMMANDS.md          -> all of the above in one scrollable file
+
+That's it. No install. The text carries the method, so it works whether or not
+the skills are installed.

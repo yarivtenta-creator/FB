@@ -1,0 +1,9 @@
+Run GOAL on the file/folder I've attached.
+
+Drive it to completion without me babysitting:
+1. Define an OBJECTIVE finish line — measurable conditions for "done" (files exist and are non-empty, N items produced, each passes its own check, etc.).
+2. Fan out parallel sub-agents, one per deliverable, each with its own clean context, each writing its own file so they don't overwrite each other.
+3. A SEPARATE evaluator (not the builder) checks the finish-line conditions — Claude doesn't get to declare itself done.
+4. Run a final verification pass: open each produced file, fix anything thin or generic, then show me the finished set.
+
+Tell me what the finish line was and whether every condition was actually met.

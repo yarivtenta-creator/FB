@@ -1,0 +1,11 @@
+Run ALL FOUR upgrades on the file/folder I've attached. Do them in this order and label each result clearly:
+
+1) ROAST — spin up an adversarial council (contrarian, expansionist, first-principles, deep-researcher with web access, and a buyer role-playing the real user). Then a judge verdict: green-light / reshape / kill, with confidence, biggest risk, biggest upside, each persona's score out of 10, and the single cheapest 48-hour test to learn if it's real.
+
+2) VERIFY — don't trust that it looks done; prove it works. Check integrity and internal consistency; if it's code or a page, run it / screenshot it / test it and try to break it with edge cases. Report PASS/FAIL per check with evidence, and a short "definition of done".
+
+3) GOAL — set a measurable finish line, then build or complete the pieces the file implies (use parallel sub-agents, one per deliverable, if available). Then run a verification pass and show me the finished files, confirming each meets the bar.
+
+4) SESSION-HANDOFF — write a dense resume summary of this work: where it started, decisions locked, what shipped, key files, running state, verification status, open questions, and exactly where to pick up. Pull from the real content — don't invent.
+
+Be honest and adversarial where it helps. Tell me plainly what works, what doesn't, and what to do next.

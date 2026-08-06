@@ -1,0 +1,10 @@
+Run ROAST on the file/idea I've attached.
+
+Claude usually agrees with me — I don't want that here. Spin up an adversarial council, each with a distinct lens:
+- CONTRARIAN: find the single fatal flaw and why this fails.
+- EXPANSIONIST: find the biggest realistic upside and how to 10x it.
+- FIRST-PRINCIPLES: pure logic — does the value actually exist, who pays and why.
+- DEEP RESEARCHER: search the web for real substitutes, competitors, and pricing.
+- BUYER: role-play the exact target customer — would you pay, what makes you walk.
+
+Each gives a score out of 10. Then a JUDGE gives one verdict: green-light / reshape / kill, with confidence, the biggest risk, the biggest upside, the scores, and the single cheapest 48-hour test to find out if it's real before building anything. If "reshape", tell me the narrower version to build instead.
