@@ -1,113 +1,154 @@
 'use strict';
 /**
- * strategy_engine — runs THREE strategy profiles in parallel, one per Alpaca paper
- * account, all from this one system. SCORING + PAPER SIMULATION ONLY.
+ * strategy_engine — BROKER_AI_OS_V7 multi-strategy paper engine.
  *
- * Design:
- *  - All three accounts read the SAME live market data (prices are identical across
- *    paper accounts), so we score signals once and apply three different filters.
- *  - Each strategy = a score threshold + max open trades + risk profile. Higher
- *    threshold = more selective = "more secure".
- *  - Each account keeps its OWN paper ledger so you can compare performance.
+ * Runs MANY strategies in parallel. Each slot = one strategy bound to one Alpaca
+ * PAPER account. Multiple slots may share the same paper account.
+ *
+ * "Uses Alpaca money" = position sizing is computed from the REAL equity read from
+ * your Alpaca PAPER account (read-only GET /v2/account). The trades themselves are
+ * SIMULATED in this system's ledger.
  *
  * HARD SAFETY (unchanged):
- *  - No broker client, no order/execute path anywhere. Everything is paper:true /
- *    executed:false. Account keys are READ-ONLY market-data keys.
- *  - When PAUSED (see run_state.js) the engine still reads data + scores signals,
- *    but opens NO new paper trades.
+ *  - No broker client, no order path, no execution anywhere.
+ *  - Every trade is paper:true / executed:false.
+ *  - Alpaca is contacted with GET only. Never POST/DELETE. Never /v2/orders.
+ *  - When PAUSED the engine still reads + scores, but opens NO new paper trades.
  */
 const scoring = require('../data_layer/signal_scoring');
 const runState = require('./run_state');
+const catalog = require('./strategies');
 
-// ── Strategy profiles (tunable). Each maps to one Alpaca paper account. ──────────
-// threshold  = minimum signal score to act on (higher = more selective/secure)
-// maxOpen    = max simultaneous open paper trades
-// qty        = paper position size per trade
-// allowSides = which directions this strategy will take
-const STRATEGIES = {
-  conservative: {
-    label: 'Conservative (most secure)',
-    threshold: 0.72,           // only the strongest signals
-    maxOpen: 2,
-    qty: 1,
-    allowSides: ['long'],      // long-only; avoids shorting
-    note: 'Highest-confidence signals only, long-only, very few positions.'
-  },
-  balanced: {
-    label: 'Balanced',
-    threshold: 0.62,
-    maxOpen: 4,
-    qty: 1,
-    allowSides: ['long', 'short'],
-    note: 'Medium-confidence signals, both directions, moderate position count.'
-  },
-  aggressive: {
-    label: 'Aggressive',
-    threshold: 0.50,           // takes more, looser filter
-    maxOpen: 8,
-    qty: 1,
-    allowSides: ['long', 'short', 'neutral'],
-    note: 'Takes more signals incl. weaker ones, both directions, many positions.'
+const DEFAULT_EQUITY = 100000;   // used only when no real Alpaca equity is available
+
+// ── Slot configuration ──────────────────────────────────────────────────────────
+// Slots A..L. Each slot: STRATEGY_<ID> picks the strategy, ALPACA_<ID>_KEY_ID /
+// ALPACA_<ID>_SECRET bind it to a paper account. A slot with no strategy set falls
+// back to a sensible default so the full catalog can run out of the box.
+const SLOT_IDS = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+const DEFAULT_ASSIGNMENT = [
+  'conservative','balanced','aggressive','momentum','mean_reversion','insider_follow',
+  'congress_follow','institutional_13f','high_conviction','diversified','swing','contrarian'
+];
+
+function _present(name){
+  return typeof process.env[name] === 'string' && process.env[name].trim() !== '';
+}
+
+// Global fallback keys — lets every slot run off one key pair if that's all you have.
+function _globalKeysPresent(){
+  return (_present('ALPACA_API_KEY') || _present('ALPACA_API_KEY_ID')) &&
+         (_present('ALPACA_SECRET_KEY') || _present('ALPACA_API_SECRET_KEY'));
+}
+
+function _slots(){
+  return SLOT_IDS.map((id, i) => {
+    const stratName = (process.env['STRATEGY_' + id] || DEFAULT_ASSIGNMENT[i] || 'balanced')
+      .trim().toLowerCase();
+    const profile = catalog.get(stratName) || catalog.get('balanced');
+    const ownKeys = _present('ALPACA_' + id + '_KEY_ID') && _present('ALPACA_' + id + '_SECRET');
+    const enabled = (process.env['SLOT_' + id + '_ENABLED'] || 'true').trim().toLowerCase() !== 'false';
+    return {
+      id,
+      strategy: stratName,
+      profile,
+      own_keys: ownKeys,
+      // A slot is "configured" if it has its own keys OR global keys exist.
+      configured: ownKeys || _globalKeysPresent(),
+      key_source: ownKeys ? ('ALPACA_' + id + '_KEY_ID') : (_globalKeysPresent() ? 'ALPACA_API_KEY (shared)' : null),
+      enabled
+    };
+  });
+}
+
+// ── Real Alpaca PAPER equity (READ-ONLY). Cached; never blocks a tick. ──────────
+const _equityCache = { value: null, ts: 0, source: 'default', error: null, account_status: null };
+const EQUITY_TTL_MS = 60000;
+
+async function refreshEquity(){
+  const apiKey = (process.env.ALPACA_API_KEY || process.env.ALPACA_API_KEY_ID || '').trim();
+  const secret = (process.env.ALPACA_SECRET_KEY || process.env.ALPACA_API_SECRET_KEY || '').trim();
+  const baseUrl = (process.env.ALPACA_BASE_URL || 'https://paper-api.alpaca.markets').replace(/\/+$/,'');
+  if (!apiKey || !secret){
+    _equityCache.source = 'default'; _equityCache.error = 'no_keys';
+    return { ok:false, reason:'no_keys', equity: DEFAULT_EQUITY };
   }
-};
-
-// ── Account → strategy assignment (read from env; presence-only for keys). ───────
-// Each account is configured by its own key pair + a strategy name. Keys are never
-// logged or returned; we only report whether each account is "configured".
-function _accounts(){
-  return [
-    {
-      id: 'A',
-      strategy: (process.env.STRATEGY_A || 'conservative').trim().toLowerCase(),
-      keyEnv: 'ALPACA_A_KEY_ID', secretEnv: 'ALPACA_A_SECRET'
-    },
-    {
-      id: 'B',
-      strategy: (process.env.STRATEGY_B || 'balanced').trim().toLowerCase(),
-      keyEnv: 'ALPACA_B_KEY_ID', secretEnv: 'ALPACA_B_SECRET'
-    },
-    {
-      id: 'C',
-      strategy: (process.env.STRATEGY_C || 'aggressive').trim().toLowerCase(),
-      keyEnv: 'ALPACA_C_KEY_ID', secretEnv: 'ALPACA_C_SECRET'
+  try {
+    // READ-ONLY GET. Never an order endpoint.
+    const res = await fetch(`${baseUrl}/v2/account`, { method:'GET', headers:{
+      'APCA-API-KEY-ID': apiKey, 'APCA-API-SECRET-KEY': secret, 'accept':'application/json'
+    }});
+    if (!res.ok){
+      _equityCache.error = 'http_' + res.status; _equityCache.source = 'default';
+      return { ok:false, status:res.status, equity: DEFAULT_EQUITY };
     }
-  ].map(a => ({
-    ...a,
-    configured: _present(a.keyEnv) && _present(a.secretEnv),
-    profile: STRATEGIES[a.strategy] || STRATEGIES.balanced
-  }));
-}
-function _present(envName){
-  return typeof process.env[envName] === 'string' && process.env[envName].trim() !== '';
+    const j = await res.json();
+    const eq = Number(j.equity);
+    if (eq > 0){
+      _equityCache.value = eq; _equityCache.ts = Date.now();
+      _equityCache.source = 'alpaca_paper'; _equityCache.error = null;
+      _equityCache.account_status = j.status || null;
+      return { ok:true, equity: eq, account_status: j.status };
+    }
+    return { ok:false, reason:'no_equity_field', equity: DEFAULT_EQUITY };
+  } catch(e){
+    _equityCache.error = e.message; _equityCache.source = 'default';
+    return { ok:false, reason:'fetch_error', error:e.message, equity: DEFAULT_EQUITY };
+  }
 }
 
-// ── Per-account paper ledgers (in-memory; mirrors paper:true/executed:false). ────
-// Keyed by account id. Each trade is a pure simulation.
-const _ledgers = { A: [], B: [], C: [] };
+function _equity(){
+  const fresh = _equityCache.value && (Date.now() - _equityCache.ts) < EQUITY_TTL_MS;
+  if (!fresh && _globalKeysPresent()) refreshEquity().catch(()=>{});   // warm in background
+  return _equityCache.value || DEFAULT_EQUITY;
+}
+
+// ── Per-slot paper ledgers (in-memory; paper:true / executed:false always) ──────
+const _ledgers = {};
+SLOT_IDS.forEach(id => { _ledgers[id] = []; });
 let _tradeSeq = 0;
 
-// Which signals does a strategy act on, given the shared ranked list?
+// Which signals does a strategy act on?
 function _selectFor(profile, ranked){
-  return ranked.filter(s =>
-    s.score >= profile.threshold &&
-    profile.allowSides.includes(s.direction || 'long')
-  );
+  return ranked.filter(s => {
+    if (s.score < profile.threshold) return false;
+    if (!profile.allowSides.includes(s.direction || 'long')) return false;
+    if (profile.sources && profile.sources.length && !profile.sources.includes(s.provider)) return false;
+    return true;
+  });
 }
 
-// Open a PAPER trade in an account's ledger (simulation only). Never a real order.
-function _openPaper(accId, profile, sig){
-  const ledger = _ledgers[accId];
+// Paper position size from REAL account equity + strategy risk %.
+function _sizePosition(profile, price, equity){
+  const dollars = equity * (profile.riskPct / 100);
+  const px = price > 0 ? price : 100;
+  return { qty: Math.max(1, Math.floor(dollars / px)), notional: +dollars.toFixed(2) };
+}
+
+function _openPaper(slot, sig, equity){
+  const ledger = _ledgers[slot.id];
+  const p = slot.profile;
   const openCount = ledger.filter(t => t.status === 'open').length;
-  if (openCount >= profile.maxOpen) return null;          // respect max open
-  if (ledger.some(t => t.symbol === sig.symbol && t.status === 'open')) return null; // no dup
+  if (openCount >= p.maxOpen) return null;
+  if (ledger.some(t => t.symbol === sig.symbol && t.status === 'open')) return null;
+
+  const price = Number(sig.price) > 0 ? Number(sig.price) : 100;
+  const sized = _sizePosition(p, price, equity);
+
   const trade = {
     id: ++_tradeSeq,
-    account: accId,
-    strategy: profile.label,
+    slot: slot.id,
+    strategy: slot.strategy,
+    strategy_label: p.label,
     symbol: sig.symbol,
-    side: sig.direction === 'short' ? 'short' : 'long',
-    qty: profile.qty,
+    side: sig.direction === 'short' ? 'short' : (sig.direction === 'neutral' ? 'neutral' : 'long'),
+    qty: sized.qty,
+    notional: sized.notional,
+    entry_price: price,
     entry_score: sig.score,
+    risk_pct: p.riskPct,
+    equity_basis: equity,
+    equity_source: _equityCache.source,
     status: 'open',
     opened_at: new Date().toISOString(),
     paper: true,        // hard invariant
@@ -117,19 +158,22 @@ function _openPaper(accId, profile, sig){
   return trade;
 }
 
-// One engine tick: score once, apply all three strategies. Honors pause state.
+// One engine tick: score once, apply every enabled+configured strategy slot.
 function tick(opts = {}){
   const paused = runState.isPaused();
   const ranked = scoring.rankSignals({ trend: opts.trend || 'long' });
-  const accounts = _accounts();
+  const equity = _equity();
+  const slots = _slots();
   const actions = [];
+  const skipped = [];
 
-  for (const acc of accounts){
-    if (!acc.configured) continue;                 // skip accounts with no keys
-    const picks = _selectFor(acc.profile, ranked);
+  for (const slot of slots){
+    if (!slot.enabled){ skipped.push({ slot: slot.id, reason: 'disabled' }); continue; }
+    if (!slot.configured){ skipped.push({ slot: slot.id, reason: 'no_keys' }); continue; }
+    const picks = _selectFor(slot.profile, ranked);
     for (const sig of picks){
-      if (paused){ continue; }                     // PAUSED: read+score only, no new trades
-      const t = _openPaper(acc.id, acc.profile, sig);
+      if (paused) continue;                       // PAUSED: read + score only
+      const t = _openPaper(slot, sig, equity);
       if (t) actions.push(t);
     }
   }
@@ -137,49 +181,83 @@ function tick(opts = {}){
   return {
     paused,
     ranked_count: ranked.length,
+    slots_active: slots.filter(s => s.enabled && s.configured).length,
+    slots_total: slots.length,
+    equity_basis: equity,
+    equity_source: _equityCache.source,
     opened_now: actions.length,
     actions,
+    skipped,
+    paper: true,
+    executed: false,
     note: paused
-      ? 'PAUSED — still reading data and scoring; no new paper trades opened.'
-      : 'RUNNING — opened any qualifying new paper trades (simulation only).'
+      ? 'PAUSED — reading data and scoring; no new paper trades opened.'
+      : 'RUNNING — opened qualifying new paper trades (simulation only, no real orders).'
   };
 }
 
 // Full status snapshot for the dashboard.
 function status(){
-  const accounts = _accounts();
+  const slots = _slots();
   const rs = runState.read();
+  const equity = _equity();
   return {
+    system: 'BROKER_AI_OS_V7',
     paused: rs.paused,
     run_state: rs,
-    accounts: accounts.map(a => {
-      const ledger = _ledgers[a.id];
+    equity_basis: equity,
+    equity_source: _equityCache.source,
+    equity_account_status: _equityCache.account_status,
+    equity_error: _equityCache.error,
+    strategies_available: catalog.NAMES.length,
+    slots_total: slots.length,
+    slots_active: slots.filter(s => s.enabled && s.configured).length,
+    accounts: slots.map(s => {
+      const ledger = _ledgers[s.id];
       const open = ledger.filter(t => t.status === 'open');
+      const p = s.profile;
       return {
-        account: a.id,
-        strategy: a.strategy,
-        strategy_label: a.profile.label,
-        configured: a.configured,
-        threshold: a.profile.threshold,
-        max_open: a.profile.maxOpen,
-        allow_sides: a.profile.allowSides,
+        account: s.id,
+        slot: s.id,
+        strategy: s.strategy,
+        strategy_label: p.label,
+        tier: p.tier,
+        configured: s.configured,
+        enabled: s.enabled,
+        key_source: s.key_source,
+        threshold: p.threshold,
+        max_open: p.maxOpen,
+        allow_sides: p.allowSides,
+        risk_pct: p.riskPct,
+        max_hold_days: p.maxHoldDays,
+        sources: p.sources,
         open_trades: open.length,
         total_trades: ledger.length,
-        note: a.profile.note,
+        deployed_notional: +open.reduce((a,t)=>a+(t.notional||0),0).toFixed(2),
+        note: p.note,
         paper: true,
         executed: false
       };
     }),
-    strategies: STRATEGIES,
-    note: 'Three paper accounts, three strategies, one system. Paper-only; no execution.'
+    strategies: catalog.STRATEGIES,
+    note: `${slots.length} strategy slots, ${catalog.NAMES.length} strategies available. Paper-only; no execution.`
   };
 }
 
-// Per-account trade ledger (paper only).
-function trades(accId){
-  const id = String(accId || '').toUpperCase();
-  if (!_ledgers[id]) return { ok:false, error:'unknown_account', account:accId };
-  return { ok:true, account:id, trades:_ledgers[id], paper:true, executed:false };
+function trades(slotId){
+  const id = String(slotId || '').toUpperCase();
+  if (!_ledgers[id]) return { ok:false, error:'unknown_slot', slot:slotId };
+  return { ok:true, slot:id, account:id, trades:_ledgers[id], paper:true, executed:false };
 }
 
-module.exports = { tick, status, trades, STRATEGIES, _accounts };
+function allTrades(){
+  const all = [];
+  for (const id of SLOT_IDS) all.push(..._ledgers[id]);
+  return { ok:true, count: all.length, trades: all.sort((a,b)=>b.id-a.id), paper:true, executed:false };
+}
+
+module.exports = {
+  tick, status, trades, allTrades, refreshEquity,
+  STRATEGIES: catalog.STRATEGIES, strategies: catalog.list,
+  SLOT_IDS, _slots
+};

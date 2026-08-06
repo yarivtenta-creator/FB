@@ -17,8 +17,20 @@ router.get('/status', (req, res) => res.json(engine.status()));
 // Run one engine tick now (score + open qualifying paper trades unless paused).
 router.post('/tick', (req, res) => res.json(engine.tick(req.body || {})));
 
-// Per-account paper ledger.
+// Per-slot paper ledger.
 router.get('/trades/:account', (req, res) => res.json(engine.trades(req.params.account)));
+
+// All strategies in the catalog.
+router.get('/strategies', (req, res) => res.json({ count: engine.strategies().length, strategies: engine.strategies() }));
+
+// Every paper trade across all slots.
+router.get('/trades', (req, res) => res.json(engine.allTrades()));
+
+// Force a read-only refresh of real Alpaca paper equity.
+router.post('/equity/refresh', async (req, res) => {
+  try { res.json(await engine.refreshEquity()); }
+  catch (e) { res.status(500).json({ ok:false, error:'equity_refresh_failed', message:e.message }); }
+});
 
 // ── Persistent Pause / Resume (survives shutdown) ───────────────────────────────
 router.get('/run-state', (req, res) => res.json(runState.read()));

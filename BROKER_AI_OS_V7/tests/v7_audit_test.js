@@ -1,9 +1,10 @@
 'use strict';
 const http = require('http');
 
-function get(path) {
+function get(path, token) {
   return new Promise((resolve, reject) => {
-    const req = http.get({ host: 'localhost', port: 6060, path }, (res) => {
+    const headers = token ? { 'x-auth-token': token } : {};
+    const req = http.get({ host: 'localhost', port: 6060, path, headers }, (res) => {
       let d = '';
       res.on('data', c => d += c);
       res.on('end', () => {
@@ -12,7 +13,26 @@ function get(path) {
       });
     });
     req.on('error', reject);
-    req.setTimeout(5000, () => req.destroy(new Error('timeout')));
+    req.setTimeout(10000, () => req.destroy(new Error('timeout')));
+  });
+}
+
+function postJson(path, payload, token) {
+  return new Promise((resolve, reject) => {
+    const body = JSON.stringify(payload || {});
+    const headers = { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) };
+    if (token) headers['x-auth-token'] = token;
+    const req = http.request({ host: 'localhost', port: 6060, path, method: 'POST', headers }, (res) => {
+      let d = '';
+      res.on('data', c => d += c);
+      res.on('end', () => {
+        try { resolve({ status: res.statusCode, body: JSON.parse(d) }); }
+        catch (e) { resolve({ status: res.statusCode, body: d }); }
+      });
+    });
+    req.on('error', reject);
+    req.write(body);
+    req.end();
   });
 }
 
@@ -36,12 +56,40 @@ async function runTests() {
     assert('GET /api/alpaca/status returns system name', alpStatus.body && alpStatus.body.system === 'BROKER_AI_OS_V7', JSON.stringify(alpStatus.body));
     assert('GET /api/alpaca/status shows read_only=true', alpStatus.body && alpStatus.body.read_only === true, JSON.stringify(alpStatus.body));
 
-    if (!process.env.ALPACA_API_KEY) {
-      const alpTest = await get('/api/alpaca/test');
+    // Ask the SERVER whether it has keys (not this test process's env).
+    const serverHasKeys = !!(alpStatus.body && alpStatus.body.configured);
+    const alpTest = await get('/api/alpaca/test');
+    if (!serverHasKeys) {
       assert('GET /api/alpaca/test without keys returns 503', alpTest.status === 503, `got ${alpTest.status}`);
-      assert('GET /api/alpaca/test returns KEYS_REQUIRED', alpTest.body && alpTest.body.code === 'KEYS_REQUIRED', JSON.stringify(alpTest.body));
+      assert('GET /api/alpaca/test reports MOCK_NO_KEYS', alpTest.body && alpTest.body.alpaca_state === 'MOCK_NO_KEYS', JSON.stringify(alpTest.body));
+      assert('MOCK_NO_KEYS performs no network call', alpTest.body && alpTest.body.network_call_performed === false, JSON.stringify(alpTest.body));
     } else {
-      console.log('SKIP: KEYS_REQUIRED test (keys are set)');
+      const st = alpTest.body && alpTest.body.alpaca_state;
+      assert('With keys, state is REAL_* (never mock)',
+        st === 'REAL_READ_ONLY_CONNECTED' || st === 'REAL_READ_ONLY_FAILED', `got ${st}`);
+      assert('With keys, a real network call was performed',
+        alpTest.body && alpTest.body.network_call_performed === true, JSON.stringify(alpTest.body && alpTest.body.network_call_performed));
+      assert('With keys, API key is masked in response',
+        !!(alpTest.body && alpTest.body.masked_key && alpTest.body.masked_key.includes('*')), JSON.stringify(alpTest.body && alpTest.body.masked_key));
+    }
+
+    // Strategy engine — catalog must expose many strategies, all paper-only.
+    const login = await postJson('/api/auth/login', { username:'admin', password:'ChangeMe-Admin-2026' });
+    const token = login.body && login.body.token;
+    assert('Login as admin succeeds', !!token, JSON.stringify(login.body));
+    if (token) {
+      const strat = await get('/api/strategy/strategies', token);
+      assert('Strategy catalog returns 200', strat.status === 200, `got ${strat.status}`);
+      assert('Strategy catalog has 10+ strategies', strat.body && strat.body.count >= 10, `count=${strat.body && strat.body.count}`);
+
+      const stat = await get('/api/strategy/status', token);
+      assert('Strategy status returns 200', stat.status === 200, `got ${stat.status}`);
+      assert('Strategy engine has 10+ slots', stat.body && stat.body.slots_total >= 10, `slots=${stat.body && stat.body.slots_total}`);
+
+      const tr = await get('/api/strategy/trades', token);
+      assert('Trades endpoint returns 200', tr.status === 200, `got ${tr.status}`);
+      const bad = (tr.body && tr.body.trades || []).filter(t => t.paper !== true || t.executed !== false);
+      assert('Every trade is paper:true / executed:false', bad.length === 0, `${bad.length} violations`);
     }
 
     const orders = await get('/api/alpaca/orders');

@@ -106,20 +106,36 @@ async function loadStrategy(){
   document.getElementById('runnote').textContent = paused
     ? 'Reading data + scoring; no new paper trades. Safe to close the PC.'
     : 'Opening qualifying paper trades (simulation only).';
-  let html = '<table style="width:100%;border-collapse:collapse"><tr style="text-align:left">'
-    + '<th>Acct</th><th>Strategy</th><th>Keys</th><th>Min score</th><th>Sides</th><th>Open</th><th>Total</th></tr>';
+  const eqSrc = d.equity_source==='alpaca_paper'
+    ? '<b style="color:#2a6">REAL Alpaca paper equity</b>'
+    : '<span style="color:#c80">default (no keys / not reachable)</span>';
+  let html = '<div class="muted" style="margin-bottom:6px">'
+    + '<b>'+d.slots_active+'/'+d.slots_total+'</b> slots active · '
+    + '<b>'+d.strategies_available+'</b> strategies · '
+    + 'sizing equity: <b>$'+Number(d.equity_basis).toLocaleString()+'</b> · '+eqSrc
+    + (d.equity_error?(' · <span style="color:#a33">'+d.equity_error+'</span>'):'')
+    + '</div>';
+  html += '<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="text-align:left">'
+    + '<th>Slot</th><th>Strategy</th><th>Tier</th><th>Keys</th><th>Min score</th><th>Risk%</th>'
+    + '<th>Sides</th><th>Max</th><th>Open</th><th>Total</th><th>Deployed</th></tr>';
   for (const a of d.accounts){
-    html += '<tr>'
-      + '<td>'+a.account+'</td>'
+    const tierColor = a.tier==='low-risk'?'#2a6':a.tier==='high-risk'?'#a33':'#c80';
+    html += '<tr'+(a.enabled?'':' style="opacity:.4"')+'>'
+      + '<td><b>'+a.slot+'</b></td>'
       + '<td>'+a.strategy_label+'</td>'
+      + '<td style="color:'+tierColor+'">'+a.tier+'</td>'
       + '<td>'+(a.configured?'<b style="color:#2a6">configured</b>':'<span style="color:#a33">no keys</span>')+'</td>'
       + '<td>'+a.threshold+'</td>'
-      + '<td>'+a.allow_sides.join(', ')+'</td>'
-      + '<td>'+a.open_trades+'</td>'
+      + '<td>'+a.risk_pct+'%</td>'
+      + '<td>'+a.allow_sides.join(',')+'</td>'
+      + '<td>'+a.max_open+'</td>'
+      + '<td><b>'+a.open_trades+'</b></td>'
       + '<td>'+a.total_trades+'</td>'
+      + '<td>$'+Number(a.deployed_notional||0).toLocaleString()+'</td>'
       + '</tr>';
   }
   html += '</table>';
+  html += '<div class="muted" style="margin-top:6px;font-size:10px">All positions are paper:true / executed:false. No real orders are ever placed.</div>';
   document.getElementById('strategy').innerHTML = html;
 }
 async function toggleRun(){

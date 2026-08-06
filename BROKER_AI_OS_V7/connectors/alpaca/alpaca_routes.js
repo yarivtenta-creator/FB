@@ -21,11 +21,18 @@ router.get('/status', async (req, res) => {
   }
 });
 
+// Missing credentials → 503 (service not configured). Real call that failed → 502.
+function _statusFor(result) {
+  if (result.ok) return 200;
+  const missing = result.code === 'KEYS_REQUIRED' || result.alpaca_state === 'MOCK_NO_KEYS';
+  return missing ? 503 : 502;
+}
+
 // GET /api/alpaca/test — connection test (keys required for real test)
 router.get('/test', async (req, res) => {
   try {
     const result = await provider.testConnection();
-    res.status(result.ok ? 200 : (result.code === 'KEYS_REQUIRED' ? 503 : 502)).json(result);
+    res.status(_statusFor(result)).json(result);
   } catch (e) {
     res.status(500).json({ ok: false, error: 'test_failed', message: e.message });
   }
@@ -35,7 +42,7 @@ router.get('/test', async (req, res) => {
 router.get('/account', async (req, res) => {
   try {
     const result = await provider.getAccount();
-    res.status(result.ok ? 200 : (result.code === 'KEYS_REQUIRED' ? 503 : 502)).json(result);
+    res.status(_statusFor(result)).json(result);
   } catch (e) {
     res.status(500).json({ ok: false, error: 'account_read_failed', message: e.message });
   }
@@ -47,7 +54,7 @@ router.get('/market/:symbol', async (req, res) => {
   if (!symbol) return res.status(400).json({ ok: false, error: 'invalid_symbol' });
   try {
     const result = await provider.getMarketData(symbol);
-    res.status(result.ok ? 200 : (result.code === 'KEYS_REQUIRED' ? 503 : 502)).json(result);
+    res.status(_statusFor(result)).json(result);
   } catch (e) {
     res.status(500).json({ ok: false, error: 'market_data_failed', message: e.message });
   }
