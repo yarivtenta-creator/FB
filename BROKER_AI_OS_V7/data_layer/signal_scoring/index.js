@@ -6,7 +6,9 @@
 const hub = require('../data_hub_v2');
 
 // Source quality weights (mock, tunable).
-const SOURCE_QUALITY = { '13f_mock':0.9, 'congress_mock':0.7, 'insider_mock':0.6, default:0.5 };
+// 'research' = output of the /trade and /crypto analysis skills. Weighted high
+// because those runs are multi-agent and evidence-backed, but below 13F filings.
+const SOURCE_QUALITY = { '13f_mock':0.9, 'research':0.85, 'congress_mock':0.7, 'insider_mock':0.6, default:0.5 };
 
 function scoreOne(sig, ctx){
   const conf = typeof sig.confidence === 'number' ? sig.confidence : 0.5;

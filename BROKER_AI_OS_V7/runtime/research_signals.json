@@ -1,0 +1,50 @@
+[
+  {
+    "id": "msh2rcyb4m",
+    "provider": "research",
+    "symbol": "NVDA",
+    "direction": "long",
+    "score": 0.88,
+    "confidence": 0.88,
+    "skill": "trade-analyze",
+    "rationale": "Composite Trade Score 88/100",
+    "price": 180,
+    "horizon_days": null,
+    "tags": [],
+    "ingested_at": "2026-08-06T05:27:56.245Z",
+    "paper": true,
+    "executed": false
+  },
+  {
+    "id": "msh2rcye4n",
+    "provider": "research",
+    "symbol": "AMD",
+    "direction": "long",
+    "score": 0.74,
+    "confidence": 0.74,
+    "skill": "trade-analyze",
+    "rationale": "",
+    "price": 142,
+    "horizon_days": null,
+    "tags": [],
+    "ingested_at": "2026-08-06T05:27:56.246Z",
+    "paper": true,
+    "executed": false
+  },
+  {
+    "id": "msh2rcye4n",
+    "provider": "research",
+    "symbol": "INTC",
+    "direction": "short",
+    "score": 0.68,
+    "confidence": 0.68,
+    "skill": "trade-thesis",
+    "rationale": "",
+    "price": 34,
+    "horizon_days": null,
+    "tags": [],
+    "ingested_at": "2026-08-06T05:27:56.246Z",
+    "paper": true,
+    "executed": false
+  }
+]

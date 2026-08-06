@@ -17,6 +17,7 @@ const calendar = require('../adapters/calendar');
 const congress = require('../adapters/congress');
 const insider = require('../adapters/insider');
 const f13 = require('../adapters/13f');
+const research = require('../adapters/research');
 
 // In-memory adapter registry (extensible at runtime).
 const adapters = new Map();
@@ -66,7 +67,8 @@ function getQuotes(){
 function getNews(){ return normalizeData(news.getNews()).records; }
 function getCalendar(){ return normalizeData(calendar.getCalendar()).records; }
 function getSignals(){
-  const s = [...congress.getSignals(), ...insider.getSignals(), ...f13.getSignals()];
+  // Research signals (from /trade and /crypto skills) rank alongside the rest.
+  const s = [...congress.getSignals(), ...insider.getSignals(), ...f13.getSignals(), ...research.getSignals()];
   return normalizeData(s).records;
 }
 

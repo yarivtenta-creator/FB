@@ -11,6 +11,7 @@ const registry = require('./provider_registry');
 const scoring = require('./signal_scoring');
 const paper = require('./paper_trading');
 const perf = require('./performance_tracker');
+const research = require('./adapters/research');
 
 // Data Hub
 router.get('/hub/health', (req,res)=> res.json(hub.health()));
@@ -33,6 +34,20 @@ router.get('/paper/trades', (req,res)=> res.json(paper.listTrades()));
 router.get('/paper/stats', (req,res)=> res.json(paper.stats()));
 router.post('/paper/open', (req,res)=> res.json(paper.openTrade(req.body||{})));
 router.post('/paper/close', (req,res)=> res.json(paper.closeTrade((req.body||{}).id)));
+
+// Research signals — ingested from the /trade and /crypto skills.
+// Ingest NEVER places an order; these feed paper simulation and statistics only.
+router.get('/research', (req,res)=> res.json({ count: research.list().length, signals: research.list() }));
+router.get('/research/stats', (req,res)=> res.json(research.stats()));
+router.post('/research', (req,res)=>{
+  const body = req.body || {};
+  const r = Array.isArray(body) ? research.ingestMany(body)
+          : Array.isArray(body.signals) ? research.ingestMany(body.signals)
+          : research.ingest(body);
+  res.status(r.ok ? 200 : 400).json(r);
+});
+router.delete('/research/:id', (req,res)=> res.json(research.remove(req.params.id)));
+router.post('/research/clear', (req,res)=> res.json(research.clear()));
 
 // Performance
 router.get('/performance', (req,res)=> res.json(perf.report()));

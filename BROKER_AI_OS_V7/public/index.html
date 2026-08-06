@@ -69,6 +69,9 @@ main{padding:0 24px 28px;display:grid;gap:16px;grid-template-columns:repeat(12,1
   </section>
   <section class="card c6"><h2>3 · Data Hub <span class="muted">(source of truth)</span></h2><div id="hub" class="muted">loading…</div></section>
 
+  <section class="card c12"><h2>6 · Research Signals <span class="muted">(from /trade and /crypto skills — feeds ranking, trades and statistics)</span></h2>
+    <div id="research" class="muted">loading…</div></section>
+
   <section class="card c6"><h2>7 · Paper Signal Board</h2><div id="signals" class="muted">loading…</div></section>
   <section class="card c6"><h2>8 · Ranked Signals (from hub)</h2><div id="ranked" class="muted">loading…</div></section>
 
@@ -127,6 +130,32 @@ async function probeKeyless(){
      + esc(ok?('OK '+JSON.stringify(r.sample||{}).slice(0,70)):(r.error||'').slice(0,80))+'</td></tr>';
   }
   el.innerHTML=h+'</table>';
+}
+async function loadResearch(){
+  const st=await get('/api/data/research/stats'); const d=await get('/api/data/research');
+  if(!st||!d) return;
+  let h='<div class="kpi" style="margin-bottom:10px">'
+   + '<div><b style="color:var(--accent)">'+st.total+'</b><span>signals</span></div>'
+   + '<div><b>'+st.symbols_covered+'</b><span>symbols</span></div>'
+   + '<div><b>'+(st.avg_score!=null?st.avg_score:'—')+'</b><span>avg score</span></div>'
+   + '<div><b style="color:var(--green)">'+(st.top_score!=null?st.top_score:'—')+'</b><span>top score</span></div></div>';
+  if(!st.total){
+    h+='<div class="muted">No research ingested yet. Run <code>/trade analyze NVDA</code> in Claude Code, then POST the result to <code>/api/data/research</code>.</div>';
+  } else {
+    h+='<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="text-align:left">'
+     + '<th>Symbol</th><th>Dir</th><th>Score</th><th>Skill</th><th>Rationale</th><th>Ingested</th></tr>';
+    for(const r of d.signals.slice().sort((a,b)=>b.score-a.score)){
+      const c=r.direction==='long'?'var(--green)':r.direction==='short'?'var(--red)':'var(--yellow)';
+      h+='<tr><td><b>'+esc(r.symbol)+'</b></td>'
+       + '<td style="color:'+c+'">'+esc(r.direction)+'</td><td>'+r.score+'</td>'
+       + '<td class="muted">'+esc(r.skill)+'</td>'
+       + '<td class="muted" style="font-size:10px">'+esc((r.rationale||'').slice(0,60))+'</td>'
+       + '<td class="muted" style="font-size:10px">'+esc(r.ingested_at.replace('T',' ').slice(0,16))+'</td></tr>';
+    }
+    h+='</table>';
+  }
+  h+='<div class="muted" style="margin-top:6px;font-size:10px">Research signals are scored at 0.85 source quality and rank alongside 13F/insider/congress. They drive PAPER trades only — ingesting never places an order.</div>';
+  document.getElementById('research').innerHTML=h;
 }
 async function loadKeys(){
   const d = await get('/api/keys'); if(!d) return;
@@ -205,7 +234,7 @@ async function strategyTick(){ await post('/api/strategy/tick'); loadStrategy();
 async function init(){
   const who=await get('/api/auth/whoami');
   document.getElementById('user').innerHTML = who&&who.ok ? `<b>${esc(who.username)}</b> (${esc(who.role)})` : 'not signed in';
-  loadStrategy(); loadHealth(); loadProviders(); loadKeys(); loadHub(); loadSignals(); loadRanked(); loadGov(); loadPaper(); loadT4(); loadN8n();
+  loadStrategy(); loadHealth(); loadProviders(); loadKeys(); loadResearch(); loadHub(); loadSignals(); loadRanked(); loadGov(); loadPaper(); loadT4(); loadN8n();
 }
 async function loadHealth(){ const d=await get('/api/health/full'); if(!d)return; const c=d.checks||{};
   document.getElementById('health').innerHTML=Object.keys(c).map(k=>`<div class="row"><span>${cap(k)}</span><span class="s-${c[k]}"><span class="dot"></span>${cap(c[k])}</span></div>`).join('');
