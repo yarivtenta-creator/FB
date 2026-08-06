@@ -52,7 +52,7 @@ main{padding:0 24px 28px;display:grid;gap:16px;grid-template-columns:repeat(12,1
     <div class="muted" style="margin-bottom:8px">Connect providers manually. Links open the provider site — keys are entered THERE, never here. Test is read-only.</div>
     <div id="providers" class="muted">loading…</div></section>
   <section class="card c12" style="border:2px solid #2a6">
-    <h2>0 · Strategy Engine <span class="muted">(3 accounts · paper only)</span></h2>
+    <h2>0 · Strategy Engine <span class="muted">(12 strategies · paper only · no real orders)</span></h2>
     <div style="display:flex;align-items:center;gap:14px;margin:8px 0 14px">
       <span id="runpill" style="padding:6px 14px;border-radius:999px;font-weight:700;background:#444;color:#fff">…</span>
       <button id="runbtn" onclick="toggleRun()" style="font-size:16px;padding:10px 22px;font-weight:700">Loading…</button>
@@ -90,6 +90,13 @@ const T = sessionStorage.getItem('auth_token');
 if(!T){ location.href='/login'; }
 const H = { 'x-auth-token': T, 'Content-Type':'application/json' };
 async function get(p){ const r=await fetch(p,{headers:H}); if(r.status===401){location.href='/login';return null;} return r.ok?r.json():null; }
+// Like get(), but keeps the JSON body on 4xx/5xx — diagnostic endpoints report
+// failures *in* the body (e.g. /api/alpaca/test returns 502/503 with details).
+async function getDiag(p){
+  const r=await fetch(p,{headers:H});
+  if(r.status===401){location.href='/login';return null;}
+  try { return await r.json(); } catch { return null; }
+}
 async function post(p){ const r=await fetch(p,{method:'POST',headers:H}); return r.ok?r.json():null; }
 function cap(s){return String(s).replace(/_/g,' ');}
 function esc(s){return String(s==null?'':s).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));}
@@ -160,7 +167,7 @@ async function loadProviders(){ const d=await get('/api/data/providers'); if(!d)
 async function testProvider(id){ const el=document.getElementById('ptest-'+id); el.textContent='testing (read-only)…';
   // Alpaca uses its own unauthenticated endpoint — always performs real probe when keys exist
   const url = id==='alpaca' ? '/api/alpaca/test' : '/api/data/providers/'+id+'/test';
-  const r = id==='alpaca' ? await get(url) : await post(url);
+  const r = id==='alpaca' ? await getDiag(url) : await post(url);
   if(!r){ el.textContent='test failed'; return; }
   if(id==='alpaca'){
     const state=r.alpaca_state||'UNKNOWN';
