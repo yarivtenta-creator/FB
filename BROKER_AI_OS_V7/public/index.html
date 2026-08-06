@@ -51,6 +51,9 @@ main{padding:0 24px 28px;display:grid;gap:16px;grid-template-columns:repeat(12,1
   <section class="card c6"><h2>2 · Provider Setup Center</h2>
     <div class="muted" style="margin-bottom:8px">Connect providers manually. Links open the provider site — keys are entered THERE, never here. Test is read-only.</div>
     <div id="providers" class="muted">loading…</div></section>
+
+  <section class="card c12"><h2>2b · Key Coverage <span class="muted">(22 providers · read-only research · none place orders)</span></h2>
+    <div id="keys" class="muted">loading…</div></section>
   <section class="card c12" style="border:2px solid #2a6">
     <h2>0 · Strategy Engine <span class="muted">(12 strategies · paper only · no real orders)</span></h2>
     <div style="display:flex;align-items:center;gap:14px;margin:8px 0 14px">
@@ -102,6 +105,30 @@ function cap(s){return String(s).replace(/_/g,' ');}
 function esc(s){return String(s==null?'':s).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));}
 
 
+async function loadKeys(){
+  const d = await get('/api/keys'); if(!d) return;
+  const pct = Math.round(d.usable_now / d.total * 100);
+  let html = '<div class="kpi" style="margin-bottom:10px">'
+    + '<div><b style="color:var(--green)">'+d.usable_now+'</b><span>usable now</span></div>'
+    + '<div><b>'+d.total+'</b><span>total</span></div>'
+    + '<div><b style="color:var(--accent)">'+d.keyless+'</b><span>need no key</span></div>'
+    + '<div><b>'+d.configured+'</b><span>keys added</span></div>'
+    + '<div><b style="color:var(--yellow)">'+d.missing+'</b><span>need a key</span></div>'
+    + '<div><b>'+pct+'%</b><span>coverage</span></div></div>';
+  const rows = p => '<tr>'
+    + '<td>'+(p.usable?'<span style="color:var(--green)">✓</span>':'<span style="color:var(--yellow)">○</span>')+'</td>'
+    + '<td>'+esc(p.name)+'</td><td class="muted">'+esc(p.category)+'</td>'
+    + '<td>'+(p.keyless?'<span style="color:var(--accent)">no key needed</span>'
+             :p.configured?'<span style="color:var(--green)">configured</span>'
+             :'<code style="font-size:10px">'+esc(p.env_keys.join(', '))+'</code>')+'</td>'
+    + '<td class="muted" style="font-size:10px">'+esc(p.free_tier||'')+'</td>'
+    + '<td>'+(!p.usable&&p.get_key_url?'<a href="'+esc(p.get_key_url)+'" target="_blank" rel="noopener">Get key</a>':'')+'</td></tr>';
+  const usable = d.providers.filter(p=>p.usable), need = d.providers.filter(p=>!p.usable);
+  html += '<table style="width:100%;border-collapse:collapse;font-size:11px">'
+    + '<tr style="text-align:left"><th></th><th>Provider</th><th>Category</th><th>Key</th><th>Free tier</th><th></th></tr>'
+    + usable.map(rows).join('') + need.map(rows).join('') + '</table>';
+  document.getElementById('keys').innerHTML = html;
+}
 async function loadStrategy(){
   const d = await get('/api/strategy/status'); if(!d) return;
   const paused = d.paused;
@@ -155,7 +182,7 @@ async function strategyTick(){ await post('/api/strategy/tick'); loadStrategy();
 async function init(){
   const who=await get('/api/auth/whoami');
   document.getElementById('user').innerHTML = who&&who.ok ? `<b>${esc(who.username)}</b> (${esc(who.role)})` : 'not signed in';
-  loadStrategy(); loadHealth(); loadProviders(); loadHub(); loadSignals(); loadRanked(); loadGov(); loadPaper(); loadT4(); loadN8n();
+  loadStrategy(); loadHealth(); loadProviders(); loadKeys(); loadHub(); loadSignals(); loadRanked(); loadGov(); loadPaper(); loadT4(); loadN8n();
 }
 async function loadHealth(){ const d=await get('/api/health/full'); if(!d)return; const c=d.checks||{};
   document.getElementById('health').innerHTML=Object.keys(c).map(k=>`<div class="row"><span>${cap(k)}</span><span class="s-${c[k]}"><span class="dot"></span>${cap(c[k])}</span></div>`).join('');
