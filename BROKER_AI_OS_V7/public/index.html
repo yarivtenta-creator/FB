@@ -53,6 +53,9 @@ main{padding:0 24px 28px;display:grid;gap:16px;grid-template-columns:repeat(12,1
     <div id="providers" class="muted">loading…</div></section>
 
   <section class="card c12"><h2>2b · Key Coverage <span class="muted">(22 providers · read-only research · none place orders)</span></h2>
+    <div style="margin-bottom:10px"><button onclick="probeKeyless()">Probe keyless providers (live)</button>
+      <span class="muted" id="probeNote" style="margin-left:10px">Runs real GET requests to the 5 no-key providers.</span></div>
+    <div id="probe" class="muted" style="margin-bottom:12px"></div>
     <div id="keys" class="muted">loading…</div></section>
   <section class="card c12" style="border:2px solid #2a6">
     <h2>0 · Strategy Engine <span class="muted">(12 strategies · paper only · no real orders)</span></h2>
@@ -105,6 +108,26 @@ function cap(s){return String(s).replace(/_/g,' ');}
 function esc(s){return String(s==null?'':s).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));}
 
 
+async function probeKeyless(){
+  const el=document.getElementById('probe');
+  el.innerHTML='<span class="muted">probing (real network calls)…</span>';
+  const d=await getDiag('/api/keyless/probe');
+  if(!d){ el.innerHTML='<span style="color:var(--red)">probe failed</span>'; return; }
+  const col = d.reachable===d.checked?'var(--green)':d.reachable===0?'var(--red)':'var(--yellow)';
+  let h='<div style="margin-bottom:6px"><b style="color:'+col+'">'+d.reachable+'/'+d.checked+' reachable</b>'
+      + ' <span class="muted">· '+esc(d.tested_at.replace('T',' ').slice(0,19))+' UTC</span></div>';
+  h+='<table style="width:100%;border-collapse:collapse;font-size:11px">'
+   + '<tr style="text-align:left"><th></th><th>Provider</th><th>Endpoint</th><th>HTTP</th><th>ms</th><th>Result</th></tr>';
+  for(const r of d.results){
+    const ok=r.reachable;
+    h+='<tr><td>'+(ok?'<span style="color:var(--green)">●</span>':'<span style="color:var(--red)">●</span>')+'</td>'
+     + '<td>'+esc(r.id)+'</td><td class="muted" style="font-size:10px">'+esc(r.endpoint)+'</td>'
+     + '<td>'+(r.status||'—')+'</td><td class="muted">'+(r.ms||'—')+'</td>'
+     + '<td style="font-size:10px;color:'+(ok?'var(--green)':'var(--red)')+'">'
+     + esc(ok?('OK '+JSON.stringify(r.sample||{}).slice(0,70)):(r.error||'').slice(0,80))+'</td></tr>';
+  }
+  el.innerHTML=h+'</table>';
+}
 async function loadKeys(){
   const d = await get('/api/keys'); if(!d) return;
   const pct = Math.round(d.usable_now / d.total * 100);

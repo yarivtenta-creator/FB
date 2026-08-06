@@ -55,6 +55,12 @@ app.get('/api/data/providers', (req, res) => {
 // ── Alpaca read-only routes (unauthenticated for diagnostics) ─────────────
 app.use('/api/alpaca', require('./connectors/alpaca/alpaca_routes'));
 
+// ── Live probe of the keyless providers (real GETs, no keys) ──────────────
+app.get('/api/keyless/probe', async (req, res) => {
+  try { res.json(await require('./data_layer/adapters/keyless').probeAll()); }
+  catch (e) { res.status(500).json({ error: 'probe_failed', message: e.message }); }
+});
+
 // ── Key coverage: which providers are usable, which need a key ────────────
 // Reports env var NAMES and presence only. Never a key value.
 app.get('/api/keys', (req, res) => {
