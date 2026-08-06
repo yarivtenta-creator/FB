@@ -10,6 +10,9 @@ node_modules/
 logs/
 *.log
 data_layer/paper_trading/paper_state.json
+# Runtime auth/engine state (churns on every login / tick)
+auth/store/auth_audit.json
+runtime/run_state.json
 
 # OS noise
 .DS_Store
