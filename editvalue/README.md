@@ -7,39 +7,50 @@ Static HTML/CSS/JS. No build step, no dependencies, no framework.
 
 ## The design
 
-**"The Edit Bay."** EditValue's customer is not the couple — it's the professional who shot the
-wedding and wants post off their plate. So the site speaks the language of the edit suite rather
-than the language of bridal.
+**"Aisle"** — a custom Theme Factory theme, specified in full in [`THEME.md`](THEME.md).
 
-One semantic rule runs through the whole page:
+Soft, unhurried and photography-led: a linen invitation rather than a grading suite. EditValue
+sells to videographers, but what it is selling them is craft and taste, so the page leads with
+those and lets the specification follow.
 
-| | meaning | token |
-|---|---|---|
-| **Cool** slate blue | raw, unrendered, waiting | `--cool` `#5B7C99` |
-| **Warm** tungsten amber | graded, rendered, delivered | `--warm` `#F0B357` |
-| **Record red** | the playhead, and nothing else | `--signal` `#FF4436` |
+| role | token | light | dark |
+|---|---|---|---|
+| Bone — the ground | `--ground` | `#F6F3EE` | `#191C17` |
+| Deep olive — the one saturated field | `--olive` / `--offer-bg` | `#4A5340` | `#9FB08C` / `#2F3828` |
+| Antique brass — punctuation | `--brass` | `#B08D57` | `#C9A870` |
+| Umber — text | `--text` | `#2E2A26` | `#EFEBE3` |
 
-The problem section ("most couples wait three to six months") is washed cool and desaturated. From
-the ten-day section onward the page warms up. The colour is carrying the argument, not decorating it.
+Three rules do most of the work:
 
-- **Ground** — `#0C0F13`, a near-black biased blue rather than neutral: the colour of a grading suite.
-- **Type** — Bodoni Moda (high-contrast didone, set large where its hairlines survive) for display,
-  Archivo for body, IBM Plex Mono for timecode and spec data.
-- **Layout** — a fixed left rail that is a working scrubber: a red playhead tracks scroll position
-  against a live timecode readout. Sections are marked with timecode instead of `01 / 02 / 03`,
-  because position in the reel is real information here and a decorative counter isn't.
+- **Air is the material.** Section padding is large and never compressed to fit more in.
+- **Hairlines, not boxes.** Structure is drawn with 1px rules and whitespace — no cards, no
+  shadows, no filled panels except one.
+- **One saturated field.** The risk-free offer is the only full-bleed olive section, so nothing
+  else on the page competes with it.
 
-Both themes are designed. Dark is the default; light is a cool blue-biased paper, not cream. The
-toggle in the header persists to `localStorage`, and the un-stamped "system" state resolves through
+**Type** — Cormorant Garamond at weight 300, set very large (it is delicate, so it is never used
+small), over Jost for body and labels. Cormorant's old-style figures are why the numbers — `2005`,
+`1,000+`, `90–180` — carry the statistics section on their own. Cormorant italic handles the pull
+quote and the two words in the headline that matter.
+
+**Layout** — a strong left margin throughout, with the hero and the offer deliberately centred
+because an invitation is. Section labels are small caps against a hairline rule, the way an order
+of service sets its sections. The ten-day breakdown is a programme list, not a card grid.
+
+Both themes are designed. Light is the default; the dark theme rotates the same four hues rather
+than inverting them, so olive lifts to a sage that survives on a dark ground and brass warms. The
+header toggle persists to `localStorage`, and the un-stamped "system" state resolves through
 `prefers-color-scheme`.
 
 ## Structure
 
 ```
 index.html          all markup (single page, anchor nav)
+THEME.md            the Aisle theme specification
 assets/styles.css   all styling — tokens at the top of the file
-assets/app.js       theme, rail scrubber, hero timeline, reveals, reel, form
-assets/work/        showreel poster frames (film-01…06.jpg)
+assets/app.js       theme, scroll progress, ten-day timeline, reveals, reel, form
+assets/fonts/       Cormorant Garamond + Jost, self-hosted variable woff2
+assets/work/        showreel poster frames (film-01…06.jpg), 4:3
 ```
 
 ## Publishing the showreel
@@ -58,8 +69,8 @@ click-to-play facade — the poster loads on page view, the Vimeo iframe only mo
 six films cost six images instead of six embedded players. While `id` is empty the card links out
 to the Vimeo profile instead of breaking.
 
-Poster frames are 16:9. Replace `assets/work/*.jpg` with real frames from the films whenever
-they're available — the current set is generated placeholder imagery.
+Poster frames are 4:3. Replace `assets/work/*.jpg` with real frames from the films whenever they
+are available; until a poster exists the card draws an editor's slate rather than a broken image.
 
 ## Before this goes live
 
@@ -70,7 +81,7 @@ These need a decision from EditValue; they are marked with `TODO` in the source 
 - **The form does not send anything.** `assets/app.js` validates and confirms locally only. Replace
   the `TODO` in the submit handler with a `fetch` POST to a real intake endpoint (Formspree, a
   serverless function, whatever the host offers) before launch.
-- **The ten-day breakdown** in the hero scrubber and the Day 0–10 track is written as an
+- **The ten-day breakdown** in the timeline control and the Day 0–10 programme is written as an
   illustrative post workflow — assembly, selects, cut, sound, grade, revisions. The ten-day
   delivery, the two free revision rounds and the free social reel are EditValue's own published
   terms; the day-by-day split of the work in between is draft copy and should be confirmed
@@ -78,7 +89,9 @@ These need a decision from EditValue; they are marked with `TODO` in the source 
 - **The pull quote** is EditValue's own testimonial copy with the attribution still unresolved —
   it currently reads "attribution to be confirmed". Name the studio or cut the quote.
 - **Prices** are deliberately absent. The page sells the risk-free first edit instead, which is
-  the stronger offer. Add a pricing section only if there's a public rate card.
+  the stronger offer. Add a pricing section only if there is a public rate card.
+- **Language.** The self-hosted fonts are latin-subset only. Adding a non-latin language means
+  pulling the matching subset files into `assets/fonts/` too.
 
 ## Facts the copy is built on
 
