@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>EditValue — Your wedding films, edited in 10 days</title>
+<meta name="description" content="EditValue is a New York post house that has edited wedding films for 20 years, over 1,000 weddings a year. Send your 4K footage, get a graded highlights film and a free social reel back in 10 days. First edit is risk-free — pay only if it meets your standard." />
+<meta name="theme-color" content="#0C0F13" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="EditValue — Your wedding films, edited in 10 days" />
+<meta property="og:description" content="A New York post house for wedding videographers. 4K in, graded Full HD out, in 10 days. First edit risk-free." />
+<link rel="canonical" href="https://editvalue.net/" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%230C0F13'/><rect x='12' y='16' width='40' height='6' rx='2' fill='%235B7C99'/><rect x='12' y='29' width='26' height='6' rx='2' fill='%23F0B357'/><rect x='12' y='42' width='14' height='6' rx='2' fill='%23F0B357'/><rect x='29' y='11' width='2' height='42' fill='%23FF4436'/></svg>" />
+
+<link rel="preload" href="assets/fonts/bodoni-moda.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="assets/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="assets/styles.css" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "EditValue",
+  "url": "https://editvalue.net/",
+  "description": "Wedding video post-production for videographers and photography studios. Highlights films, teasers and social reels delivered in 10 days.",
+  "areaServed": "Worldwide",
+  "address": { "@type": "PostalAddress", "addressRegion": "NY", "addressCountry": "US" },
+  "foundingDate": "2005",
+  "slogan": "Your wedding films, edited in 10 days."
+}
+</script>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ===================== SCRUBBER RAIL ===================== -->
+<aside class="rail" aria-hidden="true">
+  <div class="rail-tc" id="railTc">00:00:00:00</div>
+  <div class="rail-track">
+    <div class="rail-fill" id="railFill"></div>
+    <div class="rail-head" id="railHead"></div>
+  </div>
+  <div class="rail-end">END</div>
+</aside>
+
+<!-- ===================== HEADER ===================== -->
+<header class="bar" id="bar">
+  <a class="logo" href="#top" aria-label="EditValue — home">
+    <span class="logo-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="logo-word">Edit<em>Value</em></span>
+  </a>
+
+  <nav class="nav" aria-label="Main">
+    <a href="#wait">The wait</a>
+    <a href="#tendays">10 days</a>
+    <a href="#deliver">What you get</a>
+    <a href="#work">Work</a>
+    <a href="#specs">Specs</a>
+  </nav>
+
+  <div class="bar-right">
+    <button class="theme" data-theme-toggle type="button" aria-label="Switch to light theme">
+      <span class="theme-dot" aria-hidden="true"></span><span class="theme-txt">Light</span>
+    </button>
+    <a class="btn btn-warm btn-sm" href="#start">Start a free edit</a>
+    <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+      <span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="drawer" id="drawer" hidden>
+  <nav aria-label="Mobile">
+    <a href="#wait">The wait</a>
+    <a href="#tendays">10 days</a>
+    <a href="#deliver">What you get</a>
+    <a href="#process">How it works</a>
+    <a href="#work">Work</a>
+    <a href="#specs">Specs</a>
+    <a href="#start">Start a free edit</a>
+    <button class="theme theme-drawer" data-theme-toggle type="button" aria-label="Switch to light theme">
+      <span class="theme-dot" aria-hidden="true"></span><span class="theme-txt">Light</span>
+    </button>
+  </nav>
+</div>
+
+<main id="main">
+<span id="top"></span>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero" data-tc="00:00:00:00">
+  <div class="wrap">
+    <p class="eyebrow"><span class="rec" aria-hidden="true"></span>New York · Editing wedding films since 2005</p>
+
+    <h1 class="display">
+      <span class="line"><span>Shoot the wedding.</span></span>
+      <span class="line"><span>We&rsquo;ll have the film back</span></span>
+      <span class="line"><span>in <em>ten days</em>.</span></span>
+    </h1>
+
+    <p class="lede">
+      EditValue is a post house that does one thing. Over a thousand weddings a year come through
+      this room — your 4K rushes go up, a graded highlights film and a cut-down social reel come
+      back. Ten days. Two rounds of revisions, free. And the first edit costs you nothing until
+      you say it&rsquo;s good.
+    </p>
+
+    <div class="hero-cta">
+      <a class="btn btn-warm" href="#start">Send a wedding, free</a>
+      <a class="btn btn-ghost" href="#tendays">See the ten days</a>
+    </div>
+
+    <!-- Interactive scrubber -->
+    <div class="scrub" id="scrub">
+      <div class="scrub-head">
+        <span class="mono label">Delivery timeline</span>
+        <span class="mono tc" id="scrubTc">DAY 00 · 00:00:00:00</span>
+      </div>
+
+      <label class="sr" for="scrubRange">Scrub the ten-day delivery timeline</label>
+      <input class="scrub-range" id="scrubRange" type="range" min="0" max="10" step="1" value="0"
+             aria-describedby="scrubBody" />
+
+      <ol class="scrub-ticks" aria-hidden="true">
+        <li><span>0</span></li><li><span>1</span></li><li><span>2</span></li><li><span>3</span></li>
+        <li><span>4</span></li><li><span>5</span></li><li><span>6</span></li><li><span>7</span></li>
+        <li><span>8</span></li><li><span>9</span></li><li><span>10</span></li>
+      </ol>
+
+      <div class="scrub-body" id="scrubBody" aria-live="polite">
+        <h2 class="scrub-title" id="scrubTitle">Day 0 — Upload</h2>
+        <p class="scrub-text" id="scrubText">Your cards go up as they are. 4K, mixed cameras, mixed frame rates — send it all. With it: your brief and the song you want the highlights cut to.</p>
+      </div>
+      <p class="fineprint">Drag the playhead, or use the arrow keys.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== THE WAIT (cool) ===================== -->
+<section class="sec cool" id="wait" data-tc="00:01:12:04">
+  <div class="wrap">
+    <p class="mono kicker">The problem</p>
+    <h2 class="h2">Most couples wait three to six months to see their own wedding.</h2>
+
+    <div class="two">
+      <p class="body">
+        Not because the edit takes that long. Because it sits in a queue behind next Saturday,
+        and the one after that. Season fills up, the backlog grows, and the film that mattered
+        most to somebody lands in their inbox when the flowers are long gone.
+      </p>
+      <p class="body">
+        Meanwhile you&rsquo;re editing at midnight instead of booking. The couple has stopped
+        posting about the day. The tag that would have brought you the next three enquiries
+        never happens.
+      </p>
+    </div>
+
+    <!-- Comparison bars -->
+    <figure class="compare" aria-label="Typical delivery time compared with EditValue">
+      <figcaption class="sr">Typical wedding film delivery runs 90 to 180 days. EditValue delivers in 10.</figcaption>
+
+      <div class="cmp-row">
+        <div class="cmp-meta">
+          <span class="mono cmp-name">Industry typical</span>
+          <span class="mono cmp-val cool-val">90&ndash;180 days</span>
+        </div>
+        <div class="cmp-track"><div class="cmp-bar cmp-cool" data-w="100"></div></div>
+      </div>
+
+      <div class="cmp-row">
+        <div class="cmp-meta">
+          <span class="mono cmp-name">EditValue</span>
+          <span class="mono cmp-val warm-val">10 days</span>
+        </div>
+        <div class="cmp-track"><div class="cmp-bar cmp-warm" data-w="7.4"></div></div>
+      </div>
+
+      <p class="cmp-note mono">Bars to scale. Ten days against a 135-day midpoint.</p>
+    </figure>
+  </div>
+</section>
+
+<!-- ===================== TEN DAYS (warm) ===================== -->
+<section class="sec warm-sec" id="tendays" data-tc="00:03:48:11">
+  <div class="wrap">
+    <p class="mono kicker">The turnaround</p>
+    <h2 class="h2">Ten days, and we have never missed one.</h2>
+    <p class="body wide">
+      A thousand weddings a year is enough volume that the schedule is a machine, not a promise.
+      Every wedding gets slotted the day it lands. Here is what happens to yours.
+    </p>
+
+    <ol class="track" id="track">
+      <li class="clip" style="--i:0"><span class="clip-day mono">Day 0</span><h3 class="clip-h">Upload</h3><p class="clip-p">Cards go up as shot. Mixed cameras and frame rates are fine.</p></li>
+      <li class="clip" style="--i:1"><span class="clip-day mono">Day 1</span><h3 class="clip-h">Assembly</h3><p class="clip-p">Everything logged. Ceremony and speeches synced to the good audio.</p></li>
+      <li class="clip" style="--i:2"><span class="clip-day mono">Day 2&ndash;3</span><h3 class="clip-h">Selects</h3><p class="clip-p">The moments that actually carry the film get pulled and ordered.</p></li>
+      <li class="clip" style="--i:3"><span class="clip-day mono">Day 4&ndash;5</span><h3 class="clip-h">The cut</h3><p class="clip-p">Highlights built to your song, three to five minutes depending on the track.</p></li>
+      <li class="clip" style="--i:4"><span class="clip-day mono">Day 6</span><h3 class="clip-h">Sound</h3><p class="clip-p">Vows and speeches mixed to sit under the music, not fight it.</p></li>
+      <li class="clip" style="--i:5"><span class="clip-day mono">Day 7</span><h3 class="clip-h">Grade</h3><p class="clip-p">4K source graded, matched across cameras, delivered Full HD.</p></li>
+      <li class="clip" style="--i:6"><span class="clip-day mono">Day 8</span><h3 class="clip-h">First cut</h3><p class="clip-p">It comes to you. You watch it properly and write notes.</p></li>
+      <li class="clip" style="--i:7"><span class="clip-day mono">Day 9</span><h3 class="clip-h">Revisions</h3><p class="clip-p">Two rounds, free. Music, pacing, moments in or out.</p></li>
+      <li class="clip is-end" style="--i:8"><span class="clip-day mono">Day 10</span><h3 class="clip-h">Delivered</h3><p class="clip-p">Highlights film, plus the social reel — free with every delivery.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ===================== WHAT YOU GET ===================== -->
+<section class="sec" id="deliver" data-tc="00:06:20:00">
+  <div class="wrap">
+    <p class="mono kicker">What comes back</p>
+    <h2 class="h2">One upload. Three cuts.</h2>
+
+    <div class="cards">
+      <article class="card">
+        <span class="mono card-tag">Primary</span>
+        <h3 class="card-h">The highlights film</h3>
+        <p class="card-p">Three to five minutes, length set by the song you choose. Graded, sound-mixed, built around the vows and the speeches rather than dropped on top of them.</p>
+        <p class="card-meta mono">3&ndash;5 min · Full HD · graded</p>
+      </article>
+
+      <article class="card card-flag">
+        <span class="mono card-tag">Included, every time</span>
+        <h3 class="card-h">The social reel</h3>
+        <p class="card-p">A short vertical cut-down, delivered alongside the highlights at no extra cost. It exists so the couple posts it and the next couple finds you.</p>
+        <p class="card-meta mono">Free with every highlights delivery</p>
+      </article>
+
+      <article class="card">
+        <span class="mono card-tag">On request</span>
+        <h3 class="card-h">The teaser</h3>
+        <p class="card-p">A short cut for the days right after the wedding, while everyone is still talking about it. Same song rules, same turnaround.</p>
+        <p class="card-meta mono">3&ndash;5 min · Full HD</p>
+      </article>
+    </div>
+
+    <div class="note">
+      <p class="mono note-k">Music</p>
+      <p class="note-b">Pick any song you want the film cut to. If you&rsquo;d rather not chase a licence, choose from our recommended playlist — copyright-free tracks included.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== RISK FREE ===================== -->
+<section class="sec offer" id="offer" data-tc="00:10:41:07">
+  <div class="wrap">
+    <p class="mono kicker">The offer</p>
+    <h2 class="h2 offer-h">Send us one wedding.<br />Pay nothing until you&rsquo;ve seen it.</h2>
+    <p class="body wide">
+      No deposit, no card, no trial-length edit. A complete highlights film, cut the way we&rsquo;d
+      cut it for a paying studio. Watch it. If it isn&rsquo;t up to the standard you put your name
+      on, you owe us nothing and we delete the footage.
+    </p>
+    <div class="offer-cta">
+      <a class="btn btn-warm btn-lg" href="#start">Start the free edit</a>
+      <span class="mono offer-fine">Full highlights edit · No pre-payment · Two free revision rounds</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PROCESS ===================== -->
+<section class="sec" id="process" data-tc="00:08:05:18">
+  <div class="wrap">
+    <p class="mono kicker">Working with us</p>
+    <h2 class="h2">Four steps, and only one of them is yours.</h2>
+
+    <ol class="steps">
+      <li class="step">
+        <span class="step-n mono">Step 1</span>
+        <h3 class="step-h">Send the footage</h3>
+        <p class="step-p">Upload the cards however you already do it. Tell us the song and anything the couple specifically asked for.</p>
+      </li>
+      <li class="step">
+        <span class="step-n mono">Step 2</span>
+        <h3 class="step-h">We cut it</h3>
+        <p class="step-p">You hear from us when there&rsquo;s something to see, not before. No status chasing.</p>
+      </li>
+      <li class="step">
+        <span class="step-n mono">Step 3</span>
+        <h3 class="step-h">You give notes</h3>
+        <p class="step-p">Two full rounds of revisions, included. Pacing, music, moments in or out — say it plainly and it gets done.</p>
+      </li>
+      <li class="step">
+        <span class="step-n mono">Step 4</span>
+        <h3 class="step-h">Deliver it as yours</h3>
+        <p class="step-p">Files land with you, unbranded. It goes to the couple under your studio name. We stay invisible.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ===================== WORK ===================== -->
+<section class="sec" id="work" data-tc="00:14:30:00">
+  <div class="wrap">
+    <p class="mono kicker">Selected work</p>
+    <h2 class="h2">Films we cut.</h2>
+    <p class="body wide">Every one of these was shot by a studio like yours and finished in this room.</p>
+
+    <div class="reel" id="reel">
+      <!-- Cards render from the VIMEO array in assets/app.js -->
+      <noscript><p class="body">Enable JavaScript to load the showreel, or view the films on <a href="https://vimeo.com/user96599547">Vimeo</a>.</p></noscript>
+    </div>
+
+    <p class="reel-more"><a class="btn btn-ghost" href="https://vimeo.com/user96599547" rel="noopener">Everything on Vimeo</a></p>
+  </div>
+</section>
+
+<!-- ===================== NUMBERS ===================== -->
+<section class="sec figures" data-tc="00:16:52:09">
+  <div class="wrap">
+    <dl class="figs">
+      <div class="fig"><dt class="fig-k mono">Editing weddings since</dt><dd class="fig-v">2005</dd></div>
+      <div class="fig"><dt class="fig-k mono">Weddings a year</dt><dd class="fig-v">1,000+</dd></div>
+      <div class="fig"><dt class="fig-k mono">Turnaround</dt><dd class="fig-v">10 days</dd></div>
+      <div class="fig"><dt class="fig-k mono">Deadlines missed</dt><dd class="fig-v">0</dd></div>
+    </dl>
+    <blockquote class="quote">
+      <p>&ldquo;Communication is seamless and they have never missed a deadline. The team&rsquo;s editing skill is matched by how well they understand what this industry actually demands.&rdquo;</p>
+      <footer class="mono quote-src">— Client studio · attribution to be confirmed</footer>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ===================== SPECS ===================== -->
+<section class="sec" id="specs" data-tc="00:12:16:22">
+  <div class="wrap">
+    <p class="mono kicker">The details</p>
+    <h2 class="h2">Everything you&rsquo;d ask on the call.</h2>
+
+    <div class="table-scroll">
+      <table class="specs">
+        <caption class="sr">EditValue delivery specifications</caption>
+        <tbody>
+          <tr><th scope="row">Footage in</th><td>4K accepted. Mixed cameras and frame rates are fine.</td></tr>
+          <tr><th scope="row">Delivery out</th><td>Full HD, graded and sound-mixed.</td></tr>
+          <tr><th scope="row">Turnaround</th><td class="warm-val">10 days from upload</td></tr>
+          <tr><th scope="row">Revisions</th><td>Two rounds, free. Requested after the first cut lands.</td></tr>
+          <tr><th scope="row">Highlights length</th><td>3&ndash;5 minutes, set by the song you choose.</td></tr>
+          <tr><th scope="row">Music</th><td>Any song you like, or a track from our recommended playlist — copyright-free options included.</td></tr>
+          <tr><th scope="row">Social reel</th><td>Included free with every highlights delivery.</td></tr>
+          <tr><th scope="row">File retention</th><td>Final renders held on our servers for 3 months.</td></tr>
+          <tr><th scope="row">Project files</th><td>Not included. Premiere project files are not part of delivery.</td></tr>
+          <tr><th scope="row">First edit</th><td class="warm-val">Risk-free — pay only if it meets your standard</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== START ===================== -->
+<section class="sec start" id="start" data-tc="00:18:00:00">
+  <div class="wrap">
+    <p class="mono kicker">Start here</p>
+    <h2 class="h2">Send one wedding. See what comes back.</h2>
+    <p class="body wide">Tell us what you shot and we&rsquo;ll come back with upload details the same working day.</p>
+
+    <form class="form" id="form" novalidate>
+      <div class="field">
+        <label for="f-name">Your name</label>
+        <input id="f-name" name="name" type="text" autocomplete="name" required />
+        <p class="err" id="e-name" hidden>Please tell us your name.</p>
+      </div>
+
+      <div class="field">
+        <label for="f-studio">Studio</label>
+        <input id="f-studio" name="studio" type="text" autocomplete="organization" />
+      </div>
+
+      <div class="field">
+        <label for="f-email">Email</label>
+        <input id="f-email" name="email" type="email" autocomplete="email" required />
+        <p class="err" id="e-email" hidden>That email doesn&rsquo;t look right — check it and try again.</p>
+      </div>
+
+      <div class="field">
+        <label for="f-vol">Weddings a year</label>
+        <select id="f-vol" name="volume">
+          <option value="">Select</option>
+          <option>1&ndash;10</option>
+          <option>11&ndash;25</option>
+          <option>26&ndash;50</option>
+          <option>50+</option>
+        </select>
+      </div>
+
+      <div class="field field-wide">
+        <label for="f-msg">What did you shoot?</label>
+        <textarea id="f-msg" name="message" rows="4" placeholder="Cameras, roughly how many hours of footage, the song you have in mind, anything the couple asked for."></textarea>
+      </div>
+
+      <div class="form-foot">
+        <button class="btn btn-warm btn-lg" type="submit">Send it over</button>
+        <p class="mono form-fine">No payment details. Nothing due until you&rsquo;ve watched the edit.</p>
+      </div>
+
+      <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div class="foot-brand">
+      <span class="logo-word foot-word">Edit<em>Value</em></span>
+      <p class="foot-line">Wedding post-production. New York, since 2005.</p>
+    </div>
+    <nav class="foot-nav" aria-label="Footer">
+      <a href="#tendays">10 days</a>
+      <a href="#deliver">What you get</a>
+      <a href="#specs">Specs</a>
+      <a href="#start">Start a free edit</a>
+      <!-- TODO: confirm the real contact address before launch -->
+      <a href="https://vimeo.com/user96599547" rel="noopener">Vimeo</a>
+    </nav>
+    <p class="foot-legal mono">&copy; <span id="yr">2026</span> EditValue</p>
+  </div>
+</footer>
+
+<script src="assets/app.js" defer></script>
+</body>
+</html>
