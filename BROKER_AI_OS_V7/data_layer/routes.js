@@ -52,6 +52,20 @@ router.post('/research/clear', (req,res)=> res.json(research.clear()));
 // Performance
 router.get('/performance', (req,res)=> res.json(perf.report()));
 
+// ── Real market signals (momentum/trend from live Alpaca bars) ─────────────
+const market = require('./adapters/market_signals');
+router.get('/market-signals', (req,res)=> res.json({
+  ...market.status(), signals: market.getSignals()
+}));
+router.post('/market-signals/refresh', async (req,res)=>{
+  const r = await market.refresh();
+  res.status(r.ok ? 200 : 502).json(r);
+});
+router.post('/market-signals/clear', (req,res)=> res.json(market.clear()));
+
+// What the hub threw away and why — rejects used to vanish without a trace.
+router.get('/rejects', (req,res)=> res.json(hub.rejects()));
+
 // Merged (Agent 3): governance → paper bridge (candidates / simulate / bridge stats).
 require('./paper_bridge_routes.stub')(router);
 

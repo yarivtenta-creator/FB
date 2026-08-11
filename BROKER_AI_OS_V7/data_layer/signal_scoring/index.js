@@ -8,7 +8,13 @@ const hub = require('../data_hub_v2');
 // Source quality weights (mock, tunable).
 // 'research' = output of the /trade and /crypto analysis skills. Weighted high
 // because those runs are multi-agent and evidence-backed, but below 13F filings.
-const SOURCE_QUALITY = { '13f_mock':0.9, 'research':0.85, 'congress_mock':0.7, 'insider_mock':0.6, default:0.5 };
+// 'market_data' = momentum/trend computed from real Alpaca bars.
+// The *_mock entries are static fixtures; they are excluded from trading by
+// default (see strategy_engine _selectFor) and kept only for display continuity.
+const SOURCE_QUALITY = {
+  '13f_mock':0.9, 'research':0.85, 'market_data':0.8,
+  'congress_mock':0.7, 'insider_mock':0.6, default:0.5
+};
 
 function scoreOne(sig, ctx){
   const conf = typeof sig.confidence === 'number' ? sig.confidence : 0.5;

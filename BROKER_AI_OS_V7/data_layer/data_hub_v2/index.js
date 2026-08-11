@@ -45,14 +45,35 @@ function _freshness(){ return _dataMode() === 'live' ? 'live (read-only)' : 'moc
 
 // normalizeData: validate + drop anything that doesn't meet the schema contract.
 // Stamps each surviving record with source='data_hub_v2' and data_mode for provenance.
+// Records failing validation used to disappear with no trace anywhere — a
+// whole adapter's output could vanish and every panel would look normal.
+// Rejects are now kept so /api/data/rejects can show what was dropped and why.
+const _rejects = [];
+const MAX_REJECTS = 100;
+
 function normalizeData(records){
   const out = []; const rejected = [];
   const mode = _dataMode();
   for (const r of (records||[])){
     const v = S.validate(r);
-    if (v.ok) out.push({ ...r, source:'data_hub_v2', data_mode: mode }); else rejected.push({ rec:r, error:v.error });
+    if (v.ok) { out.push({ ...r, source:'data_hub_v2', data_mode: mode }); }
+    else {
+      const info = { provider: r && r.provider, symbol: r && r.symbol,
+                     kind: r && r.kind, error: v.error, at: new Date().toISOString() };
+      rejected.push({ rec:r, error:v.error });
+      _rejects.push(info);
+      if (_rejects.length > MAX_REJECTS) _rejects.splice(0, _rejects.length - MAX_REJECTS);
+    }
   }
   return { records: out, rejected, count: out.length };
+}
+
+/** What the hub threw away, and why. */
+function rejects(){
+  const byProvider = _rejects.reduce((m,r)=>{ const k=r.provider||'unknown'; m[k]=(m[k]||0)+1; return m; },{});
+  return { count: _rejects.length, by_provider: byProvider, recent: _rejects.slice(-25).reverse(),
+    note: _rejects.length ? 'These records failed schema validation and never reached scoring.'
+                          : 'No records have been rejected.' };
 }
 
 // Quote sources, gated by enabled-state in live mode (disabled providers contribute
@@ -68,7 +89,9 @@ function getNews(){ return normalizeData(news.getNews()).records; }
 function getCalendar(){ return normalizeData(calendar.getCalendar()).records; }
 function getSignals(){
   // Research signals (from /trade and /crypto skills) rank alongside the rest.
-  const s = [...congress.getSignals(), ...insider.getSignals(), ...f13.getSignals(), ...research.getSignals()];
+  const market = require('../adapters/market_signals');
+  const s = [...congress.getSignals(), ...insider.getSignals(), ...f13.getSignals(),
+             ...research.getSignals(), ...market.getSignals()];
   return normalizeData(s).records;
 }
 
@@ -93,6 +116,7 @@ function health(){
 }
 
 module.exports = {
+  rejects,
   registerProvider, providerStatus, getQuotes, getNews, getCalendar, getSignals,
   normalizeData, health
 };

@@ -175,6 +175,43 @@ async function runTests() {
     if (saved.s !== undefined) process.env.ALPACA_SECRET_KEY = saved.s;
     if (saved.b !== undefined) process.env.ALPACA_BASE_URL = saved.b;
 
+    // ── No position may ever be booked at an invented price ─────────────────
+    // The engine used to fall back to $100 when a signal carried no price, so
+    // every position in the system was booked at $100 regardless of the real
+    // quote. This is the regression guard for that.
+    const engineSrc = require('fs').readFileSync(
+      require('path').join(__dirname, '..', 'strategy_engine', 'index.js'), 'utf8');
+    assert('Engine has no hardcoded price fallback',
+      !/:\s*100\s*;/.test(engineSrc.replace(/\/\*[\s\S]*?\*\//g, '')),
+      'a numeric price fallback is still present');
+
+    if (token) {
+      const tr2 = await get('/api/strategy/trades', token);
+      const fake = (tr2.body && tr2.body.trades || []).filter(t => t.entry_price === 100);
+      assert('No open position is booked at the old $100 placeholder',
+        fake.length === 0, `${fake.length} positions at exactly $100`);
+      const noPrice = (tr2.body && tr2.body.trades || []).filter(t => !(Number(t.entry_price) > 0));
+      assert('Every position has a positive entry price', noPrice.length === 0,
+        `${noPrice.length} positions with no price`);
+
+      // ── Real signals, and fixtures excluded from trading ──────────────────
+      const msig = await get('/api/data/market-signals', token);
+      assert('Market signals endpoint returns 200', msig.status === 200, `got ${msig.status}`);
+      assert('Market signals carry a real price when present',
+        (msig.body.signals || []).every(s => Number(s.price) > 0),
+        'a market signal has no price');
+
+      const stt = await get('/api/strategy/status', token);
+      assert('Mock fixtures are excluded from trading by default',
+        stt.body && stt.body.mock_signals_tradable === false,
+        `mock_signals_tradable=${stt.body && stt.body.mock_signals_tradable}`);
+
+      // Discarded records must be visible, not silently dropped.
+      const rej = await get('/api/data/rejects', token);
+      assert('Hub reports what it discarded', rej.status === 200 && typeof rej.body.count === 'number',
+        JSON.stringify(rej.body).slice(0, 120));
+    }
+
     // ── The governance gate must NOT be able to reach the new order path ─────
     // Approving an order sets execution_allowed:true. Now that a real order path
     // exists, prove that flag still cannot reach it: only the strategy engine

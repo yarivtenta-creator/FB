@@ -79,6 +79,22 @@ main{padding:0 24px 28px;display:grid;gap:16px;grid-template-columns:repeat(12,1
     <div id="strategy" class="muted">loading…</div>
   </section>
 
+  <section class="card c12" style="border:2px solid #a63">
+    <h2>0a · Signal Source <span class="muted">(what the strategies are actually trading)</span></h2>
+    <div class="muted" style="margin-bottom:10px;font-size:11px">
+      <b style="color:var(--ink)">Real signals</b> are momentum and trend computed from live Alpaca daily bars, and carry a real price.
+      The <code>*_mock</code> providers are static sample fixtures — they are <b style="color:var(--ink)">excluded from trading</b>
+      unless you set <code>TRADE_ON_MOCK_SIGNALS=true</code>. A position is never opened without a real traded price.
+    </div>
+    <div style="margin-bottom:10px">
+      <button onclick="loadMarketSignals()">Refresh view</button>
+      <button onclick="rebuildMarketSignals()">Recompute from live bars</button>
+      <button onclick="loadRejects()">Show discarded records</button>
+    </div>
+    <div id="marketSignals" class="muted">loading…</div>
+    <div id="rejects" class="muted" style="margin-top:10px"></div>
+  </section>
+
   <section class="card c12" style="border:2px solid #46a">
     <h2>0c · Daily Change <span class="muted">(what moved since the last snapshot)</span></h2>
     <div class="muted" style="margin-bottom:10px;font-size:11px">
@@ -171,6 +187,7 @@ main{padding:0 24px 28px;display:grid;gap:16px;grid-template-columns:repeat(12,1
       <a href="/docs/operator/PAPER_TRADING.md" target="_blank">Operator: Paper Trading</a>
       <a href="/docs/operator/OPTION_B_PAPER_EXECUTION.md" target="_blank">Operator: Option B — Paper Execution</a>
       <a href="/docs/operator/CAPITAL_AND_DAILY.md" target="_blank">Operator: Capital Split &amp; Daily Change</a>
+      <a href="/docs/operator/REAL_SIGNALS_AND_PRICES.md" target="_blank">Operator: Real Signals &amp; Prices</a>
     </div></section>
 </main>
 <script>
@@ -288,6 +305,64 @@ async function syncAiTrader(){
       + 'If the token is set, the ai4trade.ai service may be unreachable from this machine.</div>';
   }
   setTimeout(loadAiTrader, 6000);
+}
+
+// ── Real market signals ─────────────────────────────────────────────────────
+async function loadMarketSignals(){
+  const el=document.getElementById('marketSignals');
+  el.innerHTML='<span class="muted">loading…</span>';
+  const d=await getDiag('/api/data/market-signals');
+  if(!d){ el.innerHTML='<span style="color:var(--red)">Could not load market signals.</span>'; return; }
+  let h='<div class="muted" style="margin-bottom:8px">'
+    + '<b style="color:'+(d.count?'var(--green)':'var(--yellow)')+'">'+d.count+'</b> real signals'
+    + ' · universe '+d.universe_size+' symbols'
+    + ' · Alpaca keys '+(d.keys_present?'<b style="color:var(--green)">present</b>':'<b style="color:var(--red)">missing</b>')
+    + (d.newest?' · computed '+esc(String(d.newest).replace('T',' ').slice(0,16)):'')
+    + '</div>';
+  if(!d.count){
+    el.innerHTML=h+'<span class="muted">'+esc(d.note)+'</span>';
+    return;
+  }
+  h+='<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="text-align:left">'
+   + '<th>Symbol</th><th>Direction</th><th>Confidence</th><th>Price</th><th>20d return</th>'
+   + '<th>SMA20/50</th><th>Ann. vol</th><th>Bars</th></tr>';
+  for(const s of d.signals){
+    const c=s.direction==='long'?'var(--green)':s.direction==='short'?'var(--red)':'var(--muted)';
+    const m=s.metrics||{};
+    h+='<tr><td><b>'+esc(s.symbol)+'</b></td>'
+     + '<td style="color:'+c+'">'+esc(s.direction)+'</td>'
+     + '<td>'+s.confidence+'</td>'
+     + '<td><b>$'+Number(s.price).toLocaleString()+'</b></td>'
+     + '<td style="color:'+((m.ret_20d||0)>=0?'var(--green)':'var(--red)')+'">'+(m.ret_20d>0?'+':'')+m.ret_20d+'%</td>'
+     + '<td class="muted">'+m.sma20+' / '+m.sma50+'</td>'
+     + '<td class="muted">'+m.annualized_vol_pct+'%</td>'
+     + '<td class="muted">'+m.bars_used+'</td></tr>';
+  }
+  el.innerHTML=h+'</table>';
+}
+
+async function rebuildMarketSignals(){
+  const el=document.getElementById('marketSignals');
+  el.innerHTML='<span class="muted">fetching live daily bars from Alpaca…</span>';
+  const r=await postDiag('/api/data/market-signals/refresh');
+  if(!r||!r.ok){
+    el.innerHTML='<span style="color:var(--red)">Could not compute signals: '
+      + esc((r&&(r.error||r.detail))||'no response')+'</span>'
+      + '<div class="muted" style="margin-top:6px">Needs Alpaca keys and reachable market data. No fixtures are substituted.</div>';
+    return;
+  }
+  loadMarketSignals(); loadRanked(); loadStrategy();
+}
+
+async function loadRejects(){
+  const el=document.getElementById('rejects');
+  const d=await getDiag('/api/data/rejects');
+  if(!d){ el.innerHTML=''; return; }
+  if(!d.count){ el.innerHTML='<span class="muted">No records discarded.</span>'; return; }
+  el.innerHTML='<div style="color:var(--yellow)">⚠ '+d.count+' record(s) discarded by schema validation — '
+    + esc(JSON.stringify(d.by_provider))+'</div>'
+    + '<div class="muted" style="font-size:10px;margin-top:4px">'
+    + d.recent.slice(0,6).map(r=>esc((r.provider||'?')+' '+(r.symbol||'')+': '+r.error)).join('<br/>')+'</div>';
 }
 
 // ── Capital split controls ──────────────────────────────────────────────────
@@ -522,7 +597,7 @@ async function loadStrategy(){
     + ' <button onclick="setReserve()">Set reserve %</button>'
     + '</div>';
   html += '<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="text-align:left">'
-    + '<th>Use</th><th>Slot</th><th>Strategy</th><th>Tier</th><th>Keys</th><th>Min score</th><th>Risk%</th>'
+    + '<th>Use</th><th>Slot</th><th>Strategy</th><th>Tier</th><th>Keys</th><th>Signal feed</th><th>Min score</th><th>Risk%</th>'
     + '<th>Sides</th><th>Max</th><th>Open</th><th>Total</th><th>Capital</th><th>Deployed</th><th>Cash left</th></tr>';
   for (const a of d.accounts){
     const tierColor = a.tier==='low-risk'?'#2a6':a.tier==='high-risk'?'#a33':'#c80';
@@ -532,6 +607,9 @@ async function loadStrategy(){
       + '<td>'+a.strategy_label+'</td>'
       + '<td style="color:'+tierColor+'">'+a.tier+'</td>'
       + '<td>'+(a.configured?'<b style="color:#2a6">configured</b>':'<span style="color:#a33">no keys</span>')+'</td>'
+      + '<td>'+(a.signal_source && a.signal_source.available
+          ? '<span style="color:var(--green)">ok</span>'
+          : '<span style="color:var(--yellow)" title="'+esc((a.signal_source&&a.signal_source.needs)||'')+'">no feed</span>')+'</td>'
       + '<td>'+a.threshold+'</td>'
       + '<td>'+a.risk_pct+'%</td>'
       + '<td>'+a.allow_sides.join(',')+'</td>'
@@ -544,6 +622,17 @@ async function loadStrategy(){
       + '</tr>';
   }
   html += '</table>';
+  const starved = d.accounts.filter(a => a.signal_source && !a.signal_source.available);
+  if (starved.length) {
+    html += '<div style="margin-top:8px;padding:8px;background:var(--panel2);border:1px solid var(--yellow);border-radius:6px;font-size:11px">'
+      + '<b style="color:var(--yellow)">'+starved.length+' strategies have no real signal feed and will not trade.</b>'
+      + '<div class="muted" style="margin-top:4px">They only accept fixture sources, and fixtures are excluded from trading. '
+      + 'They are not broken — they are waiting on data you do not have yet.</div>'
+      + starved.map(a => '<div class="muted" style="margin-top:3px">· <b style="color:var(--ink)">'+esc(a.strategy_label)
+          + '</b> needs '+esc(a.signal_source.needs||'a real feed')
+          + (a.signal_source.free? ' — free option: '+esc(a.signal_source.free) : '')+'</div>').join('')
+      + '</div>';
+  }
   html += '<div class="muted" style="margin-top:6px;font-size:10px">'
     + (d.execution_armed
         ? '<b style="color:var(--yellow)">Option B is ARMED</b> — every position above is also sent as a market order to your Alpaca PAPER account. Paper money, but a real account. Live trading is still refused by the guards in panel 0b.'
@@ -561,7 +650,7 @@ async function strategyTick(){ await post('/api/strategy/tick'); loadStrategy();
 async function init(){
   const who=await get('/api/auth/whoami');
   document.getElementById('user').innerHTML = who&&who.ok ? `<b>${esc(who.username)}</b> (${esc(who.role)})` : 'not signed in';
-  loadStrategy(); loadAuto(); loadDaily(); loadExec(); loadAiTrader(); loadHealth(); loadProviders(); loadKeys(); loadResearch(); loadHub(); loadSignals(); loadRanked(); loadGov(); loadPaper(); loadT4(); loadN8n();
+  loadStrategy(); loadAuto(); loadMarketSignals(); loadDaily(); loadExec(); loadAiTrader(); loadHealth(); loadProviders(); loadKeys(); loadResearch(); loadHub(); loadSignals(); loadRanked(); loadGov(); loadPaper(); loadT4(); loadN8n();
 }
 async function loadHealth(){ const d=await get('/api/health/full'); if(!d)return; const c=d.checks||{};
   document.getElementById('health').innerHTML=Object.keys(c).map(k=>`<div class="row"><span>${cap(k)}</span><span class="s-${c[k]}"><span class="dot"></span>${cap(c[k])}</span></div>`).join('');

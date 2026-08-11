@@ -29,6 +29,7 @@ const runState = require('./run_state');
 const catalog = require('./strategies');
 const slotConfig = require('./slot_config');
 const allocation = require('./allocation');
+const prices = require('../data_layer/prices');
 
 const DEFAULT_EQUITY = 100000;   // used only when no real Alpaca equity is available
 
@@ -121,9 +122,39 @@ const _ledgers = {};
 SLOT_IDS.forEach(id => { _ledgers[id] = []; });
 let _tradeSeq = 0;
 
+// Fixture providers. These are static sample data — trading them means trading
+// fiction, which is what the system was doing before real signals existed.
+// Opt back in with TRADE_ON_MOCK_SIGNALS=true only for demos.
+const MOCK_PROVIDERS = ['13f_mock', 'congress_mock', 'insider_mock'];
+
+// A strategy that only accepts fixture providers cannot trade once fixtures are
+// excluded. That is correct — Insider Follow should not silently start trading
+// momentum and call it insider data — but it must be VISIBLE, not a strategy
+// that quietly sits at 0 forever with no explanation.
+const REAL_SOURCE_FOR = {
+  '13f_mock':      { needs: 'A real 13F feed', free: 'SEC EDGAR (keyless, already in your provider list)' },
+  'insider_mock':  { needs: 'A real Form 4 insider feed', free: 'SEC EDGAR (keyless, already in your provider list)' },
+  'congress_mock': { needs: 'A real congressional-trade feed', free: 'Quiver Quant — limited free tier (CONGRESS_API_KEY)' }
+};
+
+function _sourceAvailability(profile){
+  const src = profile.sources || [];
+  if (!src.length) return { available: true, blocked_by: null, needs: null, free: null };
+  if (_mockAllowed()) return { available: true, blocked_by: null, needs: null, free: null };
+  const realOnes = src.filter(x => !MOCK_PROVIDERS.includes(x));
+  if (realOnes.length) return { available: true, blocked_by: null, needs: null, free: null };
+  const info = REAL_SOURCE_FOR[src[0]] || { needs: 'A real feed for ' + src.join(', '), free: null };
+  return { available: false, blocked_by: src.join(', '), needs: info.needs, free: info.free };
+}
+function _mockAllowed(){
+  return String(process.env.TRADE_ON_MOCK_SIGNALS || '').trim().toLowerCase() === 'true';
+}
+
 // Which signals does a strategy act on?
 function _selectFor(profile, ranked){
+  const allowMock = _mockAllowed();
   return ranked.filter(s => {
+    if (!allowMock && MOCK_PROVIDERS.includes(s.provider)) return false;
     if (s.score < profile.threshold) return false;
     if (!profile.allowSides.includes(s.direction || 'long')) return false;
     if (profile.sources && profile.sources.length && !profile.sources.includes(s.provider)) return false;
@@ -140,8 +171,9 @@ function _selectFor(profile, ranked){
 function _sizePosition(profile, price, capital, slotsFunded){
   const scale = slotsFunded > 0 ? slotsFunded : 1;
   const dollars = capital * (profile.riskPct / 100) * scale;
-  const px = price > 0 ? price : 100;
-  return { qty: Math.max(1, Math.floor(dollars / px)), notional: +dollars.toFixed(2) };
+  // price is guaranteed real by the caller — no placeholder here either.
+  const qty = Math.floor(dollars / price);
+  return { qty, notional: +(qty * price).toFixed(2) };
 }
 
 function _openPaper(slot, sig, alloc){
@@ -154,8 +186,19 @@ function _openPaper(slot, sig, alloc){
   const capital = alloc.per_slot[slot.id] || 0;
   if (capital <= 0) return null;                       // slot holds no money
 
-  const price = Number(sig.price) > 0 ? Number(sig.price) : 100;
+  // A position is NEVER opened without a real traded price.
+  //
+  // This used to fall back to `: 100`, and mock signals carry no price, so every
+  // position in the system was booked at $100 — MSFT included, near $428. Share
+  // counts and notionals were wrong, and marking those entries against real
+  // prices reported profit that never existed. Prefer the signal's own price,
+  // then the live price service; if neither has one, skip and say why.
+  const price = Number(sig.price) > 0 ? Number(sig.price) : prices.get(sig.symbol);
+  if (!(Number(price) > 0)) return { _skip: 'no_price', symbol: sig.symbol };
+
   let sized = _sizePosition(p, price, capital, alloc.slots_funded);
+  // Below one share at the real price — skip rather than round up to a lie.
+  if (sized.qty < 1) return { _skip: 'below_one_share', symbol: sig.symbol };
 
   // A slot may never deploy more than its own bucket. Trim the last position
   // to the cash it has left; if that buys nothing, skip rather than overspend.
@@ -240,13 +283,17 @@ function tick(opts = {}){
     for (const sig of picks){
       if (paused) continue;                       // PAUSED: read + score only
       const t = _openPaper(slot, sig, alloc);
-      if (t) actions.push(t);
+      if (!t) continue;
+      if (t._skip){ skipped.push({ slot: slot.id, symbol: t.symbol, reason: t._skip }); continue; }
+      actions.push(t);
     }
   }
 
   return {
     paused,
     ranked_count: ranked.length,
+    tradable_count: ranked.filter(s => _mockAllowed() || !MOCK_PROVIDERS.includes(s.provider)).length,
+    mock_signals_tradable: _mockAllowed(),
     slots_active: slots.filter(s => s.enabled && s.configured).length,
     slots_total: slots.length,
     equity_basis: equity,
@@ -273,6 +320,21 @@ function _execArmed(){
 }
 
 // Full status snapshot for the dashboard.
+/**
+ * Warm real prices for every symbol the engine might act on, then tick.
+ * tick() stays synchronous for existing callers; this is the entry point that
+ * guarantees prices are present before sizing, so positions are not skipped
+ * merely because nothing had fetched a quote yet.
+ */
+async function tickFresh(opts = {}){
+  try { await refreshEquity(); } catch {}
+  try {
+    const ranked = scoring.rankSignals({ trend: (opts && opts.trend) || 'long' });
+    await prices.warm(ranked.map(s => s.symbol));
+  } catch {}
+  return tick(opts || {});
+}
+
 /**
  * Same as status(), but waits for a real equity read when the cache is cold.
  * status() must stay synchronous for existing callers, but the dashboard needs
@@ -301,6 +363,7 @@ function status(){
     allocation: alloc,
     equity_error: _equityCache.error,
     strategies_available: catalog.NAMES.length,
+    mock_signals_tradable: _mockAllowed(),
     slots_total: slots.length,
     slots_active: slots.filter(s => s.enabled && s.configured).length,
     accounts: slots.map(s => {
@@ -316,6 +379,7 @@ function status(){
         configured: s.configured,
         enabled: s.enabled,
         key_source: s.key_source,
+        signal_source: _sourceAvailability(p),
         threshold: p.threshold,
         max_open: p.maxOpen,
         allow_sides: p.allowSides,
@@ -354,7 +418,7 @@ function allTrades(){
 }
 
 module.exports = {
-  tick, status, statusFresh, trades, allTrades, refreshEquity, allocation,
+  tick, tickFresh, status, statusFresh, trades, allTrades, refreshEquity, allocation, prices,
   STRATEGIES: catalog.STRATEGIES, strategies: catalog.list,
   SLOT_IDS, _slots
 };

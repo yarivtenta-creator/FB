@@ -22,10 +22,10 @@ router.get('/status', async (req, res) => {
 });
 
 // Run one engine tick now (score + open qualifying paper trades unless paused).
-// Refresh equity BEFORE sizing, so a tick never allocates off a stale default.
+// Refresh equity AND real prices before sizing. Without prices the engine
+// refuses to open anything, so warming them is part of a correct tick.
 router.post('/tick', async (req, res) => {
-  try { await engine.refreshEquity(); } catch {}
-  res.json(engine.tick(req.body || {}));
+  res.json(await engine.tickFresh(req.body || {}));
 });
 
 // Per-slot paper ledger.
@@ -95,6 +95,18 @@ router.get('/daily/history', (req, res) => res.json({ ok: true, snapshots: daily
 router.post('/daily/snapshot', async (req, res) => {
   try { res.json({ ok: true, snapshot: await daily.take() }); }
   catch (e) { res.status(500).json({ ok: false, error: 'snapshot_failed', message: e.message }); }
+});
+
+// ── Price service: where every entry price comes from ──────────────────────
+router.get('/prices', (req, res) => {
+  const syms = String(req.query.symbols || '').split(',').map(s => s.trim()).filter(Boolean);
+  res.json(require('../data_layer/prices').status(syms));
+});
+router.post('/prices/refresh', async (req, res) => {
+  const p = require('../data_layer/prices');
+  const ranked = require('../data_layer/signal_scoring').rankSignals({ trend: 'long' });
+  p.clear();
+  res.json(await p.warm(ranked.map(s => s.symbol)));
 });
 
 module.exports = router;

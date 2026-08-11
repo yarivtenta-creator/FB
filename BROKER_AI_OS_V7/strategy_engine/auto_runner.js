@@ -25,22 +25,31 @@ let _lastSnapshot = null;
 let _lastSnapshotError = null;
 
 function _tickOnce() {
-  try {
-    // Require lazily to avoid a circular import at module load.
-    const engine = require('./index');
-    // Read the real balance first — sizing off a stale default misallocates.
-    engine.refreshEquity().catch(() => {});
-    const r = engine.tick({});
-    _lastRun = new Date().toISOString();
-    _runCount += 1;
-    _lastResult = { paused: r.paused, opened: r.opened_now,
-      slots_active: r.slots_active, ranked: r.ranked_count };
-    _lastError = null;
-    _maybeSnapshot();
-  } catch (e) {
-    _lastError = e.message;
-    _lastRun = new Date().toISOString();
-  }
+  // Require lazily to avoid a circular import at module load.
+  const engine = require('./index');
+  // tickFresh reads the real balance AND real prices before sizing. Without
+  // prices the engine correctly refuses to open anything, so this is not
+  // optional polish — it is what makes an automatic tick able to trade.
+  // Recompute real market signals BEFORE ticking, and await it — firing this
+  // off without waiting would tick against the previous set, which is the same
+  // fire-and-forget mistake that made equity read as the $100,000 default.
+  const market = require('../data_layer/adapters/market_signals');
+  market.refresh()
+    .catch(() => {})                     // a failed refresh must not skip the tick
+    .then(() => engine.tickFresh({}))
+    .then(r => {
+      _lastRun = new Date().toISOString();
+      _runCount += 1;
+      _lastResult = { paused: r.paused, opened: r.opened_now,
+        slots_active: r.slots_active, ranked: r.ranked_count, tradable: r.tradable_count,
+        skipped_no_price: (r.skipped || []).filter(s => s.reason === 'no_price').length };
+      _lastError = null;
+      _maybeSnapshot();
+    })
+    .catch(e => {
+      _lastError = e.message;
+      _lastRun = new Date().toISOString();
+    });
 }
 
 // Take at most one snapshot per UTC day, off the back of a normal tick, so the
