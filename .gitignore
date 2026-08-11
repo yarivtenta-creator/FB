@@ -13,3 +13,4 @@ mcp/alpaca/server/*.egg-info/
 # Runtime operator state and history — user data, regenerated at runtime
 BROKER_AI_OS_V7/runtime/execution_audit.json
 BROKER_AI_OS_V7/runtime/daily_history.json
+BROKER_AI_OS_V7/runtime/market_signals.json
