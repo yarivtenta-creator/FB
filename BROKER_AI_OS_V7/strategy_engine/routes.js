@@ -12,6 +12,8 @@ const engine = require('./index');
 const runState = require('./run_state');
 const slotConfig = require('./slot_config');
 const autoRunner = require('./auto_runner');
+const allocation = require('./allocation');
+const daily = require('./daily');
 
 // Status of all three accounts/strategies + current pause state.
 router.get('/status', (req, res) => res.json(engine.status()));
@@ -58,6 +60,34 @@ router.post('/auto', (req, res) => {
   if (!r.ok) return res.status(400).json(r);
   autoRunner.apply();
   res.json(autoRunner.status());
+});
+
+// ── Capital allocation: how the account is divided between strategies ──────
+router.get('/allocation', (req, res) => {
+  const st = engine.status();
+  res.json({ config: allocation.read(), current: st.allocation });
+});
+router.post('/allocation/mode', (req, res) => {
+  const r = allocation.setMode((req.body || {}).mode);
+  res.status(r.ok ? 200 : 400).json(r);
+});
+router.post('/allocation/weight/:id', (req, res) => {
+  const r = allocation.setWeight(req.params.id, (req.body || {}).weight);
+  res.status(r.ok ? 200 : 400).json(r);
+});
+router.post('/allocation/reserve', (req, res) => {
+  const r = allocation.setReserve((req.body || {}).reserve_pct);
+  res.status(r.ok ? 200 : 400).json(r);
+});
+router.post('/allocation/reset', (req, res) => res.json(allocation.reset()));
+
+// ── Daily snapshots: what changed since yesterday ──────────────────────────
+router.get('/daily', (req, res) => res.json(daily.changes()));
+router.get('/daily/status', (req, res) => res.json(daily.status()));
+router.get('/daily/history', (req, res) => res.json({ ok: true, snapshots: daily.history(req.query.limit) }));
+router.post('/daily/snapshot', async (req, res) => {
+  try { res.json({ ok: true, snapshot: await daily.take() }); }
+  catch (e) { res.status(500).json({ ok: false, error: 'snapshot_failed', message: e.message }); }
 });
 
 module.exports = router;

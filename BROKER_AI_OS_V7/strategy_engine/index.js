@@ -28,6 +28,7 @@ const scoring = require('../data_layer/signal_scoring');
 const runState = require('./run_state');
 const catalog = require('./strategies');
 const slotConfig = require('./slot_config');
+const allocation = require('./allocation');
 
 const DEFAULT_EQUITY = 100000;   // used only when no real Alpaca equity is available
 
@@ -130,22 +131,43 @@ function _selectFor(profile, ranked){
   });
 }
 
-// Paper position size from REAL account equity + strategy risk %.
-function _sizePosition(profile, price, equity){
-  const dollars = equity * (profile.riskPct / 100);
+// Position size from the slot's OWN allocated bucket, not the whole account.
+//
+// riskPct is a % of the account in the strategy profiles, but a slot only holds
+// 1/12th of the account. Scaling it by slots_funded keeps each strategy's
+// relative aggressiveness intact while confining it to its bucket: a 3% risk
+// strategy still risks 3x what a 1% one does, both out of their own share.
+function _sizePosition(profile, price, capital, slotsFunded){
+  const scale = slotsFunded > 0 ? slotsFunded : 1;
+  const dollars = capital * (profile.riskPct / 100) * scale;
   const px = price > 0 ? price : 100;
   return { qty: Math.max(1, Math.floor(dollars / px)), notional: +dollars.toFixed(2) };
 }
 
-function _openPaper(slot, sig, equity){
+function _openPaper(slot, sig, alloc){
   const ledger = _ledgers[slot.id];
   const p = slot.profile;
   const openCount = ledger.filter(t => t.status === 'open').length;
   if (openCount >= p.maxOpen) return null;
   if (ledger.some(t => t.symbol === sig.symbol && t.status === 'open')) return null;
 
+  const capital = alloc.per_slot[slot.id] || 0;
+  if (capital <= 0) return null;                       // slot holds no money
+
   const price = Number(sig.price) > 0 ? Number(sig.price) : 100;
-  const sized = _sizePosition(p, price, equity);
+  let sized = _sizePosition(p, price, capital, alloc.slots_funded);
+
+  // A slot may never deploy more than its own bucket. Trim the last position
+  // to the cash it has left; if that buys nothing, skip rather than overspend.
+  const deployed = ledger.filter(t => t.status === 'open')
+                         .reduce((a, t) => a + (t.notional || 0), 0);
+  const room = +(capital - deployed).toFixed(2);
+  if (room <= 0) return null;
+  if (sized.notional > room) {
+    const qty = Math.floor(room / price);
+    if (qty < 1) return null;
+    sized = { qty, notional: +(qty * price).toFixed(2) };
+  }
 
   const trade = {
     id: ++_tradeSeq,
@@ -159,7 +181,8 @@ function _openPaper(slot, sig, equity){
     entry_price: price,
     entry_score: sig.score,
     risk_pct: p.riskPct,
-    equity_basis: equity,
+    slot_capital: capital,
+    equity_basis: alloc.equity,
     equity_source: _equityCache.source,
     status: 'open',
     opened_at: new Date().toISOString(),
@@ -205,13 +228,18 @@ function tick(opts = {}){
   const actions = [];
   const skipped = [];
 
+  // Only slots that can actually trade get funded, so the split always covers
+  // exactly what is running — no money parked in a disabled strategy.
+  const fundable = slots.filter(s => s.enabled && s.configured).map(s => s.id);
+  const alloc = allocation.allocate(equity, fundable);
+
   for (const slot of slots){
     if (!slot.enabled){ skipped.push({ slot: slot.id, reason: 'disabled' }); continue; }
     if (!slot.configured){ skipped.push({ slot: slot.id, reason: 'no_keys' }); continue; }
     const picks = _selectFor(slot.profile, ranked);
     for (const sig of picks){
       if (paused) continue;                       // PAUSED: read + score only
-      const t = _openPaper(slot, sig, equity);
+      const t = _openPaper(slot, sig, alloc);
       if (t) actions.push(t);
     }
   }
@@ -223,6 +251,8 @@ function tick(opts = {}){
     slots_total: slots.length,
     equity_basis: equity,
     equity_source: _equityCache.source,
+    allocation: { mode: alloc.mode, per_slot_capital: alloc.per_slot,
+                  slots_funded: alloc.slots_funded, reserve: alloc.reserve },
     opened_now: actions.length,
     actions,
     skipped,
@@ -247,6 +277,8 @@ function status(){
   const slots = _slots();
   const rs = runState.read();
   const equity = _equity();
+  const fundable = slots.filter(s => s.enabled && s.configured).map(s => s.id);
+  const alloc = allocation.allocate(equity, fundable);
   return {
     system: 'BROKER_AI_OS_V7',
     paused: rs.paused,
@@ -254,6 +286,7 @@ function status(){
     equity_basis: equity,
     equity_source: _equityCache.source,
     equity_account_status: _equityCache.account_status,
+    allocation: alloc,
     equity_error: _equityCache.error,
     strategies_available: catalog.NAMES.length,
     slots_total: slots.length,
@@ -279,7 +312,10 @@ function status(){
         sources: p.sources,
         open_trades: open.length,
         total_trades: ledger.length,
+        slot_capital: alloc.per_slot[s.id] || 0,
         deployed_notional: +open.reduce((a,t)=>a+(t.notional||0),0).toFixed(2),
+        cash_remaining: +((alloc.per_slot[s.id] || 0)
+          - open.reduce((a,t)=>a+(t.notional||0),0)).toFixed(2),
         note: p.note,
         paper: true,
         broker_orders: ledger.filter(t => t.executed === true).length
@@ -306,7 +342,7 @@ function allTrades(){
 }
 
 module.exports = {
-  tick, status, trades, allTrades, refreshEquity,
+  tick, status, trades, allTrades, refreshEquity, allocation,
   STRATEGIES: catalog.STRATEGIES, strategies: catalog.list,
   SLOT_IDS, _slots
 };

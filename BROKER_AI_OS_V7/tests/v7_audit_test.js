@@ -94,6 +94,36 @@ async function runTests() {
       const ghost = (tr.body && tr.body.trades || [])
         .filter(t => t.executed === true && tr.body.execution_armed !== true);
       assert('No trade claims executed while execution is disarmed', ghost.length === 0, `${ghost.length} violations`);
+
+      // ── Capital allocation: the split must cover the account, not exceed it ──
+      const al = await get('/api/strategy/allocation', token);
+      assert('Allocation endpoint returns 200', al.status === 200, `got ${al.status}`);
+      const cur = al.body && al.body.current;
+      assert('Allocation reports a mode and funded slot count',
+        cur && typeof cur.mode === 'string' && Number.isFinite(cur.slots_funded), JSON.stringify(cur));
+      const sum = cur ? Object.values(cur.per_slot).reduce((a, b) => a + b, 0) : -1;
+      // With no Alpaca keys no slot is fundable, so nothing should be allocated.
+      // With keys, the split must account for the whole investable amount.
+      const expected = cur && cur.slots_funded > 0 ? cur.investable : 0;
+      assert(`Per-slot capital sums to the investable amount (${cur && cur.slots_funded} funded)`,
+        Math.abs(sum - expected) < 1, `sum=${sum} expected=${expected}`);
+      assert('Allocation never exceeds account equity',
+        sum <= cur.equity + 1, `sum=${sum} equity=${cur && cur.equity}`);
+
+      const st2 = await get('/api/strategy/status', token);
+      const over = (st2.body && st2.body.accounts || [])
+        .filter(a => (a.deployed_notional || 0) > (a.slot_capital || 0) + 0.01);
+      assert('No strategy deploys more than its own capital', over.length === 0,
+        over.map(a => `${a.slot}: ${a.deployed_notional}>${a.slot_capital}`).join(' '));
+
+      // ── Daily change reporting ───────────────────────────────────────────────
+      const ds = await get('/api/strategy/daily/status', token);
+      assert('Daily status returns 200', ds.status === 200, `got ${ds.status}`);
+      const dc = await get('/api/strategy/daily', token);
+      assert('Daily change endpoint returns 200', dc.status === 200, `got ${dc.status}`);
+      assert('Daily report is explicit when it cannot compare two days',
+        dc.body.ok === false ? !!dc.body.note : (dc.body.first_day ? !!dc.body.note : Array.isArray(dc.body.changes)),
+        JSON.stringify(dc.body).slice(0, 160));
     }
 
     const orders = await get('/api/alpaca/orders');

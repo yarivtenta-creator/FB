@@ -21,6 +21,8 @@ let _lastRun = null;
 let _lastResult = null;
 let _runCount = 0;
 let _lastError = null;
+let _lastSnapshot = null;
+let _lastSnapshotError = null;
 
 function _tickOnce() {
   try {
@@ -32,10 +34,28 @@ function _tickOnce() {
     _lastResult = { paused: r.paused, opened: r.opened_now,
       slots_active: r.slots_active, ranked: r.ranked_count };
     _lastError = null;
+    _maybeSnapshot();
   } catch (e) {
     _lastError = e.message;
     _lastRun = new Date().toISOString();
   }
+}
+
+// Take at most one snapshot per UTC day, off the back of a normal tick, so the
+// daily change report fills itself in without the operator remembering to click.
+// Failure here must never break a tick — it is bookkeeping, not trading.
+let _snapshotting = false;
+function _maybeSnapshot() {
+  if (_snapshotting) return;
+  try {
+    const daily = require('./daily');
+    if (daily.status().today_taken) return;
+    _snapshotting = true;
+    daily.take()
+      .then(s => { _lastSnapshot = s.date; })
+      .catch(e => { _lastSnapshotError = e.message; })
+      .finally(() => { _snapshotting = false; });
+  } catch (e) { _snapshotting = false; _lastSnapshotError = e.message; }
 }
 
 function stop() {
@@ -72,6 +92,8 @@ function status() {
     last_run: _lastRun,
     last_result: _lastResult,
     last_error: _lastError,
+    last_snapshot: _lastSnapshot,
+    last_snapshot_error: _lastSnapshotError,
     note: cfg.auto.enabled
       ? (runState.isPaused()
           ? 'Auto-tick is ON but the engine is PAUSED — scoring only, no new trades.'

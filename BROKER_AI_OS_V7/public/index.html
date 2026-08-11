@@ -58,7 +58,7 @@ main{padding:0 24px 28px;display:grid;gap:16px;grid-template-columns:repeat(12,1
     <div id="probe" class="muted" style="margin-bottom:12px"></div>
     <div id="keys" class="muted">loading…</div></section>
   <section class="card c12" style="border:2px solid #2a6">
-    <h2>0 · Strategy Engine <span class="muted">(12 strategies · paper only · no real orders)</span></h2>
+    <h2>0 · Strategy Engine <span class="muted">(12 strategies · account divided between them · paper unless Option B is armed)</span></h2>
     <div style="display:flex;align-items:center;gap:14px;margin:8px 0 14px">
       <span id="runpill" style="padding:6px 14px;border-radius:999px;font-weight:700;background:#444;color:#fff">…</span>
       <button id="runbtn" onclick="toggleRun()" style="font-size:16px;padding:10px 22px;font-weight:700">Loading…</button>
@@ -77,6 +77,20 @@ main{padding:0 24px 28px;display:grid;gap:16px;grid-template-columns:repeat(12,1
       <span class="muted" id="autoNote" style="font-size:10px"></span>
     </div>
     <div id="strategy" class="muted">loading…</div>
+  </section>
+
+  <section class="card c12" style="border:2px solid #46a">
+    <h2>0c · Daily Change <span class="muted">(what moved since the last snapshot)</span></h2>
+    <div class="muted" style="margin-bottom:10px;font-size:11px">
+      One snapshot per day, taken automatically on the first tick of each day. Open positions are marked to the
+      latest Alpaca price; anything that cannot be priced is held at entry and flagged, never quietly valued.
+    </div>
+    <div style="margin-bottom:10px">
+      <button onclick="loadDaily()">Refresh</button>
+      <button onclick="snapshotNow()">Take snapshot now</button>
+      <span class="muted" id="dailyMeta" style="margin-left:10px"></span>
+    </div>
+    <div id="daily" class="muted">loading…</div>
   </section>
 
   <section class="card c12" id="execCard" style="border:2px solid #666">
@@ -156,6 +170,7 @@ main{padding:0 24px 28px;display:grid;gap:16px;grid-template-columns:repeat(12,1
       <a href="/docs/operator/CONNECT_ALPACA.md" target="_blank">Operator: Connect Alpaca</a>
       <a href="/docs/operator/PAPER_TRADING.md" target="_blank">Operator: Paper Trading</a>
       <a href="/docs/operator/OPTION_B_PAPER_EXECUTION.md" target="_blank">Operator: Option B — Paper Execution</a>
+      <a href="/docs/operator/CAPITAL_AND_DAILY.md" target="_blank">Operator: Capital Split &amp; Daily Change</a>
     </div></section>
 </main>
 <script>
@@ -273,6 +288,73 @@ async function syncAiTrader(){
       + 'If the token is set, the ai4trade.ai service may be unreachable from this machine.</div>';
   }
   setTimeout(loadAiTrader, 6000);
+}
+
+// ── Capital split controls ──────────────────────────────────────────────────
+async function setAllocMode(m){
+  const r=await postDiag('/api/strategy/allocation/mode',{mode:m});
+  if(!r||!r.ok){ alert('Could not change split mode: '+((r&&r.error)||'no response')); return; }
+  loadStrategy();
+}
+async function setReserve(){
+  const v=prompt('Hold back what % of the account as cash? (0-90)','0');
+  if(v===null) return;
+  const r=await postDiag('/api/strategy/allocation/reserve',{reserve_pct:Number(v)});
+  if(!r||!r.ok){ alert('Could not set reserve: '+((r&&r.error)||'no response')); return; }
+  loadStrategy();
+}
+
+// ── Daily change report ─────────────────────────────────────────────────────
+function money(n){ const v=Number(n)||0; return (v<0?'-$':'$')+Math.abs(v).toLocaleString(undefined,{maximumFractionDigits:2}); }
+function signed(n){ const v=Number(n)||0; const c=v>0?'var(--green)':v<0?'var(--red)':'var(--muted)';
+  return '<span style="color:'+c+'">'+(v>0?'+':'')+money(v).replace('$','$')+'</span>'; }
+
+async function loadDaily(){
+  const el=document.getElementById('daily');
+  const meta=document.getElementById('dailyMeta');
+  el.innerHTML='<span class="muted">loading…</span>';
+  const st=await getDiag('/api/strategy/daily/status');
+  if(st) meta.textContent = st.snapshots+' snapshot'+(st.snapshots===1?'':'s')
+    + (st.last_date?' · latest '+st.last_date:'') + (st.today_taken?' · today recorded':' · today not yet recorded');
+
+  const d=await getDiag('/api/strategy/daily');
+  if(!d){ el.innerHTML='<span style="color:var(--red)">Could not load the daily report.</span>'; return; }
+  if(!d.ok){ el.innerHTML='<span class="muted">'+esc(d.note||d.reason)+'</span>'; return; }
+  if(d.first_day){ el.innerHTML='<span class="muted">'+esc(d.note)+'</span>'; return; }
+
+  const a=d.account;
+  let h='<div style="display:flex;gap:22px;flex-wrap:wrap;margin-bottom:12px;padding:10px;background:var(--panel2);border:1px solid var(--line);border-radius:6px">'
+    + '<div><div class="muted" style="font-size:10px">PERIOD</div><b>'+esc(d.previous_date)+' → '+esc(d.date)+'</b></div>'
+    + '<div><div class="muted" style="font-size:10px">UNREALIZED P/L CHANGE</div><b style="font-size:16px">'+signed(a.pl_change)+'</b></div>'
+    + '<div><div class="muted" style="font-size:10px">POSITION VALUE</div><b>'+money(a.market_value)+' '+signed(a.value_change)+'</b></div>'
+    + '<div><div class="muted" style="font-size:10px">DEPLOYED</div><b>'+money(a.deployed)+' '+signed(a.deployed_change)+'</b></div>'
+    + '<div><div class="muted" style="font-size:10px">NEW TRADES</div><b>'+a.new_trades+'</b></div>'
+    + '<div><div class="muted" style="font-size:10px">ACCOUNT EQUITY</div><b>'+money(a.equity)+' '+signed(a.equity_change)+'</b></div>'
+    + '</div>';
+
+  if(d.best) h+='<div class="muted" style="margin-bottom:8px">Best: <b style="color:var(--ink)">'+esc(d.best.label)+'</b> '+signed(d.best.pl_change)
+    + (d.worst?' · Worst: <b style="color:var(--ink)">'+esc(d.worst.label)+'</b> '+signed(d.worst.pl_change):'')+'</div>';
+  if(!d.prices_complete) h+='<div style="color:var(--yellow);margin-bottom:8px">⚠ '+esc(d.price_note)+'</div>';
+
+  h+='<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="text-align:left">'
+   + '<th>Slot</th><th>Strategy</th><th>Capital</th><th>Open</th><th>New</th><th>Value</th><th>Value Δ</th><th>Unreal. P/L</th><th>P/L Δ</th></tr>';
+  for(const r of d.changes){
+    h+='<tr'+(r.enabled?'':' style="opacity:.45"')+'>'
+     + '<td><b>'+esc(r.slot)+'</b></td><td>'+esc(r.label)+'</td>'
+     + '<td>'+money(r.capital)+'</td><td>'+r.open_trades+'</td>'
+     + '<td>'+(r.new_trades?'<b style="color:var(--accent)">+'+r.new_trades+'</b>':'0')+'</td>'
+     + '<td>'+money(r.market_value)+'</td><td>'+signed(r.value_change)+'</td>'
+     + '<td>'+money(r.unrealized_pl)+'</td><td><b>'+signed(r.pl_change)+'</b></td></tr>';
+  }
+  el.innerHTML=h+'</table>';
+}
+
+async function snapshotNow(){
+  const el=document.getElementById('daily');
+  el.innerHTML='<span class="muted">taking snapshot (fetching live prices)…</span>';
+  const r=await postDiag('/api/strategy/daily/snapshot');
+  if(!r||!r.ok){ el.innerHTML='<span style="color:var(--red)">Snapshot failed: '+esc((r&&r.message)||'no response')+'</span>'; return; }
+  loadDaily();
 }
 
 async function probeKeyless(){
@@ -422,12 +504,22 @@ async function loadStrategy(){
   let html = '<div class="muted" style="margin-bottom:6px">'
     + '<b>'+d.slots_active+'/'+d.slots_total+'</b> slots active · '
     + '<b>'+d.strategies_available+'</b> strategies · '
-    + 'sizing equity: <b>$'+Number(d.equity_basis).toLocaleString()+'</b> · '+eqSrc
+    + 'account: <b>$'+Number(d.equity_basis).toLocaleString()+'</b> · '+eqSrc
     + (d.equity_error?(' · <span style="color:#a33">'+d.equity_error+'</span>'):'')
+    + '</div>';
+  const al = d.allocation||{};
+  html += '<div style="margin-bottom:10px;padding:8px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;font-size:11px">'
+    + '<b>CAPITAL SPLIT</b> · mode <b>'+esc(al.mode||'equal')+'</b> · '
+    + '<b>$'+Number(al.investable||0).toLocaleString()+'</b> divided between <b>'+(al.slots_funded||0)+'</b> running strategies'
+    + (al.reserve? ' · reserve held back <b>$'+Number(al.reserve).toLocaleString()+'</b>':'')
+    + '<span class="muted"> — each strategy sizes from its own share and cannot spend past it.</span>'
+    + ' <button onclick="setAllocMode(\'equal\')">Equal split</button>'
+    + ' <button onclick="setAllocMode(\'weighted\')">Weighted</button>'
+    + ' <button onclick="setReserve()">Set reserve %</button>'
     + '</div>';
   html += '<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="text-align:left">'
     + '<th>Use</th><th>Slot</th><th>Strategy</th><th>Tier</th><th>Keys</th><th>Min score</th><th>Risk%</th>'
-    + '<th>Sides</th><th>Max</th><th>Open</th><th>Total</th><th>Deployed</th></tr>';
+    + '<th>Sides</th><th>Max</th><th>Open</th><th>Total</th><th>Capital</th><th>Deployed</th><th>Cash left</th></tr>';
   for (const a of d.accounts){
     const tierColor = a.tier==='low-risk'?'#2a6':a.tier==='high-risk'?'#a33':'#c80';
     html += '<tr'+(a.enabled?'':' style="opacity:.45"')+'>'
@@ -442,7 +534,9 @@ async function loadStrategy(){
       + '<td>'+a.max_open+'</td>'
       + '<td><b>'+a.open_trades+'</b></td>'
       + '<td>'+a.total_trades+'</td>'
+      + '<td><b>$'+Number(a.slot_capital||0).toLocaleString()+'</b></td>'
       + '<td>$'+Number(a.deployed_notional||0).toLocaleString()+'</td>'
+      + '<td class="muted">$'+Number(a.cash_remaining||0).toLocaleString()+'</td>'
       + '</tr>';
   }
   html += '</table>';
@@ -459,7 +553,7 @@ async function strategyTick(){ await post('/api/strategy/tick'); loadStrategy();
 async function init(){
   const who=await get('/api/auth/whoami');
   document.getElementById('user').innerHTML = who&&who.ok ? `<b>${esc(who.username)}</b> (${esc(who.role)})` : 'not signed in';
-  loadStrategy(); loadAuto(); loadExec(); loadAiTrader(); loadHealth(); loadProviders(); loadKeys(); loadResearch(); loadHub(); loadSignals(); loadRanked(); loadGov(); loadPaper(); loadT4(); loadN8n();
+  loadStrategy(); loadAuto(); loadDaily(); loadExec(); loadAiTrader(); loadHealth(); loadProviders(); loadKeys(); loadResearch(); loadHub(); loadSignals(); loadRanked(); loadGov(); loadPaper(); loadT4(); loadN8n();
 }
 async function loadHealth(){ const d=await get('/api/health/full'); if(!d)return; const c=d.checks||{};
   document.getElementById('health').innerHTML=Object.keys(c).map(k=>`<div class="row"><span>${cap(k)}</span><span class="s-${c[k]}"><span class="dot"></span>${cap(c[k])}</span></div>`).join('');
