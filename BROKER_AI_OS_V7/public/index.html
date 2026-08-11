@@ -52,7 +52,7 @@ main{padding:0 24px 28px;display:grid;gap:16px;grid-template-columns:repeat(12,1
     <div class="muted" style="margin-bottom:8px">Connect providers manually. Links open the provider site — keys are entered THERE, never here. Test is read-only.</div>
     <div id="providers" class="muted">loading…</div></section>
 
-  <section class="card c12"><h2>2b · Key Coverage <span class="muted">(22 providers · read-only research · none place orders)</span></h2>
+  <section class="card c12"><h2>2b · Key Coverage <span class="muted" id="keysHeading">(read-only research · none place orders)</span></h2>
     <div style="margin-bottom:10px"><button onclick="probeKeyless()">Probe keyless providers (live)</button>
       <span class="muted" id="probeNote" style="margin-left:10px">Runs real GET requests to the 5 no-key providers.</span></div>
     <div id="probe" class="muted" style="margin-bottom:12px"></div>
@@ -464,8 +464,12 @@ async function loadResearch(){
   }
 }
 async function loadKeys(){
+  // Heading count comes from the catalog, so adding a provider can't leave a
+  // stale number in the UI.
   const d = await get('/api/keys'); if(!d) return;
   const pct = Math.round(d.usable_now / d.total * 100);
+  const hd = document.getElementById('keysHeading');
+  if (hd) hd.textContent = '('+d.total+' providers · read-only research · none place orders)';
   let html = '<div class="kpi" style="margin-bottom:10px">'
     + '<div><b style="color:var(--green)">'+d.usable_now+'</b><span>usable now</span></div>'
     + '<div><b>'+d.total+'</b><span>total</span></div>'
@@ -540,7 +544,11 @@ async function loadStrategy(){
       + '</tr>';
   }
   html += '</table>';
-  html += '<div class="muted" style="margin-top:6px;font-size:10px">All positions are paper:true / executed:false. No real orders are ever placed.</div>';
+  html += '<div class="muted" style="margin-top:6px;font-size:10px">'
+    + (d.execution_armed
+        ? '<b style="color:var(--yellow)">Option B is ARMED</b> — every position above is also sent as a market order to your Alpaca PAPER account. Paper money, but a real account. Live trading is still refused by the guards in panel 0b.'
+        : 'All positions are paper:true and simulated here only — the broker is never told. Arm Option B in .env if you want them to reach your Alpaca paper account.')
+    + '</div>';
   document.getElementById('strategy').innerHTML = html;
 }
 async function toggleRun(){

@@ -28,6 +28,8 @@ function _tickOnce() {
   try {
     // Require lazily to avoid a circular import at module load.
     const engine = require('./index');
+    // Read the real balance first — sizing off a stale default misallocates.
+    engine.refreshEquity().catch(() => {});
     const r = engine.tick({});
     _lastRun = new Date().toISOString();
     _runCount += 1;
@@ -70,6 +72,9 @@ function apply() {
   const ms = cfg.auto.interval_sec * 1000;
   _timer = setInterval(_tickOnce, ms);
   if (_timer.unref) _timer.unref();   // never hold the process open
+  // Run one pass straight away. Waiting a full interval after switching auto on
+  // (or after a restart) makes a running engine look dead for up to 15 minutes.
+  setTimeout(_tickOnce, 0);
   return status();
 }
 

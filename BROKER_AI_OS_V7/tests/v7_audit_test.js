@@ -175,6 +175,38 @@ async function runTests() {
     if (saved.s !== undefined) process.env.ALPACA_SECRET_KEY = saved.s;
     if (saved.b !== undefined) process.env.ALPACA_BASE_URL = saved.b;
 
+    // ── The governance gate must NOT be able to reach the new order path ─────
+    // Approving an order sets execution_allowed:true. Now that a real order path
+    // exists, prove that flag still cannot reach it: only the strategy engine
+    // may call alpaca_execution, and paper_bridge holds no broker client.
+    // Strip comments first — both files DOCUMENT that they hold no order path,
+    // and matching that prose would fail the very check it describes.
+    const stripComments = src => src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+    const bridgeSrc = stripComments(require('fs').readFileSync(
+      require('path').join(__dirname, '..', 'data_layer', 'paper_bridge', 'index.js'), 'utf8'));
+    assert('paper_bridge cannot reach the execution module',
+      !/alpaca_execution|submitOrder|\/v2\/orders/.test(bridgeSrc), 'bridge references an order path');
+
+    const govSrc = stripComments(require('fs').readFileSync(
+      require('path').join(__dirname, '..', 'governance', 'governance.js'), 'utf8'));
+    assert('governance cannot reach the execution module',
+      !/alpaca_execution|submitOrder|\/v2\/orders/.test(govSrc), 'governance references an order path');
+
+    // ── Health must report what is actually true ─────────────────────────────
+    if (token) {
+      const hf = await get('/api/health/full', token);
+      assert('Health check returns 200', hf.status === 200, `got ${hf.status}`);
+      const rs = await get('/api/strategy/run-state', token);
+      const enginePaused = rs.body && rs.body.paused === true;
+      assert('Health engine state matches the real pause flag',
+        hf.body.checks.strategy_engine === (enginePaused ? 'stopped' : 'running'),
+        `health=${hf.body.checks.strategy_engine} paused=${enginePaused}`);
+      const alpStat = await get('/api/alpaca/status');
+      assert('Health Alpaca A/B matches whether keys are actually loaded',
+        (hf.body.checks.alpaca_account_a === 'configured') === !!(alpStat.body && alpStat.body.configured),
+        `health=${hf.body.checks.alpaca_account_a} configured=${alpStat.body && alpStat.body.configured}`);
+    }
+
     // ── AI-Trader connector ──────────────────────────────────────────────────
     const at = await get('/api/ai-trader/status');
     assert('AI-Trader status returns 200', at.status === 200, `got ${at.status}`);

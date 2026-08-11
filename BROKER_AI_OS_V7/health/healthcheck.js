@@ -17,7 +17,7 @@ const t4 = require('../connectors/t4/t4_mock_connector');
 // Allowed enums (the only strings any check may return)
 const ENUMS = [
   'connected', 'disconnected', 'error', 'not_configured', 'mock',
-  'available', 'not_available', 'running', 'stopped', 'ok'
+  'available', 'not_available', 'running', 'stopped', 'ok', 'configured'
 ];
 
 function exists(p) {
@@ -28,9 +28,18 @@ function fullHealth() {
   // Each check maps to an enum via try/catch. No check echoes any credential.
   const checks = {};
 
-  // Alpaca A/B — this instance holds no creds by design.
-  checks.alpaca_account_a = config.ACCOUNT_B_CONFIGURED ? 'not_configured' : 'not_configured';
-  checks.alpaca_account_b = config.ACCOUNT_B_CONFIGURED ? 'not_configured' : 'not_configured';
+  // Alpaca A/B — report what is ACTUALLY configured.
+  // This previously read `X ? 'not_configured' : 'not_configured'` on both
+  // lines: a dead ternary that always answered "not configured" even with keys
+  // loaded, and checked ACCOUNT_B for account A. The panel therefore said
+  // "not configured" while the rest of the dashboard showed Alpaca connected.
+  const _has = n => typeof process.env[n] === 'string' && process.env[n].trim() !== '';
+  const _globalAlpaca = (_has('ALPACA_API_KEY') || _has('ALPACA_API_KEY_ID')) &&
+                        (_has('ALPACA_SECRET_KEY') || _has('ALPACA_API_SECRET_KEY'));
+  checks.alpaca_account_a = (_has('ALPACA_A_KEY_ID') && _has('ALPACA_A_SECRET')) || _globalAlpaca
+    ? 'configured' : 'not_configured';
+  checks.alpaca_account_b = (_has('ALPACA_B_KEY_ID') && _has('ALPACA_B_SECRET')) || _globalAlpaca
+    ? 'configured' : 'not_configured';
 
   // Database (mock JSON store for v2)
   try {
@@ -43,7 +52,12 @@ function fullHealth() {
   // AI Agents / Strategy Engine / Legacy Bot / Wheel — surfaced from runtime state, never auto-started
   const rt = readRuntime();
   checks.ai_agents       = rt.agents_running ? 'running' : 'stopped';
-  checks.strategy_engine = rt.strategy_engine_running ? 'running' : 'stopped';
+  // The strategy engine's real state is the persisted pause flag, not this
+  // legacy runtime file — which nothing writes, so it always said "stopped"
+  // while the engine panel correctly showed RUNNING.
+  try {
+    checks.strategy_engine = require('../strategy_engine/run_state').isPaused() ? 'stopped' : 'running';
+  } catch { checks.strategy_engine = rt.strategy_engine_running ? 'running' : 'stopped'; }
   checks.legacy_bot      = rt.legacy_bot_running ? 'running' : 'stopped';
   checks.wheel_strategy  = rt.wheel_running ? 'running' : 'stopped';
 

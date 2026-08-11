@@ -16,10 +16,17 @@ const allocation = require('./allocation');
 const daily = require('./daily');
 
 // Status of all three accounts/strategies + current pause state.
-router.get('/status', (req, res) => res.json(engine.status()));
+router.get('/status', async (req, res) => {
+  try { res.json(await engine.statusFresh()); }
+  catch (e) { res.status(500).json({ error: 'status_failed', message: e.message }); }
+});
 
 // Run one engine tick now (score + open qualifying paper trades unless paused).
-router.post('/tick', (req, res) => res.json(engine.tick(req.body || {})));
+// Refresh equity BEFORE sizing, so a tick never allocates off a stale default.
+router.post('/tick', async (req, res) => {
+  try { await engine.refreshEquity(); } catch {}
+  res.json(engine.tick(req.body || {}));
+});
 
 // Per-slot paper ledger.
 router.get('/trades/:account', (req, res) => res.json(engine.trades(req.params.account)));

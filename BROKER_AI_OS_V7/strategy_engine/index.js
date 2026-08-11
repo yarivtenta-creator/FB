@@ -273,6 +273,18 @@ function _execArmed(){
 }
 
 // Full status snapshot for the dashboard.
+/**
+ * Same as status(), but waits for a real equity read when the cache is cold.
+ * status() must stay synchronous for existing callers, but the dashboard needs
+ * the REAL balance on first paint — otherwise it shows the $100,000 default and
+ * divides the capital off a number that is not the operator's account.
+ */
+async function statusFresh(){
+  const stale = !_equityCache.value || (Date.now() - _equityCache.ts) >= EQUITY_TTL_MS;
+  if (stale && _globalKeysPresent()) { try { await refreshEquity(); } catch {} }
+  return status();
+}
+
 function status(){
   const slots = _slots();
   const rs = runState.read();
@@ -342,7 +354,7 @@ function allTrades(){
 }
 
 module.exports = {
-  tick, status, trades, allTrades, refreshEquity, allocation,
+  tick, status, statusFresh, trades, allTrades, refreshEquity, allocation,
   STRATEGIES: catalog.STRATEGIES, strategies: catalog.list,
   SLOT_IDS, _slots
 };
