@@ -1,0 +1,45 @@
+{
+  "slots": {
+    "A": {
+      "enabled": true
+    },
+    "B": {
+      "enabled": true
+    },
+    "C": {
+      "enabled": true
+    },
+    "D": {
+      "enabled": true
+    },
+    "E": {
+      "enabled": true
+    },
+    "F": {
+      "enabled": true
+    },
+    "G": {
+      "enabled": true
+    },
+    "H": {
+      "enabled": true
+    },
+    "I": {
+      "enabled": true
+    },
+    "J": {
+      "enabled": true
+    },
+    "K": {
+      "enabled": true
+    },
+    "L": {
+      "enabled": true
+    }
+  },
+  "auto": {
+    "enabled": false,
+    "interval_sec": 300
+  },
+  "updated_at": "2026-08-11T03:30:36.072Z"
+}

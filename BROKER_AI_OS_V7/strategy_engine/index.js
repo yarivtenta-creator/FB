@@ -18,6 +18,7 @@
 const scoring = require('../data_layer/signal_scoring');
 const runState = require('./run_state');
 const catalog = require('./strategies');
+const slotConfig = require('./slot_config');
 
 const DEFAULT_EQUITY = 100000;   // used only when no real Alpaca equity is available
 
@@ -47,7 +48,9 @@ function _slots(){
       .trim().toLowerCase();
     const profile = catalog.get(stratName) || catalog.get('balanced');
     const ownKeys = _present('ALPACA_' + id + '_KEY_ID') && _present('ALPACA_' + id + '_SECRET');
-    const enabled = (process.env['SLOT_' + id + '_ENABLED'] || 'true').trim().toLowerCase() !== 'false';
+    // Operator toggle (persisted) wins; env var is the fallback default.
+    const envDefault = (process.env['SLOT_' + id + '_ENABLED'] || 'true').trim().toLowerCase() !== 'false';
+    const enabled = envDefault && slotConfig.isEnabled(id);
     return {
       id,
       strategy: stratName,

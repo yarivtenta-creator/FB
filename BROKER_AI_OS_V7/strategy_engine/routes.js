@@ -10,6 +10,8 @@ const express = require('express');
 const router = express.Router();
 const engine = require('./index');
 const runState = require('./run_state');
+const slotConfig = require('./slot_config');
+const autoRunner = require('./auto_runner');
 
 // Status of all three accounts/strategies + current pause state.
 router.get('/status', (req, res) => res.json(engine.status()));
@@ -36,5 +38,26 @@ router.post('/equity/refresh', async (req, res) => {
 router.get('/run-state', (req, res) => res.json(runState.read()));
 router.post('/pause',  (req, res) => res.json(runState.pause((req.body || {}).reason)));
 router.post('/resume', (req, res) => res.json(runState.resume((req.body || {}).reason)));
+
+// ── Operator control: which strategies run ─────────────────────────────────
+router.get('/slots', (req, res) => res.json(slotConfig.read()));
+router.post('/slots/:id', (req, res) => {
+  const body = req.body || {};
+  res.json(slotConfig.setSlot(req.params.id, body.enabled !== false));
+});
+router.post('/slots-all', (req, res) => {
+  const body = req.body || {};
+  res.json(slotConfig.setAll(body.enabled !== false));
+});
+
+// ── Auto-tick: run the engine on a timer instead of clicking Tick ──────────
+router.get('/auto', (req, res) => res.json(autoRunner.status()));
+router.post('/auto', (req, res) => {
+  const body = req.body || {};
+  const r = slotConfig.setAuto(body.enabled !== false, body.interval_sec);
+  if (!r.ok) return res.status(400).json(r);
+  autoRunner.apply();
+  res.json(autoRunner.status());
+});
 
 module.exports = router;

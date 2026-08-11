@@ -65,6 +65,17 @@ main{padding:0 24px 28px;display:grid;gap:16px;grid-template-columns:repeat(12,1
       <button onclick="strategyTick()" title="Run one scoring pass now">Tick now</button>
       <span class="muted" id="runnote"></span>
     </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;padding:10px;background:var(--panel2);border:1px solid var(--line);border-radius:6px">
+      <b style="font-size:11px">CONTROL</b>
+      <button onclick="setAllSlots(true)">All strategies ON</button>
+      <button onclick="setAllSlots(false)">All OFF</button>
+      <span style="width:1px;height:20px;background:var(--line)"></span>
+      <label style="display:flex;align-items:center;gap:6px;font-size:11px">
+        <input type="checkbox" id="autoChk" onchange="setAuto()"/> Auto-run every
+        <input type="number" id="autoSec" min="30" value="300" style="width:70px;padding:4px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:4px;font-family:var(--mono)"/> sec
+      </label>
+      <span class="muted" id="autoNote" style="font-size:10px"></span>
+    </div>
     <div id="strategy" class="muted">loading…</div>
   </section>
   <section class="card c6"><h2>3 · Data Hub <span class="muted">(source of truth)</span></h2><div id="hub" class="muted">loading…</div></section>
@@ -130,7 +141,7 @@ async function getDiag(p){
   if(r.status===401){location.href='/login';return null;}
   try { return await r.json(); } catch { return null; }
 }
-async function post(p){ const r=await fetch(p,{method:'POST',headers:H}); return r.ok?r.json():null; }
+async function post(p,body){ const r=await fetch(p,{method:'POST',headers:H,body:body?JSON.stringify(body):undefined}); return r.ok?r.json():null; }
 function cap(s){return String(s).replace(/_/g,' ');}
 function esc(s){return String(s==null?'':s).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));}
 
@@ -174,9 +185,47 @@ async function addResearch(){
     msg.innerHTML='<span style="color:var(--red)">'+esc((d&&d.errors?d.errors.join(', '):'failed'))+'</span>';
   }
 }
+async function toggleSlot(id,on){
+  await post('/api/strategy/slots/'+id+(on?'?on=1':''),{enabled:on});
+  loadStrategy();
+}
+async function setAllSlots(on){
+  await post('/api/strategy/slots-all',{enabled:on});
+  loadStrategy();
+}
+async function setAuto(){
+  const on=document.getElementById('autoChk').checked;
+  const sec=Number(document.getElementById('autoSec').value)||300;
+  const d=await post('/api/strategy/auto',{enabled:on,interval_sec:sec});
+  if(d){ document.getElementById('autoSec').value=d.interval_sec; renderAuto(d); }
+}
+function renderAuto(d){
+  const el=document.getElementById('autoNote');
+  el.style.color = d.enabled ? (d.paused?'var(--yellow)':'var(--green)') : 'var(--muted)';
+  el.textContent = d.note + (d.runs?(' · '+d.runs+' runs'):'');
+}
+async function loadAuto(){
+  const d=await get('/api/strategy/auto'); if(!d) return;
+  document.getElementById('autoChk').checked=d.enabled;
+  document.getElementById('autoSec').value=d.interval_sec;
+  renderAuto(d);
+}
 async function loadResearch(){
-  const st=await get('/api/data/research/stats'); const d=await get('/api/data/research');
-  if(!st||!d) return;
+  const el=document.getElementById('research');
+  let st,d;
+  try{
+    st=await getDiag('/api/data/research/stats');
+    d=await getDiag('/api/data/research');
+  }catch(e){
+    el.innerHTML='<span style="color:var(--red)">Could not reach the research endpoint: '+esc(e.message)+'</span>';
+    return;
+  }
+  if(!st||!d||!Array.isArray(d.signals)){
+    el.innerHTML='<span style="color:var(--red)">Research endpoint returned an unexpected response. '
+      +'Check that the server is the current build (needs /api/data/research).</span>';
+    return;
+  }
+  try{
   let h='<div class="kpi" style="margin-bottom:10px">'
    + '<div><b style="color:var(--accent)">'+st.total+'</b><span>signals</span></div>'
    + '<div><b>'+st.symbols_covered+'</b><span>symbols</span></div>'
@@ -198,7 +247,10 @@ async function loadResearch(){
     h+='</table>';
   }
   h+='<div class="muted" style="margin-top:6px;font-size:10px">Research signals are scored at 0.85 source quality and rank alongside 13F/insider/congress. They drive PAPER trades only — ingesting never places an order.</div>';
-  document.getElementById('research').innerHTML=h;
+  el.innerHTML=h;
+  }catch(e){
+    el.innerHTML='<span style="color:var(--red)">Failed to render research signals: '+esc(e.message)+'</span>';
+  }
 }
 async function loadKeys(){
   const d = await get('/api/keys'); if(!d) return;
@@ -245,11 +297,12 @@ async function loadStrategy(){
     + (d.equity_error?(' · <span style="color:#a33">'+d.equity_error+'</span>'):'')
     + '</div>';
   html += '<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="text-align:left">'
-    + '<th>Slot</th><th>Strategy</th><th>Tier</th><th>Keys</th><th>Min score</th><th>Risk%</th>'
+    + '<th>Use</th><th>Slot</th><th>Strategy</th><th>Tier</th><th>Keys</th><th>Min score</th><th>Risk%</th>'
     + '<th>Sides</th><th>Max</th><th>Open</th><th>Total</th><th>Deployed</th></tr>';
   for (const a of d.accounts){
     const tierColor = a.tier==='low-risk'?'#2a6':a.tier==='high-risk'?'#a33':'#c80';
-    html += '<tr'+(a.enabled?'':' style="opacity:.4"')+'>'
+    html += '<tr'+(a.enabled?'':' style="opacity:.45"')+'>'
+      + '<td><input type="checkbox" '+(a.enabled?'checked':'')+' onchange="toggleSlot(\''+a.slot+'\',this.checked)" title="Use this strategy"/></td>'
       + '<td><b>'+a.slot+'</b></td>'
       + '<td>'+a.strategy_label+'</td>'
       + '<td style="color:'+tierColor+'">'+a.tier+'</td>'
@@ -277,7 +330,7 @@ async function strategyTick(){ await post('/api/strategy/tick'); loadStrategy();
 async function init(){
   const who=await get('/api/auth/whoami');
   document.getElementById('user').innerHTML = who&&who.ok ? `<b>${esc(who.username)}</b> (${esc(who.role)})` : 'not signed in';
-  loadStrategy(); loadHealth(); loadProviders(); loadKeys(); loadResearch(); loadHub(); loadSignals(); loadRanked(); loadGov(); loadPaper(); loadT4(); loadN8n();
+  loadStrategy(); loadAuto(); loadHealth(); loadProviders(); loadKeys(); loadResearch(); loadHub(); loadSignals(); loadRanked(); loadGov(); loadPaper(); loadT4(); loadN8n();
 }
 async function loadHealth(){ const d=await get('/api/health/full'); if(!d)return; const c=d.checks||{};
   document.getElementById('health').innerHTML=Object.keys(c).map(k=>`<div class="row"><span>${cap(k)}</span><span class="s-${c[k]}"><span class="dot"></span>${cap(c[k])}</span></div>`).join('');

@@ -160,6 +160,9 @@ app.post('/api/graph/propose', requireAuth, (req, res) => res.json(planner.propo
 
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
+// Restore auto-tick only if it was left ON and the engine is not paused.
+try { require('./strategy_engine/auto_runner').init(); } catch {}
+
 const PORT = config.PORT;
 if (require.main === module) {
   app.listen(PORT, () => {
