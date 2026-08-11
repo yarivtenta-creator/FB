@@ -42,7 +42,7 @@ main{padding:0 24px 28px;display:grid;gap:16px;grid-template-columns:repeat(12,1
   <span class="user" id="user">…</span>
   <button onclick="logout()">Logout</button>
 </header>
-<div class="banner">🛡️ Integrated safe instance. Mock data only · read-only data · approvals open a permission gate (never place orders) · paper trades are paper:true / executed:false · no secrets shown.</div>
+<div class="banner">🛡️ Integrated safe instance. No live trading — a live host or a live (AK) key is refused by the execution guards, not merely discouraged. Every trade is paper:true. Orders reach your Alpaca <b>PAPER</b> account only when Option B is armed in .env; see panel 0b for exactly what is or isn't being sent. No secrets shown.</div>
 <main>
   <section class="card c8"><h2>1 · System Health</h2><div id="health" class="muted">loading…</div>
     <div style="margin-top:10px"><button onclick="loadHealth()">Run Full Health Check</button></div></section>
@@ -78,7 +78,35 @@ main{padding:0 24px 28px;display:grid;gap:16px;grid-template-columns:repeat(12,1
     </div>
     <div id="strategy" class="muted">loading…</div>
   </section>
+
+  <section class="card c12" id="execCard" style="border:2px solid #666">
+    <h2>0b · Alpaca Paper Execution <span class="muted">(Option B — does your real paper balance move?)</span></h2>
+    <div class="muted" style="margin-bottom:10px;font-size:11px">
+      When this is <b style="color:var(--ink)">ARMED</b>, every trade the engine opens is also sent as a market order to your
+      Alpaca <b style="color:var(--ink)">PAPER</b> account, so the balance and positions really change. Play money — but your real paper account.
+      When it is <b style="color:var(--ink)">BLOCKED</b>, trades are simulated here only and Alpaca is never told.
+      Arming is done in <code>.env</code> (<code>ALPACA_EXECUTE=true</code>), not from this page.
+    </div>
+    <div style="margin-bottom:10px">
+      <button onclick="loadExec()">Refresh execution status</button>
+      <button onclick="loadBrokerState()">Show broker positions &amp; orders</button>
+    </div>
+    <div id="exec" class="muted">loading…</div>
+    <div id="brokerState" class="muted" style="margin-top:12px"></div>
+  </section>
+
   <section class="card c6"><h2>3 · Data Hub <span class="muted">(source of truth)</span></h2><div id="hub" class="muted">loading…</div></section>
+
+  <section class="card c6"><h2>3b · AI-Trader Feed <span class="muted">(ai4trade.ai · read-only · never publishes your trades)</span></h2>
+    <div class="muted" style="margin-bottom:10px;font-size:11px">
+      Community signal feed from other trading agents. Sync pulls the feed and files each signal as a research signal,
+      so it flows into ranking and statistics like any other source. Needs a free <code>AITRADER_TOKEN</code> in <code>.env</code>.
+    </div>
+    <div style="margin-bottom:10px">
+      <button onclick="loadAiTrader()">Check connection</button>
+      <button onclick="syncAiTrader()">Sync feed → research signals</button>
+    </div>
+    <div id="aitrader" class="muted">loading…</div></section>
 
   <section class="card c12"><h2>6 · Research Signals <span class="muted">(from /trade and /crypto skills — feeds ranking, trades and statistics)</span></h2>
     <div style="background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:12px;margin-bottom:14px">
@@ -127,6 +155,7 @@ main{padding:0 24px 28px;display:grid;gap:16px;grid-template-columns:repeat(12,1
       <a href="/docs/operator/START_2024.md" target="_blank">Operator: Start 2024</a>
       <a href="/docs/operator/CONNECT_ALPACA.md" target="_blank">Operator: Connect Alpaca</a>
       <a href="/docs/operator/PAPER_TRADING.md" target="_blank">Operator: Paper Trading</a>
+      <a href="/docs/operator/OPTION_B_PAPER_EXECUTION.md" target="_blank">Operator: Option B — Paper Execution</a>
     </div></section>
 </main>
 <script>
@@ -142,9 +171,109 @@ async function getDiag(p){
   try { return await r.json(); } catch { return null; }
 }
 async function post(p,body){ const r=await fetch(p,{method:'POST',headers:H,body:body?JSON.stringify(body):undefined}); return r.ok?r.json():null; }
+// POST that keeps the JSON body on 4xx/5xx, so failures can be shown, not swallowed.
+async function postDiag(p,body){
+  const r=await fetch(p,{method:'POST',headers:H,body:body?JSON.stringify(body):undefined});
+  if(r.status===401){location.href='/login';return null;}
+  try { return await r.json(); } catch { return null; }
+}
 function cap(s){return String(s).replace(/_/g,' ');}
 function esc(s){return String(s==null?'':s).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));}
 
+
+// ── Option B: Alpaca paper execution status ─────────────────────────────────
+// Shows each guard individually. A bare "blocked" tells the operator nothing;
+// naming the guard tells them exactly which line of .env to change.
+async function loadExec(){
+  const el=document.getElementById('exec');
+  const card=document.getElementById('execCard');
+  el.innerHTML='<span class="muted">checking…</span>';
+  const d=await getDiag('/api/alpaca-exec/status');
+  if(!d||!d.guards){ el.innerHTML='<span style="color:var(--red)">Could not read execution status.</span>'; return; }
+
+  const armed=d.execution_enabled===true;
+  card.style.border='2px solid '+(armed?'var(--yellow)':'#666');
+  let h='<div style="margin-bottom:10px"><span style="padding:6px 14px;border-radius:999px;font-weight:700;background:'
+      + (armed?'var(--yellow);color:#000':'#444;color:#fff')+'">'+esc(d.mode)+'</span>'
+      + '<span class="muted" style="margin-left:10px">'+esc(d.base_url)
+      + (d.masked_key?' · key '+esc(d.masked_key):'')
+      + (d.account_number?' · account '+esc(d.account_number):'')+'</span></div>';
+  h+='<table style="width:100%;border-collapse:collapse;font-size:11px">';
+  for(const g of d.guards){
+    h+='<tr style="border-bottom:1px solid var(--line)">'
+     + '<td style="padding:5px 8px;width:22px;color:'+(g.pass?'var(--green)':'var(--red)')+'">'+(g.pass?'✓':'✗')+'</td>'
+     + '<td style="padding:5px 8px"><code style="font-size:10px">'+esc(g.id)+'</code></td>'
+     + '<td style="padding:5px 8px">'+esc(g.label)+'</td>'
+     + '<td style="padding:5px 8px" class="muted">'+esc(g.detail)+'</td></tr>';
+  }
+  h+='</table><div class="muted" style="margin-top:8px">'+esc(d.note)+'</div>';
+  el.innerHTML=h;
+}
+
+async function loadBrokerState(){
+  const el=document.getElementById('brokerState');
+  el.innerHTML='<span class="muted">reading broker…</span>';
+  const [pos,ord]=await Promise.all([
+    getDiag('/api/alpaca-exec/positions'), getDiag('/api/alpaca-exec/orders')
+  ]);
+  let h='';
+  if(pos&&pos.ok){
+    h+='<div style="margin-bottom:4px"><b>Broker positions ('+pos.count+')</b></div>';
+    h+=pos.count? pos.positions.map(p=>'<div class="row"><span>'+esc(p.symbol)+' '+esc(p.side)+' × '+esc(p.qty)
+      +'</span><span class="muted">$'+esc(p.market_value)+' · P/L '+esc(p.unrealized_pl)+'</span></div>').join('')
+      : '<span class="muted">none held at Alpaca</span>';
+  } else {
+    h+='<div class="muted">Positions unavailable: '+esc((pos&&(pos.reason||(pos.blocked_by||[]).join(',')))||'unknown')+'</div>';
+  }
+  if(ord&&ord.ok){
+    h+='<div style="margin:10px 0 4px"><b>Broker orders ('+ord.count+')</b></div>';
+    h+=ord.count? ord.orders.slice(0,10).map(o=>'<div class="row"><span>'+esc(o.symbol)+' '+esc(o.side)+' × '+esc(o.qty)
+      +'</span><span class="muted">'+esc(o.status)+' · '+esc(String(o.submitted_at||'').replace('T',' ').slice(0,16))+'</span></div>').join('')
+      : '<span class="muted">no orders sent yet</span>';
+  } else {
+    h+='<div class="muted" style="margin-top:8px">Orders unavailable: '+esc((ord&&(ord.reason||(ord.blocked_by||[]).join(',')))||'unknown')+'</div>';
+  }
+  el.innerHTML=h;
+}
+
+// ── AI-Trader feed ──────────────────────────────────────────────────────────
+async function loadAiTrader(){
+  const el=document.getElementById('aitrader');
+  el.innerHTML='<span class="muted">checking…</span>';
+  const s=await getDiag('/api/ai-trader/status');
+  if(!s){ el.innerHTML='<span style="color:var(--red)">Could not read AI-Trader status.</span>'; return; }
+  let h='<div class="row"><span>token</span><span class="'+(s.token_present?'':'muted')+'">'
+      + (s.token_present?esc(s.masked_token):'not set')+'</span></div>'
+      + '<div class="row"><span>base url</span><span class="muted">'+esc(s.base_url)+'</span></div>'
+      + '<div class="row"><span>baseline score</span><span>'+esc(s.baseline_score)+'</span></div>'
+      + '<div class="row"><span>places orders</span><span style="color:var(--green)">no</span></div>'
+      + '<div class="row"><span>publishes your trades</span><span style="color:var(--green)">no</span></div>';
+  if(s.token_present){
+    const me=await getDiag('/api/ai-trader/whoami');
+    h+='<div class="row"><span>connection</span><span style="color:'+(me&&me.ok?'var(--green)':'var(--red)')+'">'
+      + (me&&me.ok? 'connected as '+esc(me.name||('agent#'+me.agent_id)) : 'failed: '+esc((me&&(me.error||me.status))||'unknown'))
+      + '</span></div>';
+  }
+  h+='<div class="muted" style="margin-top:8px;font-size:10px">'+esc(s.note)+'</div>';
+  el.innerHTML=h;
+}
+
+async function syncAiTrader(){
+  const el=document.getElementById('aitrader');
+  el.innerHTML='<span class="muted">pulling feed…</span>';
+  const r=await postDiag('/api/ai-trader/sync');
+  if(r&&r.ok){
+    el.innerHTML='<span style="color:var(--green)">Ingested '+r.ingested+' of '+r.fetched
+      +' signals at score '+r.baseline_score+'.</span><div class="muted" style="margin-top:6px">'+esc(r.note)+'</div>';
+    loadResearch(); loadRanked();
+  } else {
+    el.innerHTML='<span style="color:var(--red)">Sync failed: '
+      + esc((r&&(r.error||r.reason))||'no response')+'</span>'
+      + '<div class="muted" style="margin-top:6px">Set AITRADER_TOKEN in .env, then restart. '
+      + 'If the token is set, the ai4trade.ai service may be unreachable from this machine.</div>';
+  }
+  setTimeout(loadAiTrader, 6000);
+}
 
 async function probeKeyless(){
   const el=document.getElementById('probe');
@@ -330,7 +459,7 @@ async function strategyTick(){ await post('/api/strategy/tick'); loadStrategy();
 async function init(){
   const who=await get('/api/auth/whoami');
   document.getElementById('user').innerHTML = who&&who.ok ? `<b>${esc(who.username)}</b> (${esc(who.role)})` : 'not signed in';
-  loadStrategy(); loadAuto(); loadHealth(); loadProviders(); loadKeys(); loadResearch(); loadHub(); loadSignals(); loadRanked(); loadGov(); loadPaper(); loadT4(); loadN8n();
+  loadStrategy(); loadAuto(); loadExec(); loadAiTrader(); loadHealth(); loadProviders(); loadKeys(); loadResearch(); loadHub(); loadSignals(); loadRanked(); loadGov(); loadPaper(); loadT4(); loadN8n();
 }
 async function loadHealth(){ const d=await get('/api/health/full'); if(!d)return; const c=d.checks||{};
   document.getElementById('health').innerHTML=Object.keys(c).map(k=>`<div class="row"><span>${cap(k)}</span><span class="s-${c[k]}"><span class="dot"></span>${cap(c[k])}</span></div>`).join('');

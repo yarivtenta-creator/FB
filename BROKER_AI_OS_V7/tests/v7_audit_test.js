@@ -88,12 +88,69 @@ async function runTests() {
 
       const tr = await get('/api/strategy/trades', token);
       assert('Trades endpoint returns 200', tr.status === 200, `got ${tr.status}`);
-      const bad = (tr.body && tr.body.trades || []).filter(t => t.paper !== true || t.executed !== false);
-      assert('Every trade is paper:true / executed:false', bad.length === 0, `${bad.length} violations`);
+      const bad = (tr.body && tr.body.trades || []).filter(t => t.paper !== true);
+      assert('Every trade is paper:true', bad.length === 0, `${bad.length} violations`);
+      // executed:true is only legal when Option B execution is armed.
+      const ghost = (tr.body && tr.body.trades || [])
+        .filter(t => t.executed === true && tr.body.execution_armed !== true);
+      assert('No trade claims executed while execution is disarmed', ghost.length === 0, `${ghost.length} violations`);
     }
 
     const orders = await get('/api/alpaca/orders');
-    assert('No order endpoint exposed (should be 404)', orders.status === 404, `got ${orders.status}`);
+    assert('Read-only Alpaca router exposes no order endpoint (404)', orders.status === 404, `got ${orders.status}`);
+
+    // ── Option B execution guards ────────────────────────────────────────────
+    const ex = await get('/api/alpaca-exec/status');
+    assert('Execution status returns 200', ex.status === 200, `got ${ex.status}`);
+    assert('Execution never reports live trading',
+      ex.body && ex.body.live_trading === false && ex.body.paper_only === true,
+      JSON.stringify(ex.body && { live: ex.body.live_trading, paper: ex.body.paper_only }));
+
+    const guards = (ex.body && ex.body.guards) || [];
+    const ids = guards.map(g => g.id).sort().join(',');
+    assert('All five execution guards are present',
+      ids === 'KEYS_PRESENT,OPT_IN,PAPER_ACCOUNT,PAPER_HOST,PAPER_KEY', ids);
+
+    // The unbypassable guards, proven directly against the module.
+    const exec = require('../connectors/alpaca/alpaca_execution');
+    const saved = {
+      e: process.env.ALPACA_EXECUTE, k: process.env.ALPACA_API_KEY,
+      s: process.env.ALPACA_SECRET_KEY, b: process.env.ALPACA_BASE_URL
+    };
+    const set = (e, k, b) => {
+      process.env.ALPACA_EXECUTE = e; process.env.ALPACA_API_KEY = k;
+      process.env.ALPACA_SECRET_KEY = 'secret_placeholder'; process.env.ALPACA_BASE_URL = b;
+    };
+    const blockedBy = () => exec.guardStatic().blocked_by;
+
+    set('true', 'AKLIVEKEY0000', 'https://paper-api.alpaca.markets');
+    assert('A LIVE (AK) key is refused even with opt-in',
+      blockedBy().includes('PAPER_KEY'), blockedBy().join(','));
+
+    set('true', 'PKPAPERKEY000', 'https://api.alpaca.markets');
+    assert('The LIVE host is refused even with a paper key',
+      blockedBy().includes('PAPER_HOST'), blockedBy().join(','));
+
+    set('false', 'PKPAPERKEY000', 'https://paper-api.alpaca.markets');
+    assert('Without ALPACA_EXECUTE=true nothing is sent',
+      blockedBy().includes('OPT_IN'), blockedBy().join(','));
+
+    set('true', 'AKLIVEKEY0000', 'https://api.alpaca.markets');
+    const blockedOrder = await exec.submitOrder({ symbol: 'AAPL', side: 'buy', qty: 1 });
+    assert('submitOrder against a live key+host is blocked, not sent',
+      blockedOrder.ok === false && blockedOrder.blocked === true, JSON.stringify(blockedOrder));
+
+    process.env.ALPACA_EXECUTE = saved.e === undefined ? '' : saved.e;
+    if (saved.k !== undefined) process.env.ALPACA_API_KEY = saved.k;
+    if (saved.s !== undefined) process.env.ALPACA_SECRET_KEY = saved.s;
+    if (saved.b !== undefined) process.env.ALPACA_BASE_URL = saved.b;
+
+    // ── AI-Trader connector ──────────────────────────────────────────────────
+    const at = await get('/api/ai-trader/status');
+    assert('AI-Trader status returns 200', at.status === 200, `got ${at.status}`);
+    assert('AI-Trader connector never places orders and never publishes trades',
+      at.body && at.body.places_orders === false && at.body.publishes_your_trades === false,
+      JSON.stringify(at.body));
 
   } catch (e) {
     console.error('TEST ERROR:', e.message);

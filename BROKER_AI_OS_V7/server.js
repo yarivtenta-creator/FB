@@ -1,8 +1,11 @@
 'use strict';
 /**
  * server.js — BROKER_AI_OS_V7 (port 6060).
- * SAFETY: no broker client, no live endpoint, manual default, AUTO_RESUME=false,
- * Alpaca is READ-ONLY market data only — no orders, no execution, no positions modification.
+ * SAFETY: no live endpoint, manual default, AUTO_RESUME=false.
+ * Alpaca data/account access is READ-ONLY. Order placement exists ONLY in
+ * connectors/alpaca/alpaca_execution.js (Option B), is off by default, and is
+ * structurally restricted to a PAPER account — a live host or a live (AK) key
+ * is refused by guards that no env var can disable.
  */
 const express = require('express');
 const path = require('path');
@@ -81,6 +84,16 @@ app.get('/api/data/providers', (req, res) => {
 
 // ── Alpaca read-only routes (unauthenticated for diagnostics) ─────────────
 app.use('/api/alpaca', require('./connectors/alpaca/alpaca_routes'));
+
+// ── Alpaca PAPER execution (Option B). Mounted separately so the router above
+// keeps its GET-only contract. Placing an order requires a signed-in operator
+// ON TOP of the guards in connectors/alpaca/alpaca_execution.js. Status/read
+// paths stay open so the dashboard can show what is blocking without a login.
+app.post('/api/alpaca-exec/order', requireAuth, (req, res, next) => next());
+app.use('/api/alpaca-exec', require('./connectors/alpaca/alpaca_exec_routes'));
+
+// ── AI-Trader (ai4trade.ai) signal feed — read + local ingest only ────────
+app.use('/api/ai-trader', require('./connectors/ai_trader/routes'));
 
 // ── Live probe of the keyless providers (real GETs, no keys) ──────────────
 app.get('/api/keyless/probe', async (req, res) => {
@@ -168,7 +181,10 @@ if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`\n✅ BROKER_AI_OS_V7 running at http://localhost:${PORT}`);
     console.log(`   mode=${config.EXECUTION_MODE} auto_resume=${config.AUTO_RESUME} live=${config.LIVE_ENDPOINT_ENABLED}`);
-    console.log(`   Alpaca: READ-ONLY | No live trading | No order placement`);
+    const _armed = (() => { try { return require('./connectors/alpaca/alpaca_execution').guardStatic().allowed; } catch { return false; } })();
+    console.log(_armed
+      ? `   Alpaca: PAPER EXECUTION ARMED — orders WILL be sent to your paper account. No live trading.`
+      : `   Alpaca: READ-ONLY | No live trading | No order placement (Option B disarmed)`);
     console.log(`   sign in at http://localhost:${PORT}/login\n`);
   });
 }

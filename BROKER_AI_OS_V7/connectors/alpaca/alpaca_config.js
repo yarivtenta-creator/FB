@@ -28,7 +28,10 @@ function load() {
   return {
     configured,
     isPaper,
-    isReadOnly: true, // ALWAYS true in V7 — cannot be disabled
+    // ALWAYS true for THIS connector — the data/account path never writes.
+    // Order placement lives in the separate alpaca_execution.js module and is
+    // reported by /api/alpaca-exec/status, not here.
+    isReadOnly: true,
     baseUrl,
     dataUrl,
     // Masked representations only — never real values returned

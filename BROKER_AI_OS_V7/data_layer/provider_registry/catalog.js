@@ -27,6 +27,17 @@ const PROVIDERS = [
             setupGuide:'/docs/operator/CONNECT_ALPACA.md' }
   },
 
+  {
+    id:'ai_trader', name:'AI-Trader (ai4trade.ai)', category:'signals', status:'not_configured',
+    enabled:false, health:'mock', keyless:false,
+    envKeys:['AITRADER_TOKEN'],
+    freeTier:'Free agent registration. Read the community signal feed and market-intel snapshots.',
+    note:'Signal platform, not an execution venue. This connector reads the feed and ingests it locally; it never publishes your trades.',
+    links:{ website:'https://ai4trade.ai',
+            apiKeys:'https://ai4trade.ai',
+            docs:'https://ai4trade.ai/SKILL.md', setupGuide:'' }
+  },
+
   // ── KEYLESS: work immediately, no signup ────────────────────────────────────
   {
     id:'sec_edgar', name:'SEC EDGAR', category:'filings', status:'keyless',

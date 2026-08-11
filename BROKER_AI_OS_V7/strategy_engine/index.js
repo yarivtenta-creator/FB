@@ -9,11 +9,20 @@
  * your Alpaca PAPER account (read-only GET /v2/account). The trades themselves are
  * SIMULATED in this system's ledger.
  *
+ * EXECUTION (Option B):
+ *  - By default the engine is SIMULATION ONLY: a trade lives in this ledger and
+ *    the broker is never told. Alpaca is contacted with GET only.
+ *  - If the operator arms execution (ALPACA_EXECUTE=true, paper host, PK key,
+ *    PA account — see connectors/alpaca/alpaca_execution.js), each newly opened
+ *    trade is ALSO submitted as a market order to the Alpaca PAPER account, and
+ *    the real paper balance moves.
+ *  - live_trading remains structurally impossible: a live host or a live AK key
+ *    is refused by the execution guards, not merely discouraged.
+ *
  * HARD SAFETY (unchanged):
- *  - No broker client, no order path, no execution anywhere.
- *  - Every trade is paper:true / executed:false.
- *  - Alpaca is contacted with GET only. Never POST/DELETE. Never /v2/orders.
- *  - When PAUSED the engine still reads + scores, but opens NO new paper trades.
+ *  - Every trade is paper:true. `executed` reports the TRUTH: false while
+ *    simulated, true only once the broker accepts the paper order.
+ *  - When PAUSED the engine still reads + scores, but opens NO new trades.
  */
 const scoring = require('../data_layer/signal_scoring');
 const runState = require('./run_state');
@@ -106,7 +115,7 @@ function _equity(){
   return _equityCache.value || DEFAULT_EQUITY;
 }
 
-// ── Per-slot paper ledgers (in-memory; paper:true / executed:false always) ──────
+// ── Per-slot paper ledgers (in-memory; paper:true always) ──────────────────────
 const _ledgers = {};
 SLOT_IDS.forEach(id => { _ledgers[id] = []; });
 let _tradeSeq = 0;
@@ -154,11 +163,37 @@ function _openPaper(slot, sig, equity){
     equity_source: _equityCache.source,
     status: 'open',
     opened_at: new Date().toISOString(),
-    paper: true,        // hard invariant
-    executed: false     // hard invariant — never a real order
+    paper: true,        // hard invariant — never a live account
+    executed: false,    // truthful: flipped to true only if the broker accepts
+    broker: null        // {order_id, status} once submitted, or {error}
   };
   ledger.push(trade);
+  _maybeExecute(trade);
   return trade;
+}
+
+// ── Option B: mirror the paper trade to the Alpaca PAPER account ────────────
+// Fire-and-forget so a slow or failing broker can never stall a tick. The
+// guards inside alpaca_execution decide whether anything is sent at all; if
+// execution is not armed this is a no-op and the trade stays simulated.
+function _maybeExecute(trade) {
+  let exec;
+  try { exec = require('../connectors/alpaca/alpaca_execution'); } catch { return; }
+  if (!exec.guardStatic().allowed) return;         // not armed — stay simulated
+  if (trade.side === 'neutral') return;            // nothing to send
+
+  exec.submitOrder({
+    symbol: trade.symbol,
+    side: trade.side === 'short' ? 'sell' : 'buy',
+    qty: trade.qty
+  }).then(r => {
+    if (r.ok) {
+      trade.executed = true;                       // the broker really has it
+      trade.broker = { order_id: r.order.broker_order_id, status: r.order.status, paper: true };
+    } else {
+      trade.broker = { error: r.reason, blocked_by: r.blocked_by || null, message: r.message || null };
+    }
+  }).catch(e => { trade.broker = { error: 'exception', message: e.message }; });
 }
 
 // One engine tick: score once, apply every enabled+configured strategy slot.
@@ -192,11 +227,19 @@ function tick(opts = {}){
     actions,
     skipped,
     paper: true,
-    executed: false,
+    execution_armed: _execArmed(),
     note: paused
-      ? 'PAUSED — reading data and scoring; no new paper trades opened.'
-      : 'RUNNING — opened qualifying new paper trades (simulation only, no real orders).'
+      ? 'PAUSED — reading data and scoring; no new trades opened.'
+      : (_execArmed()
+          ? 'RUNNING — opened qualifying trades and submitted them to the Alpaca PAPER account.'
+          : 'RUNNING — opened qualifying paper trades (simulation only, no broker orders).')
   };
+}
+
+// Is Option B execution armed right now? Static guards only, no network call.
+function _execArmed(){
+  try { return require('../connectors/alpaca/alpaca_execution').guardStatic().allowed; }
+  catch { return false; }
 }
 
 // Full status snapshot for the dashboard.
@@ -239,24 +282,27 @@ function status(){
         deployed_notional: +open.reduce((a,t)=>a+(t.notional||0),0).toFixed(2),
         note: p.note,
         paper: true,
-        executed: false
+        broker_orders: ledger.filter(t => t.executed === true).length
       };
     }),
     strategies: catalog.STRATEGIES,
-    note: `${slots.length} strategy slots, ${catalog.NAMES.length} strategies available. Paper-only; no execution.`
+    execution_armed: _execArmed(),
+    note: `${slots.length} strategy slots, ${catalog.NAMES.length} strategies available. Paper-only.` +
+      (_execArmed() ? ' Orders ARE being sent to your Alpaca PAPER account.'
+                    : ' Simulation only — no broker orders.')
   };
 }
 
 function trades(slotId){
   const id = String(slotId || '').toUpperCase();
   if (!_ledgers[id]) return { ok:false, error:'unknown_slot', slot:slotId };
-  return { ok:true, slot:id, account:id, trades:_ledgers[id], paper:true, executed:false };
+  return { ok:true, slot:id, account:id, trades:_ledgers[id], paper:true, execution_armed:_execArmed() };
 }
 
 function allTrades(){
   const all = [];
   for (const id of SLOT_IDS) all.push(..._ledgers[id]);
-  return { ok:true, count: all.length, trades: all.sort((a,b)=>b.id-a.id), paper:true, executed:false };
+  return { ok:true, count: all.length, trades: all.sort((a,b)=>b.id-a.id), paper:true, execution_armed:_execArmed() };
 }
 
 module.exports = {
