@@ -954,7 +954,7 @@ button { font: inherit; cursor: pointer; }
 
 .results-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: clamp(18px, 2.2vw, 28px);
   margin-bottom: clamp(56px, 7vw, 90px);
 }
@@ -987,6 +987,9 @@ button { font: inherit; cursor: pointer; }
 .results-grid .result-card:nth-child(1) { rotate: -1.2deg; }
 .results-grid .result-card:nth-child(2) { rotate: 0.9deg; }
 .results-grid .result-card:nth-child(3) { rotate: -0.7deg; }
+.results-grid .result-card:nth-child(4) { rotate: 1deg; }
+.results-grid .result-card:nth-child(5) { rotate: -0.9deg; }
+.results-grid .result-card:nth-child(6) { rotate: 0.7deg; }
 .results-grid .result-card:hover { rotate: 0deg; }
 
 .result-kicker {

@@ -14,7 +14,7 @@ Built from `GoBigger_Website_Plan_v2.md`. Brand rule respected throughout: a **h
 | Pricing modal | "See Pricing Options" opens a side-by-side comparison table; drop real numbers into the last row later, no restructuring needed |
 | How It Works | 5 steps: Discovery → Research & Diagnosis → Strategy Options → Delivery & Roadmap → Ongoing Support |
 | About / Manifesto | Dark section; the philosophy ("Don't fall in love with the solution…") incl. the Dutch tagline |
-| Results | Founder ventures (Club Lab, Vinyl Lab) honestly framed + a reserved slot for the first client case study |
+| Results | Founder ventures (Club Lab, Video Vegas, Tenta Production, Medical Products, and more) honestly framed; client case studies published with real numbers as earned |
 | Contact | Intake form (front-end only — wire to backend `src/intake/normalize.js` later) |
 | Client Login | Small top-right placeholder link with "Portal opening soon" tooltip; activates with backend P6/P7 |
 
