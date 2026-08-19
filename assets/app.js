@@ -1,10 +1,13 @@
 /* Go-Bigger Solutions — page behavior
    Scroll reveals, header state, nav highlighting, mobile menu,
-   pricing modal, and the intake form (front-end only for now —
-   wire the submit handler to the backend intake endpoint later). */
+   pricing modal, and the intake form. The form validates and then
+   opens the visitor's email client pre-filled to INTAKE_EMAIL. */
 
 (function () {
   "use strict";
+
+  // Where contact-form leads are sent (opens the visitor's email client).
+  var INTAKE_EMAIL = "yariv.tenta@gmail.com";
 
   var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -161,9 +164,39 @@
         status.textContent = "Please fill in your name, a valid email, and your goal.";
         return;
       }
-      // TODO: POST to the backend intake endpoint (src/intake/normalize.js) when it ships.
+
+      // Deliver the lead by opening the visitor's email client, pre-filled.
+      var val = function (id) {
+        var el = document.getElementById(id);
+        return el ? el.value.trim() : "";
+      };
+      var name = val("f-name");
+      var email = val("f-email");
+      var company = val("f-company");
+      var goal = val("f-goal");
+
+      var subject = "Free diagnostic request — " + (name || "new lead");
+      var bodyLines = [
+        "Name: " + name,
+        "Email: " + email,
+        "Business / company: " + (company || "—"),
+        "",
+        "Where they're trying to go:",
+        goal,
+      ];
+      var mailto = "mailto:" + INTAKE_EMAIL +
+        "?subject=" + encodeURIComponent(subject) +
+        "&body=" + encodeURIComponent(bodyLines.join("\n"));
+
+      // Trigger the mail client without navigating the page away.
+      var a = document.createElement("a");
+      a.href = mailto;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
       status.className = "form-status ok";
-      status.textContent = "Thank you — we've got it. A real person will reply within two business days.";
+      status.textContent = "Thanks — your email app should open with the details filled in. Just hit send and a real person will reply within two business days.";
       form.querySelectorAll("input, textarea").forEach(function (f) { f.value = ""; });
     });
     form.querySelectorAll("input, textarea").forEach(function (f) {
