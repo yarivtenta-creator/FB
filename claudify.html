@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Claudify — generate a CLAUDE.md for any project</title>
+  <title>Claudify</title>
   <meta name="description" content="Drop a project folder in your browser and get a CLAUDE.md and .claude/settings.json written from what is actually in it. Runs entirely on your machine." />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%232ee6e0%22/><text x=%2250%22 y=%2271%22 font-size=%2254%22 text-anchor=%22middle%22 font-family=%22Georgia,serif%22 fill=%22%23070d12%22>C</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -367,6 +367,7 @@
         <button type="button" class="btn btn-outline" id="dl">Download it</button>
         <button type="button" class="btn btn-outline" id="dlBoth">Download both</button>
       </div>
+      <p class="note" id="embedNote" hidden><b>Downloads are turned off in this embedded view</b> &mdash; the frame this page is running in blocks them. Use <b>Copy this file</b> and paste into your editor. Save <code>claudify.html</code> to your machine and open it directly to get working download buttons.</p>
     </section>
 
     <footer>
@@ -1057,7 +1058,9 @@
       document.body.removeChild(ta);
     }
 
-    function save(name, text) {
+    /* Two ways to hand over a file. Opened from disk, an anchor does it. Hosted in
+       a frame, the frame can't download at all and the host mediates the save. */
+    function localSave(name, text) {
       var blob = new Blob([text], { type: "text/plain;charset=utf-8" });
       var url = URL.createObjectURL(blob);
       var a = document.createElement("a");
@@ -1069,16 +1072,46 @@
       setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
     }
 
+    var hostSaver, hostSaverAsked = false;
+    function saver() {
+      if (hostSaverAsked) return Promise.resolve(hostSaver);
+      hostSaverAsked = true;
+      if (window.claude && typeof window.claude.use === "function") {
+        return window.claude.use("downloads").then(
+          function (ns) { hostSaver = ns; return ns; },
+          function () { return null; }
+        );
+      }
+      return Promise.resolve(null);
+    }
+
+    function save(name, text) {
+      return saver().then(function (ns) {
+        if (!ns) { localSave(name, text); toast("Saved " + name); return true; }
+        return ns.save({ filename: name, data: text }).then(
+          function () { toast("Saved " + name); return true; },
+          function (err) {
+            var code = err && err.code;
+            if (code === "declined") toast("Save cancelled");
+            else if (code === "rate_limited") toast("One save at a time — try again");
+            else toast("Couldn't save " + name + " — use Copy instead");
+            return false;
+          }
+        );
+      });
+    }
+
     $("dl").addEventListener("click", function () {
       if (state.tab === "md") save("CLAUDE.md", state.out.md);
       else save("settings.json", state.out.json);
-      toast("Saved");
     });
 
+    /* Sequential: the host allows one open save prompt at a time. A viewer who
+       declines the first file doesn't get asked about the second. */
     $("dlBoth").addEventListener("click", function () {
-      save("CLAUDE.md", state.out.md);
-      setTimeout(function () { save("settings.json", state.out.json); }, 350);
-      toast("Both saved — settings.json goes in .claude/");
+      save("CLAUDE.md", state.out.md).then(function (ok) {
+        if (ok) return save("settings.json", state.out.json);
+      });
     });
 
     $("reset").addEventListener("click", function () {
@@ -1090,6 +1123,19 @@
       picker.value = "";
       window.scrollTo({ top: 0 });
     });
+
+    /* A frame with neither an anchor download nor a host saver can't hand over a
+       file at all — drop the buttons rather than leave ones that do nothing. */
+    var embedded = false;
+    try { embedded = window.self !== window.top; } catch (e) { embedded = true; }
+    if (embedded) {
+      saver().then(function (ns) {
+        if (ns) return;
+        $("dl").style.display = "none";
+        $("dlBoth").style.display = "none";
+        $("embedNote").hidden = false;
+      });
+    }
 
     // expose for automated verification
     window.__claudify = {
