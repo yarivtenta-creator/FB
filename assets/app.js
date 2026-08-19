@@ -1,13 +1,15 @@
 /* Go-Bigger Solutions — page behavior
    Scroll reveals, header state, nav highlighting, mobile menu,
    pricing modal, and the intake form. The form validates and then
-   opens the visitor's email client pre-filled to INTAKE_EMAIL. */
+   opens WhatsApp to INTAKE_WHATSAPP with the details pre-filled. */
 
 (function () {
   "use strict";
 
-  // Where contact-form leads are sent (opens the visitor's email client).
-  var INTAKE_EMAIL = "yariv.tenta@gmail.com";
+  // Where contact-form leads are sent (opens WhatsApp to this number).
+  // International format, no "+" and no leading zero — wa.me requires this.
+  var INTAKE_WHATSAPP = "31683010122"; // Avital
+
 
   var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -165,7 +167,7 @@
         return;
       }
 
-      // Deliver the lead by opening the visitor's email client, pre-filled.
+      // Deliver the lead by opening WhatsApp with the message pre-filled.
       var val = function (id) {
         var el = document.getElementById(id);
         return el ? el.value.trim() : "";
@@ -175,8 +177,9 @@
       var company = val("f-company");
       var goal = val("f-goal");
 
-      var subject = "Free diagnostic request — " + (name || "new lead");
-      var bodyLines = [
+      var lines = [
+        "New free-diagnostic request",
+        "",
         "Name: " + name,
         "Email: " + email,
         "Business / company: " + (company || "—"),
@@ -184,19 +187,14 @@
         "Where they're trying to go:",
         goal,
       ];
-      var mailto = "mailto:" + INTAKE_EMAIL +
-        "?subject=" + encodeURIComponent(subject) +
-        "&body=" + encodeURIComponent(bodyLines.join("\n"));
+      var waUrl = "https://wa.me/" + INTAKE_WHATSAPP +
+        "?text=" + encodeURIComponent(lines.join("\n"));
 
-      // Trigger the mail client without navigating the page away.
-      var a = document.createElement("a");
-      a.href = mailto;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      // Open WhatsApp in a new tab (works on desktop web + mobile app).
+      window.open(waUrl, "_blank", "noopener");
 
       status.className = "form-status ok";
-      status.textContent = "Thanks — your email app should open with the details filled in. Just hit send and a real person will reply within two business days.";
+      status.textContent = "Thanks — WhatsApp is opening with your details filled in. Just press send and a real person will reply within two business days.";
       form.querySelectorAll("input, textarea").forEach(function (f) { f.value = ""; });
     });
     form.querySelectorAll("input, textarea").forEach(function (f) {
