@@ -793,12 +793,14 @@
       });
 
       /* --- Layout + languages ---------------------------------- */
-      var dirCount = {}, extCount = {};
+      var dirCount = {}, extCount = {}, rootFiles = [];
       state.paths.forEach(function (p) {
         var i = p.indexOf("/");
         if (i > 0) {
           var top = p.slice(0, i);
           if (top.charAt(0) !== ".") dirCount[top] = (dirCount[top] || 0) + 1;
+        } else if (p.charAt(0) !== ".") {
+          rootFiles.push(p);
         }
         var e = /\.([a-z0-9]+)$/i.exec(p);
         if (e) {
@@ -808,6 +810,8 @@
       });
       d.dirs = Object.keys(dirCount).map(function (k) { return { name: k, n: dirCount[k] }; })
         .sort(function (a, b) { return b.n - a.n; }).slice(0, 8);
+      d.rootFiles = rootFiles.sort().slice(0, 10);
+      d.rootExtra = Math.max(0, rootFiles.length - d.rootFiles.length);
 
       var codeOnly = { Markdown: 1, JSON: 1, YAML: 1, TOML: 1 };
       d.langs = Object.keys(extCount).map(function (k) { return { name: k, n: extCount[k] }; })
@@ -892,10 +896,18 @@
       } else {
         L.push("<!-- One or two sentences: who this is for and what it does. -->");
       }
-      if (d.stack.length) {
+      var DESCRIPTOR = {
+        "Static site": "Static HTML/CSS/JS \u2014 no build step, no package manager, no dependencies. What is in the repo is what ships.",
+        "Monorepo": "Organised as a monorepo. The commands below are the root ones; individual packages may have their own."
+      };
+      var tech = d.stack.filter(function (s) { return !DESCRIPTOR[s]; });
+      if (tech.length) {
         L.push("");
-        L.push("Built with " + humanList(d.stack) + ".");
+        L.push("Built with " + humanList(tech) + ".");
       }
+      d.stack.forEach(function (s) {
+        if (DESCRIPTOR[s]) { L.push(""); L.push(DESCRIPTOR[s]); }
+      });
       L.push("");
 
       var keys = Object.keys(d.cmds);
@@ -914,10 +926,12 @@
         }
       }
 
-      if (d.dirs.length) {
+      if (d.dirs.length || (d.rootFiles && d.rootFiles.length)) {
         L.push("## Layout");
         L.push("");
         L.push("```");
+        (d.rootFiles || []).forEach(function (f) { L.push(f); });
+        if (d.rootExtra) L.push("... and " + d.rootExtra + " more at the root");
         d.dirs.forEach(function (x) {
           L.push(pad(x.name + "/", 22) + x.n + " file" + (x.n === 1 ? "" : "s"));
         });
