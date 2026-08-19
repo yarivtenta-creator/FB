@@ -109,32 +109,9 @@
     a.addEventListener("click", closeMenu);
   });
 
-  /* ---------- Pricing modal ---------- */
-  var modal = document.getElementById("pricingModal");
-  var openBtn = document.getElementById("pricingOpen");
-  var lastFocus = null;
-
-  function openModal() {
-    lastFocus = document.activeElement;
-    modal.hidden = false;
-    document.body.classList.add("modal-open");
-    var closeBtn = modal.querySelector(".modal-close");
-    if (closeBtn) closeBtn.focus();
-  }
-  function closeModal() {
-    modal.hidden = true;
-    document.body.classList.remove("modal-open");
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
-  }
-  if (openBtn) openBtn.addEventListener("click", openModal);
-  modal.addEventListener("click", function (e) {
-    if (e.target.closest("[data-close]")) closeModal();
-  });
+  /* ---------- Escape closes the mobile menu ---------- */
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") {
-      if (!modal.hidden) closeModal();
-      if (menu.classList.contains("open")) closeMenu();
-    }
+    if (e.key === "Escape" && menu.classList.contains("open")) closeMenu();
   });
 
   /* ---------- Client Login placeholder ---------- */

@@ -691,7 +691,7 @@ button { font: inherit; cursor: pointer; }
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: clamp(18px, 2.2vw, 28px);
 }
 
