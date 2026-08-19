@@ -1127,6 +1127,62 @@ button { font: inherit; cursor: pointer; }
 .form-status.ok { color: var(--accent); font-weight: 600; }
 .form-status.err { color: #ff6b5e; }
 
+/* WhatsApp contact panel */
+.contact-whatsapp {
+  align-content: start;
+  gap: 20px;
+}
+.wa-title {
+  font-family: var(--grotesk);
+  font-size: clamp(20px, 2.4vw, 26px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--cream);
+}
+.wa-lede {
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--cream-soft);
+}
+.wa-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: #25d366;
+  border-color: #25d366;
+  color: #05231a;
+}
+.wa-btn:hover {
+  background: #1fbe5a;
+  border-color: #1fbe5a;
+  color: #05231a;
+}
+.wa-icon { flex: none; }
+.wa-points {
+  list-style: none;
+  display: grid;
+  gap: 13px;
+  margin-top: 4px;
+}
+.wa-points li {
+  position: relative;
+  padding-left: 30px;
+  font-size: 15px;
+  color: var(--cream-soft);
+}
+.wa-points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 5px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent);
+  background: radial-gradient(circle at center, var(--accent) 0 3px, transparent 3.5px);
+}
+
 /* ============================================================ Closing */
 
 .closing {

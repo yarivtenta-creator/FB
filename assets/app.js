@@ -1,14 +1,10 @@
 /* Go-Bigger Solutions — page behavior
    Scroll reveals, header state, nav highlighting, mobile menu,
-   pricing modal, and the intake form. The form validates and then
-   opens WhatsApp to INTAKE_WHATSAPP with the details pre-filled. */
+   pricing modal, and a direct WhatsApp contact link. */
 
 (function () {
   "use strict";
 
-  // Where contact-form leads are sent (opens WhatsApp to this number).
-  // International format, no "+" and no leading zero — wa.me requires this.
-  var INTAKE_WHATSAPP = "31683010122"; // Avital
 
 
   var prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -148,59 +144,7 @@
     }
   });
 
-  /* ---------- Intake form (front-end only) ---------- */
-  var form = document.getElementById("contactForm");
-  var status = document.getElementById("formStatus");
-  if (form) {
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var valid = true;
-      form.querySelectorAll("[required]").forEach(function (field) {
-        var bad = !field.value.trim() ||
-          (field.type === "email" && !/^\S+@\S+\.\S+$/.test(field.value));
-        field.classList.toggle("invalid", bad);
-        if (bad) valid = false;
-      });
-      if (!valid) {
-        status.className = "form-status err";
-        status.textContent = "Please fill in your name, a valid email, and your goal.";
-        return;
-      }
-
-      // Deliver the lead by opening WhatsApp with the message pre-filled.
-      var val = function (id) {
-        var el = document.getElementById(id);
-        return el ? el.value.trim() : "";
-      };
-      var name = val("f-name");
-      var email = val("f-email");
-      var company = val("f-company");
-      var goal = val("f-goal");
-
-      var lines = [
-        "New free-diagnostic request",
-        "",
-        "Name: " + name,
-        "Email: " + email,
-        "Business / company: " + (company || "—"),
-        "",
-        "Where they're trying to go:",
-        goal,
-      ];
-      var waUrl = "https://wa.me/" + INTAKE_WHATSAPP +
-        "?text=" + encodeURIComponent(lines.join("\n"));
-
-      // Open WhatsApp in a new tab (works on desktop web + mobile app).
-      window.open(waUrl, "_blank", "noopener");
-
-      status.className = "form-status ok";
-      status.textContent = "Thanks — WhatsApp is opening with your details filled in. Just press send and a real person will reply within two business days.";
-      form.querySelectorAll("input, textarea").forEach(function (f) { f.value = ""; });
-    });
-    form.querySelectorAll("input, textarea").forEach(function (f) {
-      f.addEventListener("input", function () { f.classList.remove("invalid"); });
-    });
-  }
+  /* Contact is a direct WhatsApp link now — no form JS needed. */
 
   /* ==========================================================
      3D layer — vanilla canvas, no dependencies
