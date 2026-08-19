@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Claudify — generate a CLAUDE.md for any project</title>
+  <meta name="description" content="Drop a project folder in your browser and get a CLAUDE.md and .claude/settings.json written from what is actually in it. Runs entirely on your machine." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%232ee6e0%22/><text x=%2250%22 y=%2271%22 font-size=%2254%22 text-anchor=%22middle%22 font-family=%22Georgia,serif%22 fill=%22%23070d12%22>C</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #070d12;
+      --bg-2: #0c141d;
+      --bg-3: #111b26;
+      --cream: #ecf3f5;
+      --cream-soft: rgba(236, 243, 245, 0.72);
+      --mute: #89a1ae;
+      --accent: #2ee6e0;
+      --accent-deep: #17c3bd;
+      --accent-glow: rgba(46, 230, 224, 0.35);
+      --violet: #a06bff;
+      --amber: #ffcf6b;
+      --line: rgba(236, 243, 245, 0.1);
+      --line-strong: rgba(236, 243, 245, 0.24);
+      --glass: rgba(236, 243, 245, 0.035);
+      --serif: "Fraunces", Georgia, "Times New Roman", serif;
+      --sans: "Inter", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+      --grotesk: "Space Grotesk", var(--sans);
+      --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      --container: 1100px;
+      --gutter: clamp(18px, 4vw, 40px);
+      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; overflow-x: clip; }
+
+    body {
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--cream);
+      background:
+        radial-gradient(1100px 620px at 78% -8%, rgba(46, 230, 224, 0.12), transparent 62%),
+        radial-gradient(880px 520px at 8% 4%, rgba(160, 107, 255, 0.1), transparent 60%),
+        var(--bg);
+      background-attachment: fixed;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: clip;
+    }
+
+    .wrap { max-width: var(--container); margin: 0 auto; padding: 0 var(--gutter); }
+
+    /* ============================================================ Header */
+    .top {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px; flex-wrap: wrap;
+      padding: 30px 0 0;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .mark {
+      width: 40px; height: 40px; border-radius: 11px;
+      background: linear-gradient(150deg, var(--accent), var(--accent-deep));
+      color: var(--bg); font-family: var(--serif); font-size: 24px;
+      display: grid; place-items: center;
+      box-shadow: 0 0 26px var(--accent-glow);
+    }
+    .brand b { font-family: var(--serif); font-weight: 400; font-size: 22px; letter-spacing: -0.01em; display: block; line-height: 1.15; }
+    .brand span { font-family: var(--grotesk); font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--mute); }
+    .privacy {
+      font-family: var(--grotesk); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); border: 1px solid rgba(46, 230, 224, 0.32);
+      border-radius: 999px; padding: 7px 15px; background: rgba(46, 230, 224, 0.07);
+    }
+
+    /* ============================================================ Hero */
+    .hero { padding: 58px 0 40px; max-width: 720px; }
+    .eyebrow {
+      font-family: var(--grotesk); font-size: 11px; letter-spacing: 0.26em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 18px;
+    }
+    h1 {
+      font-family: var(--serif); font-weight: 300;
+      font-size: clamp(38px, 6vw, 62px); line-height: 1.04;
+      letter-spacing: -0.02em; margin-bottom: 20px;
+    }
+    h1 i { font-style: italic; color: var(--accent); }
+    .lede { color: var(--cream-soft); font-size: clamp(16px, 1.6vw, 18px); max-width: 620px; }
+    .lede code { font-family: var(--mono); font-size: 0.88em; color: var(--cream); background: var(--glass); border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px; }
+
+    /* ============================================================ Steps */
+    .step { margin: 0 0 26px; }
+    .step[hidden] { display: none; }
+    .step-head { display: flex; align-items: baseline; gap: 13px; margin-bottom: 14px; }
+    .step-no {
+      font-family: var(--grotesk); font-size: 11px; letter-spacing: 0.18em;
+      color: var(--accent); border: 1px solid rgba(46, 230, 224, 0.3);
+      border-radius: 999px; padding: 3px 11px; flex: none;
+    }
+    .step-head h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(21px, 2.4vw, 27px); letter-spacing: -0.01em; }
+    .step-head p { color: var(--mute); font-size: 14px; }
+
+    .panel {
+      background: linear-gradient(180deg, var(--glass), rgba(236, 243, 245, 0.012));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: clamp(18px, 3vw, 26px);
+      backdrop-filter: blur(9px);
+    }
+
+    /* ============================================================ Dropzone */
+    .drop {
+      border: 1.5px dashed var(--line-strong);
+      border-radius: 18px;
+      padding: clamp(30px, 6vw, 56px) 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.25s var(--ease-out), background 0.25s var(--ease-out), transform 0.25s var(--ease-out);
+      background: rgba(236, 243, 245, 0.018);
+      display: block; width: 100%;
+      color: inherit; font: inherit;
+    }
+    .drop:hover, .drop:focus-visible { border-color: var(--accent); background: rgba(46, 230, 224, 0.05); outline: none; }
+    .drop.over { border-color: var(--accent); background: rgba(46, 230, 224, 0.09); transform: scale(1.006); }
+    .drop-ico { font-size: 30px; margin-bottom: 12px; opacity: 0.85; }
+    .drop b { font-family: var(--serif); font-weight: 400; font-size: clamp(20px, 2.6vw, 26px); display: block; margin-bottom: 8px; }
+    .drop span { color: var(--mute); font-size: 14px; display: block; }
+    .drop em { font-style: normal; color: var(--accent); }
+    .drop small { display: block; margin-top: 14px; color: rgba(137, 161, 174, 0.8); font-size: 12.5px; }
+
+    /* ============================================================ Report */
+    .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); }
+    .stat { background: rgba(236, 243, 245, 0.026); border: 1px solid var(--line); border-radius: 13px; padding: 15px 17px; }
+    .stat dt {
+      font-family: var(--grotesk); font-size: 10px; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--mute); margin-bottom: 7px;
+    }
+    .stat dd { font-size: 15px; line-height: 1.5; word-break: break-word; }
+    .stat dd.big { font-family: var(--serif); font-weight: 400; font-size: 25px; line-height: 1.2; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+    .chip {
+      font-family: var(--grotesk); font-size: 11px; letter-spacing: 0.06em;
+      border: 1px solid var(--line-strong); border-radius: 999px;
+      padding: 3px 10px; color: var(--cream-soft);
+    }
+    .chip.hot { border-color: rgba(46, 230, 224, 0.42); color: var(--accent); background: rgba(46, 230, 224, 0.07); }
+    .chip.warn { border-color: rgba(255, 207, 107, 0.4); color: var(--amber); background: rgba(255, 207, 107, 0.06); }
+
+    .cmds { margin-top: 12px; border: 1px solid var(--line); border-radius: 13px; overflow: hidden; }
+    .cmd { display: flex; gap: 14px; align-items: baseline; padding: 10px 16px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+    .cmd:last-child { border-bottom: 0; }
+    .cmd b {
+      font-family: var(--grotesk); font-weight: 500; font-size: 10.5px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--mute); min-width: 92px;
+    }
+    .cmd code { font-family: var(--mono); font-size: 13px; color: var(--accent); }
+
+    .note {
+      margin-top: 14px; padding: 12px 16px; border-radius: 11px; font-size: 13.5px;
+      border: 1px solid rgba(255, 207, 107, 0.3); background: rgba(255, 207, 107, 0.06); color: #f4e2bb;
+    }
+    .note b { color: var(--amber); }
+
+    /* ============================================================ Form */
+    .field { margin-bottom: 17px; }
+    .field:last-child { margin-bottom: 0; }
+    .field label {
+      display: block; font-family: var(--grotesk); font-size: 10.5px; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--mute); margin-bottom: 7px;
+    }
+    .field .hint { text-transform: none; letter-spacing: 0; font-family: var(--sans); font-size: 12.5px; color: rgba(137, 161, 174, 0.85); margin-bottom: 8px; }
+    input[type="text"], textarea {
+      width: 100%; background: rgba(7, 13, 18, 0.5); border: 1px solid var(--line-strong);
+      border-radius: 11px; padding: 12px 14px; color: var(--cream);
+      font-family: var(--sans); font-size: 15px; line-height: 1.55; resize: vertical;
+      transition: border-color 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+    }
+    input[type="text"]:focus, textarea:focus {
+      outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(46, 230, 224, 0.12);
+    }
+    input::placeholder, textarea::placeholder { color: rgba(137, 161, 174, 0.55); }
+    .check { display: flex; align-items: flex-start; gap: 11px; cursor: pointer; padding: 11px 0 0; }
+    .check input { margin-top: 4px; accent-color: var(--accent); width: 16px; height: 16px; flex: none; }
+    .check span { font-size: 14px; color: var(--cream-soft); }
+    .check span b { color: var(--cream); font-weight: 500; }
+
+    /* ============================================================ Buttons */
+    .btn {
+      font-family: var(--grotesk); font-size: 13px; font-weight: 500; letter-spacing: 0.04em;
+      border-radius: 999px; padding: 12px 24px; border: 1px solid transparent;
+      cursor: pointer; transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), background 0.2s var(--ease-out), color 0.2s var(--ease-out);
+      display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+    }
+    .btn-primary { background: var(--accent); color: var(--bg); box-shadow: 0 0 26px var(--accent-glow); }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 0 38px var(--accent-glow); }
+    .btn-outline { background: transparent; color: var(--cream); border-color: var(--line-strong); }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+
+    /* ============================================================ Output */
+    .tabs { display: flex; gap: 6px; margin-bottom: 0; flex-wrap: wrap; }
+    .tab {
+      font-family: var(--grotesk); font-size: 12px; letter-spacing: 0.08em;
+      background: transparent; border: 1px solid var(--line); border-bottom: none;
+      border-radius: 11px 11px 0 0; padding: 10px 18px; color: var(--mute); cursor: pointer;
+      transition: color 0.2s var(--ease-out), background 0.2s var(--ease-out);
+    }
+    .tab:hover { color: var(--cream); }
+    .tab[aria-selected="true"] { color: var(--accent); background: rgba(46, 230, 224, 0.07); border-color: rgba(46, 230, 224, 0.32); }
+    .out {
+      border: 1px solid var(--line); border-radius: 0 13px 13px 13px;
+      background: rgba(7, 13, 18, 0.62); overflow: hidden;
+    }
+    .out pre {
+      margin: 0; padding: 20px; overflow: auto; max-height: 62vh;
+      font-family: var(--mono); font-size: 12.5px; line-height: 1.72;
+      color: var(--cream-soft); white-space: pre-wrap; word-break: break-word;
+      tab-size: 2;
+    }
+    .out pre::-webkit-scrollbar { width: 10px; height: 10px; }
+    .out pre::-webkit-scrollbar-thumb { background: rgba(236, 243, 245, 0.14); border-radius: 6px; }
+
+    /* ============================================================ Toast */
+    .toast {
+      position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 16px);
+      background: var(--accent); color: var(--bg); border-radius: 999px;
+      padding: 11px 24px; font-family: var(--grotesk); font-size: 13px; font-weight: 500;
+      opacity: 0; pointer-events: none; transition: opacity 0.25s var(--ease-out), transform 0.25s var(--ease-out);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); z-index: 90;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    footer {
+      margin-top: 54px; padding: 26px 0 44px; border-top: 1px solid var(--line);
+      color: var(--mute); font-size: 13px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    }
+    footer code { font-family: var(--mono); font-size: 12px; color: var(--cream-soft); }
+
+    /* ============================================================ Responsive */
+    @media (max-width: 620px) {
+      .cmd b { min-width: 100%; }
+      .top { padding-top: 22px; }
+      .hero { padding: 40px 0 30px; }
+    }
+
+    /* ============================================================ Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+      .drop.over { transform: none; }
+      .btn-primary:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">C</div>
+        <div>
+          <b>Claudify</b>
+          <span>Project &rarr; CLAUDE.md</span>
+        </div>
+      </div>
+      <div class="privacy">Runs in your browser &middot; nothing uploaded</div>
+    </div>
+
+    <div class="hero">
+      <p class="eyebrow">A single HTML file &middot; no install, no server</p>
+      <h1>Give Claude the <i>briefing</i> your project never wrote down.</h1>
+      <p class="lede">Drop a project folder below. Claudify reads its manifests, scripts and layout right here on your machine and writes the <code>CLAUDE.md</code> and <code>.claude/settings.json</code> that go in it &mdash; then you fill in the handful of things only you know.</p>
+    </div>
+
+    <!-- ======================= STEP 1 ======================= -->
+    <section class="step" id="step1">
+      <div class="step-head">
+        <span class="step-no">01</span>
+        <div>
+          <h2>Point it at a project</h2>
+          <p>Folders only. Files never leave this page.</p>
+        </div>
+      </div>
+      <button type="button" class="drop" id="drop">
+        <div class="drop-ico" aria-hidden="true">&#9783;</div>
+        <b>Drop a project folder here</b>
+        <span>or <em>click to choose one</em></span>
+        <small>Skips node_modules, .git, dist, build, venv and friends automatically</small>
+      </button>
+      <input type="file" id="picker" webkitdirectory directory multiple hidden />
+      <p class="note" id="scanNote" hidden></p>
+    </section>
+
+    <!-- ======================= STEP 2 ======================= -->
+    <section class="step" id="step2" hidden>
+      <div class="step-head">
+        <span class="step-no">02</span>
+        <div>
+          <h2>What it found</h2>
+          <p>Read this before you trust the draft.</p>
+        </div>
+      </div>
+      <div class="panel">
+        <dl class="grid" id="report"></dl>
+        <div class="cmds" id="cmdList"></div>
+        <div id="warnings"></div>
+      </div>
+    </section>
+
+    <!-- ======================= STEP 3 ======================= -->
+    <section class="step" id="step3" hidden>
+      <div class="step-head">
+        <span class="step-no">03</span>
+        <div>
+          <h2>Add what a scan can't see</h2>
+          <p>These two fields are the difference between a useful CLAUDE.md and a generated one.</p>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="field">
+          <label for="f-what">What this is</label>
+          <p class="hint">One or two sentences. Who it's for and what it does &mdash; not the tech stack, that's already detected.</p>
+          <input type="text" id="f-what" placeholder="The internal billing dashboard finance uses to reconcile invoices." />
+        </div>
+        <div class="field">
+          <label for="f-rules">Rules that are easy to break</label>
+          <p class="hint">The things you'd tell a new hire in their first week. Landmines, conventions people always get wrong, files that look safe to edit but aren't. One per line.</p>
+          <textarea id="f-rules" rows="5" placeholder="Never edit files in src/generated/ &mdash; they come from the proto build.&#10;Migrations are forward-only; add a new one instead of editing the last.&#10;The staging API key in .env.example is fake. Real ones come from 1Password."></textarea>
+        </div>
+        <div class="field">
+          <label for="f-branch">Branch convention</label>
+          <input type="text" id="f-branch" placeholder="feature/* branches off main; main deploys automatically" />
+        </div>
+        <label class="check">
+          <input type="checkbox" id="f-hook" />
+          <span><b>Include a SessionStart hook</b> &mdash; installs dependencies automatically when a Claude Code session opens, so tests and linters can run right away.</span>
+        </label>
+        <div class="actions">
+          <button type="button" class="btn btn-primary" id="gen">Generate files</button>
+          <button type="button" class="btn btn-outline" id="reset">Start over</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= STEP 4 ======================= -->
+    <section class="step" id="step4" hidden>
+      <div class="step-head">
+        <span class="step-no">04</span>
+        <div>
+          <h2>Take it away</h2>
+          <p>Drop these into the root of the project.</p>
+        </div>
+      </div>
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" id="tab-md" aria-selected="true" aria-controls="pane">CLAUDE.md</button>
+        <button class="tab" role="tab" id="tab-json" aria-selected="false" aria-controls="pane">.claude/settings.json</button>
+      </div>
+      <div class="out">
+        <pre id="pane" role="tabpanel" tabindex="0"></pre>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn btn-primary" id="copy">Copy this file</button>
+        <button type="button" class="btn btn-outline" id="dl">Download it</button>
+        <button type="button" class="btn btn-outline" id="dlBoth">Download both</button>
+      </div>
+    </section>
+
+    <footer>
+      <span>Claudify &mdash; one HTML file. Open it from disk, it works offline.</span>
+      <code>claudify.html</code>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+  (function () {
+    "use strict";
+
+    /* ============================================================ Config */
+
+    var SKIP_DIRS = {
+      "node_modules": 1, ".git": 1, ".svn": 1, ".hg": 1, "dist": 1, "build": 1, "out": 1,
+      "target": 1, "vendor": 1, ".venv": 1, "venv": 1, "env": 1, "__pycache__": 1,
+      ".next": 1, ".nuxt": 1, ".svelte-kit": 1, ".turbo": 1, ".cache": 1, "coverage": 1,
+      ".pytest_cache": 1, ".mypy_cache": 1, ".ruff_cache": 1, ".gradle": 1, ".idea": 1,
+      ".vscode": 1, "bower_components": 1, ".terraform": 1, "Pods": 1, ".DS_Store": 1,
+      ".parcel-cache": 1, ".yarn": 1, "site-packages": 1
+    };
+
+    /* Files we open and actually read. Everything else is only counted. */
+    var READ = {
+      "package.json": 1, "tsconfig.json": 1, "jsconfig.json": 1, "pyproject.toml": 1,
+      "requirements.txt": 1, "requirements-dev.txt": 1, "setup.py": 1, "setup.cfg": 1,
+      "Pipfile": 1, "go.mod": 1, "Cargo.toml": 1, "Gemfile": 1, "composer.json": 1,
+      "pubspec.yaml": 1, "build.gradle": 1, "build.gradle.kts": 1, "pom.xml": 1,
+      "Makefile": 1, "makefile": 1, "justfile": 1, "Justfile": 1, "Taskfile.yml": 1,
+      "Dockerfile": 1, "docker-compose.yml": 1, "docker-compose.yaml": 1, "compose.yaml": 1,
+      "README.md": 1, "readme.md": 1, "CLAUDE.md": 1, "CONTRIBUTING.md": 1,
+      "turbo.json": 1, "nx.json": 1, "lerna.json": 1, "pnpm-workspace.yaml": 1,
+      "vercel.json": 1, "netlify.toml": 1, "index.html": 1, ".nvmrc": 1, ".python-version": 1,
+      "biome.json": 1, ".eslintrc.json": 1, ".eslintrc": 1, "eslint.config.js": 1,
+      "eslint.config.mjs": 1, ".prettierrc": 1, "ruff.toml": 1, ".rubocop.yml": 1,
+      "deno.json": 1, "bun.lockb": 1, "flake.nix": 1, "shell.nix": 1
+    };
+
+    var LANG = {
+      js: "JavaScript", jsx: "JavaScript", mjs: "JavaScript", cjs: "JavaScript",
+      ts: "TypeScript", tsx: "TypeScript",
+      py: "Python", rb: "Ruby", go: "Go", rs: "Rust", java: "Java", kt: "Kotlin",
+      swift: "Swift", php: "PHP", cs: "C#", c: "C", h: "C", cpp: "C++", hpp: "C++",
+      cc: "C++", m: "Objective-C", scala: "Scala", ex: "Elixir", exs: "Elixir",
+      dart: "Dart", lua: "Lua", sh: "Shell", bash: "Shell", zsh: "Shell",
+      html: "HTML", css: "CSS", scss: "SCSS", sass: "SCSS", less: "Less",
+      vue: "Vue", svelte: "Svelte", sql: "SQL", md: "Markdown", json: "JSON",
+      yml: "YAML", yaml: "YAML", toml: "TOML"
+    };
+
+    var MAX_READ_BYTES = 400 * 1024;
+    var MAX_FILES = 24000;
+
+    /* ============================================================ State */
+
+    var state = {
+      root: "",
+      paths: [],          // every kept relative path
+      text: {},           // path -> file contents, for READ files only
+      detect: null,
+      out: { md: "", json: "" },
+      tab: "md"
+    };
+
+    var $ = function (id) { return document.getElementById(id); };
+    var drop = $("drop"), picker = $("picker"), toastEl = $("toast");
+
+    function toast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(function () { toastEl.classList.remove("show"); }, 2400);
+    }
+
+    function esc(s) {
+      return String(s).replace(/[&<>"]/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+      });
+    }
+
+    function skipped(rel) {
+      var parts = rel.split("/");
+      for (var i = 0; i < parts.length - 1; i++) {
+        if (SKIP_DIRS[parts[i]]) return true;
+      }
+      return false;
+    }
+
+    function base(rel) { return rel.split("/").pop(); }
+
+    function wanted(rel) {
+      if (READ[base(rel)]) return true;
+      if (/^\.github\/workflows\/[^/]+\.ya?ml$/.test(rel)) return true;
+      if (/^\.claude\//.test(rel)) return true;
+      return false;
+    }
+
+    /* ============================================================ Intake */
+
+    function ingest(entries) {
+      // entries: [{ rel, file }]
+      var kept = [], reads = [];
+      for (var i = 0; i < entries.length && kept.length < MAX_FILES; i++) {
+        var rel = entries[i].rel.replace(/\\/g, "/");
+        if (skipped(rel)) continue;
+        kept.push(rel);
+        if (wanted(rel) && entries[i].file.size < MAX_READ_BYTES) {
+          reads.push({ rel: rel, file: entries[i].file });
+        }
+      }
+      if (!kept.length) {
+        note("That folder came back empty once build output and <b>node_modules</b> were skipped. Try the project root.");
+        return;
+      }
+      state.paths = kept;
+      state.text = {};
+
+      Promise.all(reads.map(function (r) {
+        return r.file.text().then(function (t) { state.text[r.rel] = t; })
+          .catch(function () {});
+      })).then(function () {
+        state.detect = analyze();
+        renderReport();
+        $("step2").hidden = false;
+        $("step3").hidden = false;
+        $("step2").scrollIntoView({ block: "start" });
+      });
+    }
+
+    function note(html) {
+      var el = $("scanNote");
+      el.innerHTML = html;
+      el.hidden = false;
+    }
+
+    // Folder picker
+    drop.addEventListener("click", function () { picker.click(); });
+    picker.addEventListener("change", function () {
+      var out = [], f = picker.files;
+      for (var i = 0; i < f.length; i++) {
+        var p = f[i].webkitRelativePath || f[i].name;
+        var cut = p.indexOf("/");
+        state.root = cut > 0 ? p.slice(0, cut) : "project";
+        out.push({ rel: cut > 0 ? p.slice(cut + 1) : p, file: f[i] });
+      }
+      $("scanNote").hidden = true;
+      ingest(out);
+    });
+
+    // Drag and drop
+    ["dragenter", "dragover"].forEach(function (ev) {
+      drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add("over"); });
+    });
+    ["dragleave", "drop"].forEach(function (ev) {
+      drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove("over"); });
+    });
+
+    drop.addEventListener("drop", function (e) {
+      e.preventDefault();
+      var items = e.dataTransfer && e.dataTransfer.items;
+      if (!items || !items.length) return;
+      var entry = items[0].webkitGetAsEntry && items[0].webkitGetAsEntry();
+      if (!entry) { note("Couldn't read that drop. Click the box and pick the folder instead."); return; }
+      if (!entry.isDirectory) { note("That's a single file. Claudify needs the whole <b>project folder</b>."); return; }
+      state.root = entry.name;
+      $("scanNote").hidden = true;
+      walk(entry, "").then(ingest);
+    });
+
+    function walk(dirEntry, prefix) {
+      return readAll(dirEntry.createReader()).then(function (kids) {
+        var jobs = kids.map(function (k) {
+          var rel = prefix ? prefix + "/" + k.name : k.name;
+          if (k.isDirectory) {
+            if (SKIP_DIRS[k.name]) return Promise.resolve([]);
+            return walk(k, rel);
+          }
+          return new Promise(function (res) {
+            k.file(function (f) { res([{ rel: rel, file: f }]); }, function () { res([]); });
+          });
+        });
+        return Promise.all(jobs).then(function (lists) {
+          return lists.reduce(function (a, b) { return a.concat(b); }, []);
+        });
+      });
+    }
+
+    function readAll(reader) {
+      var all = [];
+      return new Promise(function (res) {
+        (function next() {
+          reader.readEntries(function (batch) {
+            if (!batch.length) return res(all);
+            all = all.concat(Array.prototype.slice.call(batch));
+            next();
+          }, function () { res(all); });
+        })();
+      });
+    }
+
+    /* ============================================================ Analysis */
+
+    function json(path) {
+      var t = state.text[path];
+      if (!t) return null;
+      try { return JSON.parse(t); } catch (e) { return null; }
+    }
+
+    function has(path) { return state.paths.indexOf(path) !== -1; }
+
+    function anyMatch(re) {
+      for (var i = 0; i < state.paths.length; i++) {
+        if (re.test(state.paths[i])) return state.paths[i];
+      }
+      return null;
+    }
+
+    function analyze() {
+      var d = {
+        name: state.root || "project",
+        summary: "",
+        stack: [],
+        pm: "",
+        runtime: "",
+        cmds: {},        // label -> command
+        dirs: [],
+        langs: [],
+        fileCount: state.paths.length,
+        hasCI: [],
+        hasTests: false,
+        existingClaude: !!state.text["CLAUDE.md"],
+        warnings: [],
+        allowExtra: []
+      };
+
+      var pkg = json("package.json");
+      var scripts = (pkg && pkg.scripts) || {};
+
+      /* --- Node ------------------------------------------------ */
+      if (pkg) {
+        d.runtime = "Node.js";
+        d.stack.push("Node.js");
+        if (pkg.description) d.summary = pkg.description;
+        if (pkg.name) d.name = pkg.name;
+
+        d.pm = has("bun.lockb") ? "bun"
+             : has("pnpm-lock.yaml") ? "pnpm"
+             : has("yarn.lock") ? "yarn"
+             : "npm";
+        d.cmds["Install"] = d.pm === "npm" ? "npm ci" : d.pm + " install";
+
+        var deps = {};
+        ["dependencies", "devDependencies", "peerDependencies"].forEach(function (k) {
+          if (pkg[k]) for (var n in pkg[k]) deps[n] = 1;
+        });
+
+        var frameworks = [
+          ["next", "Next.js"], ["react", "React"], ["vue", "Vue"], ["svelte", "Svelte"],
+          ["@angular/core", "Angular"], ["solid-js", "Solid"], ["astro", "Astro"],
+          ["express", "Express"], ["fastify", "Fastify"], ["@nestjs/core", "NestJS"],
+          ["hono", "Hono"], ["electron", "Electron"], ["vite", "Vite"], ["webpack", "webpack"],
+          ["tailwindcss", "Tailwind"], ["prisma", "Prisma"], ["drizzle-orm", "Drizzle"]
+        ];
+        frameworks.forEach(function (f) { if (deps[f[0]]) d.stack.push(f[1]); });
+
+        if (has("tsconfig.json") || deps["typescript"]) d.stack.push("TypeScript");
+
+        var runner = d.pm === "npm" ? "npm run" : d.pm === "bun" ? "bun run" : d.pm + " run";
+        var mapScript = function (label, names) {
+          for (var i = 0; i < names.length; i++) {
+            if (scripts[names[i]]) {
+              d.cmds[label] = runner + " " + names[i];
+              return true;
+            }
+          }
+          return false;
+        };
+        mapScript("Dev server", ["dev", "start", "serve"]);
+        mapScript("Build", ["build", "compile"]);
+        if (mapScript("Test", ["test"])) d.hasTests = true;
+        mapScript("Lint", ["lint"]);
+        mapScript("Format", ["format", "fmt"]);
+        mapScript("Typecheck", ["typecheck", "type-check", "tsc"]);
+
+        if (!d.cmds["Typecheck"] && (has("tsconfig.json") || deps["typescript"])) {
+          d.cmds["Typecheck"] = "npx tsc --noEmit";
+        }
+        if (deps["vitest"]) { d.stack.push("Vitest"); d.hasTests = true; }
+        else if (deps["jest"]) { d.stack.push("Jest"); d.hasTests = true; }
+        else if (deps["mocha"]) { d.stack.push("Mocha"); d.hasTests = true; }
+        if (deps["@playwright/test"] || deps["playwright"]) { d.stack.push("Playwright"); d.hasTests = true; }
+        if (deps["eslint"]) d.stack.push("ESLint");
+        if (deps["@biomejs/biome"]) d.stack.push("Biome");
+
+        if (pkg.workspaces || has("pnpm-workspace.yaml") || has("turbo.json") || has("nx.json") || has("lerna.json")) {
+          d.stack.push("Monorepo");
+          d.warnings.push("This is a <b>monorepo</b>. The generated commands are the root ones — individual packages may have their own, and a per-package CLAUDE.md often beats one big root file.");
+        }
+        d.allowExtra.push("Bash(" + d.pm + " run:*)", "Bash(npx:*)");
+      }
+
+      /* --- Python ---------------------------------------------- */
+      var pyproject = state.text["pyproject.toml"] || "";
+      if (pyproject || has("requirements.txt") || has("setup.py") || has("Pipfile")) {
+        d.stack.push("Python");
+        if (!d.runtime) d.runtime = "Python";
+
+        if (/\[tool\.poetry\]/.test(pyproject)) {
+          d.pm = d.pm || "poetry";
+          d.cmds["Install"] = d.cmds["Install"] || "poetry install";
+        } else if (/\[tool\.uv\]/.test(pyproject) || has("uv.lock")) {
+          d.pm = d.pm || "uv";
+          d.cmds["Install"] = d.cmds["Install"] || "uv sync";
+        } else if (has("requirements.txt")) {
+          d.cmds["Install"] = d.cmds["Install"] || "pip install -r requirements.txt";
+        } else if (pyproject) {
+          d.cmds["Install"] = d.cmds["Install"] || "pip install -e .";
+        }
+
+        if (/pytest/.test(pyproject) || has("pytest.ini") || anyMatch(/(^|\/)tests?\//) || anyMatch(/test_[^/]+\.py$/)) {
+          d.cmds["Test"] = d.cmds["Test"] || "pytest";
+          d.hasTests = true;
+          d.stack.push("pytest");
+        }
+        if (/ruff/.test(pyproject) || has("ruff.toml")) { d.cmds["Lint"] = d.cmds["Lint"] || "ruff check ."; d.stack.push("Ruff"); }
+        if (/black/.test(pyproject)) { d.cmds["Format"] = d.cmds["Format"] || "black ."; }
+        if (/mypy/.test(pyproject) || has("mypy.ini")) { d.cmds["Typecheck"] = d.cmds["Typecheck"] || "mypy ."; d.stack.push("mypy"); }
+        if (/django/i.test(pyproject) || anyMatch(/(^|\/)manage\.py$/)) { d.stack.push("Django"); d.cmds["Dev server"] = d.cmds["Dev server"] || "python manage.py runserver"; }
+        else if (/fastapi/i.test(pyproject) || /fastapi/i.test(state.text["requirements.txt"] || "")) d.stack.push("FastAPI");
+        else if (/flask/i.test(pyproject) || /flask/i.test(state.text["requirements.txt"] || "")) d.stack.push("Flask");
+
+        d.allowExtra.push("Bash(pytest:*)", "Bash(python3:*)", "Bash(python:*)");
+      }
+
+      /* --- Go / Rust / Ruby / PHP / JVM ------------------------- */
+      if (has("go.mod")) {
+        d.stack.push("Go");
+        d.runtime = d.runtime || "Go";
+        var gomod = state.text["go.mod"] || "";
+        var mod = /^module\s+(\S+)/m.exec(gomod);
+        if (mod && d.name === state.root) d.name = mod[1].split("/").pop();
+        d.cmds["Build"] = d.cmds["Build"] || "go build ./...";
+        d.cmds["Test"] = d.cmds["Test"] || "go test ./...";
+        d.cmds["Lint"] = d.cmds["Lint"] || "go vet ./...";
+        d.cmds["Format"] = d.cmds["Format"] || "gofmt -w .";
+        d.hasTests = true;
+        d.allowExtra.push("Bash(go test:*)", "Bash(go build:*)", "Bash(go vet:*)");
+      }
+      if (has("Cargo.toml")) {
+        d.stack.push("Rust");
+        d.runtime = d.runtime || "Rust";
+        d.cmds["Build"] = d.cmds["Build"] || "cargo build";
+        d.cmds["Test"] = d.cmds["Test"] || "cargo test";
+        d.cmds["Lint"] = d.cmds["Lint"] || "cargo clippy -- -D warnings";
+        d.cmds["Format"] = d.cmds["Format"] || "cargo fmt";
+        d.hasTests = true;
+        d.allowExtra.push("Bash(cargo test:*)", "Bash(cargo build:*)", "Bash(cargo clippy:*)");
+      }
+      if (has("Gemfile")) {
+        d.stack.push("Ruby");
+        d.runtime = d.runtime || "Ruby";
+        d.cmds["Install"] = d.cmds["Install"] || "bundle install";
+        var gemfile = state.text["Gemfile"] || "";
+        if (/rails/.test(gemfile)) d.stack.push("Rails");
+        if (/rspec/.test(gemfile)) { d.cmds["Test"] = d.cmds["Test"] || "bundle exec rspec"; d.hasTests = true; }
+        if (/rubocop/.test(gemfile)) d.cmds["Lint"] = d.cmds["Lint"] || "bundle exec rubocop";
+        d.allowExtra.push("Bash(bundle exec:*)");
+      }
+      if (has("composer.json")) {
+        d.stack.push("PHP");
+        d.runtime = d.runtime || "PHP";
+        d.cmds["Install"] = d.cmds["Install"] || "composer install";
+        if (anyMatch(/phpunit/)) { d.cmds["Test"] = d.cmds["Test"] || "vendor/bin/phpunit"; d.hasTests = true; }
+      }
+      if (has("pom.xml")) {
+        d.stack.push("Java / Maven");
+        d.cmds["Build"] = d.cmds["Build"] || "mvn package";
+        d.cmds["Test"] = d.cmds["Test"] || "mvn test";
+        d.hasTests = true;
+      } else if (has("build.gradle") || has("build.gradle.kts")) {
+        d.stack.push("Gradle");
+        d.cmds["Build"] = d.cmds["Build"] || "./gradlew build";
+        d.cmds["Test"] = d.cmds["Test"] || "./gradlew test";
+        d.hasTests = true;
+      }
+
+      /* --- Make / Just ----------------------------------------- */
+      var mk = state.text["Makefile"] || state.text["makefile"];
+      if (mk) {
+        var targets = [];
+        var re = /^([a-zA-Z][a-zA-Z0-9_.-]*):(?!=)/gm, m;
+        while ((m = re.exec(mk)) && targets.length < 12) targets.push(m[1]);
+        if (targets.length) {
+          d.make = targets;
+          ["test", "lint", "build", "fmt", "format"].forEach(function (t) {
+            if (targets.indexOf(t) !== -1) {
+              var label = t === "fmt" || t === "format" ? "Format" : t.charAt(0).toUpperCase() + t.slice(1);
+              d.cmds[label] = d.cmds[label] || "make " + t;
+              if (label === "Test") d.hasTests = true;
+            }
+          });
+          d.allowExtra.push("Bash(make:*)");
+        }
+      }
+
+      /* --- Static site with no toolchain ----------------------- */
+      if (!pkg && !pyproject && has("index.html")) {
+        d.stack.push("Static site");
+        d.cmds["Dev server"] = d.cmds["Dev server"] || "python3 -m http.server 8080";
+        d.allowExtra.push("Bash(python3 -m http.server:*)");
+        d.warnings.push("No package manager and no build step — what's in the repo is what ships. Say so in CLAUDE.md so nobody adds a bundler to solve something the files already do.");
+      }
+
+      /* --- Docker / CI ----------------------------------------- */
+      if (has("Dockerfile")) d.stack.push("Docker");
+      if (has("docker-compose.yml") || has("docker-compose.yaml") || has("compose.yaml")) {
+        d.cmds["Services"] = "docker compose up -d";
+      }
+      state.paths.forEach(function (p) {
+        if (/^\.github\/workflows\/[^/]+\.ya?ml$/.test(p)) d.hasCI.push(base(p));
+      });
+
+      /* --- Layout + languages ---------------------------------- */
+      var dirCount = {}, extCount = {};
+      state.paths.forEach(function (p) {
+        var i = p.indexOf("/");
+        if (i > 0) {
+          var top = p.slice(0, i);
+          if (top.charAt(0) !== ".") dirCount[top] = (dirCount[top] || 0) + 1;
+        }
+        var e = /\.([a-z0-9]+)$/i.exec(p);
+        if (e) {
+          var lang = LANG[e[1].toLowerCase()];
+          if (lang) extCount[lang] = (extCount[lang] || 0) + 1;
+        }
+      });
+      d.dirs = Object.keys(dirCount).map(function (k) { return { name: k, n: dirCount[k] }; })
+        .sort(function (a, b) { return b.n - a.n; }).slice(0, 8);
+
+      var codeOnly = { Markdown: 1, JSON: 1, YAML: 1, TOML: 1 };
+      d.langs = Object.keys(extCount).map(function (k) { return { name: k, n: extCount[k] }; })
+        .sort(function (a, b) { return b.n - a.n; })
+        .filter(function (l, i) { return i < 6 && !(codeOnly[l.name] && l.n < 4); });
+
+      if (!d.hasTests) {
+        d.warnings.push("No test command found. If the project really has no tests, say that in CLAUDE.md — otherwise Claude will keep looking for a suite that isn't there.");
+      }
+      if (d.existingClaude) {
+        d.warnings.push("This project <b>already has a CLAUDE.md</b>. The draft below is written from scratch — merge the good parts in by hand rather than overwriting what someone already curated.");
+      }
+      if (!Object.keys(d.cmds).length) {
+        d.warnings.push("No manifest recognised. The draft will be thin — fill in the commands by hand.");
+      }
+
+      return d;
+    }
+
+    /* ============================================================ Report */
+
+    function renderReport() {
+      var d = state.detect;
+      var rows = [];
+
+      rows.push(cell("Project", '<span class="big">' + esc(d.name) + "</span>"));
+      rows.push(cell("Files scanned", '<span class="big">' + d.fileCount.toLocaleString() + "</span>"));
+      rows.push(cell("Stack", d.stack.length
+        ? '<div class="chips">' + d.stack.map(function (s) { return '<span class="chip hot">' + esc(s) + "</span>"; }).join("") + "</div>"
+        : '<span style="color:var(--mute)">nothing recognised</span>'));
+      if (d.langs.length) {
+        rows.push(cell("Languages", '<div class="chips">' + d.langs.map(function (l) {
+          return '<span class="chip">' + esc(l.name) + " &middot; " + l.n + "</span>";
+        }).join("") + "</div>"));
+      }
+      if (d.dirs.length) {
+        rows.push(cell("Top-level", '<div class="chips">' + d.dirs.map(function (x) {
+          return '<span class="chip">' + esc(x.name) + "/ &middot; " + x.n + "</span>";
+        }).join("") + "</div>"));
+      }
+      rows.push(cell("CI", d.hasCI.length
+        ? '<div class="chips">' + d.hasCI.map(function (w) { return '<span class="chip">' + esc(w) + "</span>"; }).join("") + "</div>"
+        : '<span class="chip warn">no workflows</span>'));
+
+      $("report").innerHTML = rows.join("");
+
+      var keys = Object.keys(d.cmds);
+      $("cmdList").innerHTML = keys.length ? keys.map(function (k) {
+        return '<div class="cmd"><b>' + esc(k) + "</b><code>" + esc(d.cmds[k]) + "</code></div>";
+      }).join("") : "";
+      $("cmdList").style.display = keys.length ? "" : "none";
+
+      $("warnings").innerHTML = d.warnings.map(function (w) {
+        return '<p class="note">' + w + "</p>";
+      }).join("");
+
+      if (d.summary) $("f-what").value = d.summary;
+    }
+
+    function cell(label, body) {
+      return "<div class=\"stat\"><dt>" + esc(label) + "</dt><dd>" + body + "</dd></div>";
+    }
+
+    /* ============================================================ Generate */
+
+    function buildMd() {
+      var d = state.detect;
+      var what = $("f-what").value.trim();
+      var rules = $("f-rules").value.trim();
+      var branch = $("f-branch").value.trim();
+      var L = [];
+
+      L.push("# CLAUDE.md");
+      L.push("");
+      L.push("Guidance for Claude Code when working in this repository.");
+      L.push("");
+
+      L.push("## What this is");
+      L.push("");
+      if (what) {
+        L.push(what);
+      } else {
+        L.push("<!-- One or two sentences: who this is for and what it does. -->");
+      }
+      if (d.stack.length) {
+        L.push("");
+        L.push("Built with " + humanList(d.stack) + ".");
+      }
+      L.push("");
+
+      var keys = Object.keys(d.cmds);
+      if (keys.length) {
+        L.push("## Commands");
+        L.push("");
+        L.push("```bash");
+        keys.forEach(function (k) {
+          L.push(pad(d.cmds[k], 42) + "# " + k.toLowerCase());
+        });
+        L.push("```");
+        L.push("");
+        if (!d.hasTests) {
+          L.push("There is no test suite. Verify changes by running the app and looking at the result.");
+          L.push("");
+        }
+      }
+
+      if (d.dirs.length) {
+        L.push("## Layout");
+        L.push("");
+        L.push("```");
+        d.dirs.forEach(function (x) {
+          L.push(pad(x.name + "/", 22) + x.n + " file" + (x.n === 1 ? "" : "s"));
+        });
+        L.push("```");
+        L.push("");
+      }
+
+      L.push("## Rules that are easy to break");
+      L.push("");
+      if (rules) {
+        rules.split(/\n+/).forEach(function (r) {
+          r = r.trim();
+          if (r) L.push("- " + r.replace(/^[-*]\s*/, ""));
+        });
+      } else {
+        L.push("<!-- The things you'd tell a new hire in week one. Landmines, conventions people");
+        L.push("     always get wrong, files that look safe to edit but aren't. This section is");
+        L.push("     the reason a CLAUDE.md is worth having — don't ship it empty. -->");
+      }
+      L.push("");
+
+      if (d.hasCI.length) {
+        L.push("## CI");
+        L.push("");
+        L.push("GitHub Actions runs " + humanList(d.hasCI.map(function (w) { return "`" + w + "`"; })) +
+               ". Run the checks above locally before pushing — a red pipeline costs a full cycle.");
+        L.push("");
+      }
+
+      L.push("## Git");
+      L.push("");
+      L.push(branch || "<!-- Branch naming, what deploys from where, anything unusual about merges. -->");
+      L.push("");
+
+      return L.join("\n");
+    }
+
+    function pad(s, n) {
+      while (s.length < n) s += " ";
+      return s;
+    }
+
+    function humanList(a) {
+      if (a.length === 1) return a[0];
+      if (a.length === 2) return a[0] + " and " + a[1];
+      return a.slice(0, -1).join(", ") + " and " + a[a.length - 1];
+    }
+
+    function buildJson() {
+      var d = state.detect;
+      var allow = [
+        "Bash(git status:*)", "Bash(git diff:*)", "Bash(git log:*)",
+        "Bash(ls:*)", "Bash(cat:*)", "Bash(grep:*)", "Bash(rg:*)", "Bash(find:*)"
+      ];
+      d.allowExtra.forEach(function (a) { if (allow.indexOf(a) === -1) allow.push(a); });
+
+      var cfg = { permissions: { allow: allow } };
+
+      if ($("f-hook").checked && d.cmds["Install"]) {
+        cfg.hooks = {
+          SessionStart: [
+            {
+              hooks: [
+                { type: "command", command: d.cmds["Install"], timeout: 300 }
+              ]
+            }
+          ]
+        };
+      }
+      return JSON.stringify(cfg, null, 2) + "\n";
+    }
+
+    function generate() {
+      state.out.md = buildMd();
+      state.out.json = buildJson();
+      $("step4").hidden = false;
+      showTab(state.tab);
+      $("step4").scrollIntoView({ block: "start" });
+    }
+
+    /* ============================================================ Output UI */
+
+    function showTab(which) {
+      state.tab = which;
+      $("tab-md").setAttribute("aria-selected", which === "md");
+      $("tab-json").setAttribute("aria-selected", which === "json");
+      $("pane").textContent = which === "md" ? state.out.md : state.out.json;
+      $("dl").textContent = which === "md" ? "Download CLAUDE.md" : "Download settings.json";
+    }
+
+    $("tab-md").addEventListener("click", function () { showTab("md"); });
+    $("tab-json").addEventListener("click", function () { showTab("json"); });
+    $("gen").addEventListener("click", generate);
+
+    // Regenerate live once output is on screen
+    ["f-what", "f-rules", "f-branch", "f-hook"].forEach(function (id) {
+      $(id).addEventListener("input", function () {
+        if (!$("step4").hidden) {
+          state.out.md = buildMd();
+          state.out.json = buildJson();
+          $("pane").textContent = state.tab === "md" ? state.out.md : state.out.json;
+        }
+      });
+    });
+
+    $("copy").addEventListener("click", function () {
+      var txt = state.tab === "md" ? state.out.md : state.out.json;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(function () { toast("Copied"); },
+          function () { fallbackCopy(txt); });
+      } else fallbackCopy(txt);
+    });
+
+    function fallbackCopy(txt) {
+      var ta = document.createElement("textarea");
+      ta.value = txt;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); toast("Copied"); }
+      catch (e) { toast("Select the text and copy manually"); }
+      document.body.removeChild(ta);
+    }
+
+    function save(name, text) {
+      var blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    }
+
+    $("dl").addEventListener("click", function () {
+      if (state.tab === "md") save("CLAUDE.md", state.out.md);
+      else save("settings.json", state.out.json);
+      toast("Saved");
+    });
+
+    $("dlBoth").addEventListener("click", function () {
+      save("CLAUDE.md", state.out.md);
+      setTimeout(function () { save("settings.json", state.out.json); }, 350);
+      toast("Both saved — settings.json goes in .claude/");
+    });
+
+    $("reset").addEventListener("click", function () {
+      state.paths = []; state.text = {}; state.detect = null;
+      $("step2").hidden = true; $("step3").hidden = true; $("step4").hidden = true;
+      $("scanNote").hidden = true;
+      $("f-what").value = ""; $("f-rules").value = ""; $("f-branch").value = "";
+      $("f-hook").checked = false;
+      picker.value = "";
+      window.scrollTo({ top: 0 });
+    });
+
+    // expose for automated verification
+    window.__claudify = {
+      ingest: ingest, state: state, analyze: analyze, buildMd: buildMd, buildJson: buildJson
+    };
+  })();
+  </script>
+</body>
+</html>

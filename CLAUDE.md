@@ -13,7 +13,14 @@ index.html         The entire site (single page, anchor navigation)
 edit.html          Standalone in-browser content editor for non-technical edits
 assets/styles.css  All styling; design tokens live in :root at the top
 assets/app.js      Scroll reveals, header, mobile menu, pricing modal, form, 3D canvases
+claudify.html      Dev tool, not part of the site — see below
 ```
+
+`claudify.html` is a self-contained utility: drop any project folder on it and it reads the
+manifests in-browser and writes that project's `CLAUDE.md` and `.claude/settings.json`. It
+shares this site's tokens and conventions but ships nothing to visitors and is not linked
+from `index.html`. It reads no elements matching `edit.html`'s `SELECTOR`, so changing it
+can never renumber saved client edits.
 
 ## Running it
 

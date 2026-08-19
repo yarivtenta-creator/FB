@@ -24,7 +24,12 @@ Built from `GoBigger_Website_Plan_v2.md`. Brand rule respected throughout: a **h
 index.html         All markup (single page, anchor navigation)
 assets/styles.css  All styling — design tokens at the top (:root)
 assets/app.js      Scroll reveals, header behavior, mobile menu, pricing modal, form validation
+claudify.html      Dev tool (not part of the site) — generates a CLAUDE.md for any project
 ```
+
+`claudify.html` is standalone: open it from disk or at `/claudify.html`, drop a project
+folder on it, and it writes that project's `CLAUDE.md` and `.claude/settings.json` from
+what's actually in the folder. Everything runs in the browser — no files are uploaded.
 
 ## Run locally
 
