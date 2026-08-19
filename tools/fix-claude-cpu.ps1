@@ -232,7 +232,10 @@ Write-Host ('Claude process tree: {0} processes, {1:N1}% CPU, {2}' -f $rows.Coun
 Write-Host ('Machine has {0} logical cores.' -f [Environment]::ProcessorCount) -ForegroundColor DarkGray
 Write-Host ''
 
-$rows |
+# Format-Table -AutoSize emits nothing when it cannot determine console
+# width, which happens whenever output is redirected or the host reports a
+# width of -1. Out-String with an explicit width makes rendering deterministic.
+$table = $rows |
     Select-Object @{ N = 'PID';     E = { $_.Id } },
                   @{ N = 'Process'; E = { $_.Name } },
                   @{ N = 'CPU %';   E = { '{0,5:N1}' -f $_.Cpu } },
@@ -242,7 +245,8 @@ $rows |
                         elseif ($_.Cpu -le $IdleThreshold) { 'idle' }
                         else                               { 'busy' }
                      } } |
-    Format-Table -AutoSize
+    Format-Table -AutoSize | Out-String -Width 500
+Write-Host $table.TrimEnd()
 
 $protected = @($rows | Where-Object { $_.Protected })
 $idle      = @($rows | Where-Object { -not $_.Protected -and $_.Cpu -le $IdleThreshold })
