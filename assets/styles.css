@@ -1183,6 +1183,60 @@ button { font: inherit; cursor: pointer; }
   background: radial-gradient(circle at center, var(--accent) 0 3px, transparent 3.5px);
 }
 
+/* Floating WhatsApp button */
+.wa-float {
+  position: fixed;
+  right: clamp(16px, 3vw, 28px);
+  bottom: clamp(16px, 3vw, 28px);
+  z-index: 900;
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  height: 60px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: #25d366;
+  color: #05231a;
+  text-decoration: none;
+  box-shadow: 0 14px 34px -10px rgba(37, 211, 102, 0.6), 0 6px 16px -6px rgba(0, 0, 0, 0.5);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  overflow: hidden;
+}
+.wa-float svg { flex: none; }
+.wa-float-label {
+  font-family: var(--grotesk);
+  font-weight: 600;
+  font-size: 15px;
+  white-space: nowrap;
+  max-width: 0;
+  opacity: 0;
+  margin-left: 0;
+  transition: max-width 0.35s ease, opacity 0.25s ease, margin-left 0.35s ease;
+}
+.wa-float:hover {
+  background: #1fbe5a;
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px -10px rgba(37, 211, 102, 0.7), 0 8px 20px -6px rgba(0, 0, 0, 0.55);
+}
+.wa-float:hover .wa-float-label,
+.wa-float:focus-visible .wa-float-label {
+  max-width: 160px;
+  opacity: 1;
+  margin-left: 10px;
+}
+.wa-float:focus-visible {
+  outline: 3px solid rgba(37, 211, 102, 0.5);
+  outline-offset: 3px;
+}
+/* On touch screens the label can't hover — show it always, but compact */
+@media (hover: none) {
+  .wa-float { height: 56px; padding: 0 16px; }
+  .wa-float-label { max-width: 160px; opacity: 1; margin-left: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wa-float, .wa-float-label { transition: none; }
+}
+
 /* ============================================================ Closing */
 
 .closing {
